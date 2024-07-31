@@ -1,7 +1,17 @@
 {
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
-    "plugins": [{ "name": "next" }]
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "esnext",
+    "target": "ES2018",
+    "plugins": [{ "name": "next" }],
+    // baseUrl and paths to configure the @ default import
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+    // "declaration": false,
+    // "declarationMap": false
   },
   "include": [
     "next-env.d.ts",

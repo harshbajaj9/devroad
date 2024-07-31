@@ -7,11 +7,40 @@ import {
   AccordionTrigger,
   Button,
 } from "@repo/ui";
-
+import LoginButton from "@/components/auth/login-button";
+import { cn } from "@/lib/utils";
+import { Poppins } from "next/font/google";
+const font = Poppins({
+  weight: "600",
+  subsets: ["latin"],
+});
 export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        <div>
+          <p className="font-bold">Hi there,</p>
+          <p className="font-medium">Let's create your first problem set</p>
+          <Button variant={"secondary"}>Create</Button>
+        </div>
+        <div>
+          <h1
+            className={cn(
+              "font-bold text-white drop-shadow-md",
+              font.className
+            )}
+          >
+            Auth
+          </h1>
+          <p className="font-medium">A simple auth service</p>
+          <div>
+            <LoginButton mode="redirect">
+              <Button variant={"secondary"} size={"lg"}>
+                Sign in
+              </Button>
+            </LoginButton>
+          </div>
+        </div>
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
             <AccordionTrigger>Is it accessible?</AccordionTrigger>
@@ -74,10 +103,7 @@ export default function Home() {
             Read our docs
           </a>
         </div>
-        <Button
-          appName="web"
-          className="mx-auto rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-        >
+        <Button className="mx-auto rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44">
           Open alert
         </Button>
       </main>
