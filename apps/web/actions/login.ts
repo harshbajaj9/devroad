@@ -35,21 +35,21 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 };
 
 export const resendLogin = async (
-  values: z.infer<typeof EmailVerificationSchema>,
+  values: z.infer<typeof EmailVerificationSchema>
 ) => {
   const validatedFields = EmailVerificationSchema.safeParse(values);
   if (!validatedFields.success) return { error: "invalid fields" };
   // TODO: check if emailVerfied is false for the db user, then don't allow login
   const { email } = validatedFields.data;
   try {
-    console.log("hello");
+    console.log("hello", email);
     await signIn("resend", {
       email,
       // redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT_URL,
       // redirectTo: DEFAULT_LOGIN_REDIRECT_URL,
     });
   } catch (err) {
-    console.log("hello1");
+    console.log("hello1", err);
     if (err instanceof AuthError) {
       switch (err.type) {
         case "CredentialsSignin":
