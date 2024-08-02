@@ -6,7 +6,7 @@ const nextConfig = {
   // },
   // productionBrowserSourceMaps: false,
   // transpilePackages: ["ui", "database", "botpress"],
-  transpilePackages: ["ui"],
+  transpilePackages: ["ui", "database"],
   // i18n: {
   //   locales: ["en"],
   //   defaultLocale: "en",
