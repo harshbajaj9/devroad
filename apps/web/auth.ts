@@ -1,5 +1,5 @@
 import NextAuth, { DefaultSession, NextAuthResult } from "next-auth";
-import { Session } from "next-auth";
+// import { Session } from "next-auth";
 import "next-auth/jwt";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/db";
@@ -83,7 +83,5 @@ const nextAuthResult = NextAuth({
     },
   },
 });
-
-// had to do this becaues signIn was giving type error
-export const signIn: NextAuthResult["signIn"] = nextAuthResult.auth;
+export const signIn: NextAuthResult["signIn"] = nextAuthResult.signIn;
 export const { handlers, signOut, auth }: NextAuthResult = nextAuthResult;
