@@ -1,6 +1,8 @@
 {
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
+    // https://trpc.io/docs/client/nextjs/setup#2-enable-strict-mode
+    "strictNullChecks": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "target": "ES2018",

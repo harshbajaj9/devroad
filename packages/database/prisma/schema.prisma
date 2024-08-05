@@ -66,7 +66,7 @@ model User {
   role             UserRole  @default(USER)
   accounts         Account[]
   sessions         Session[]
-  // posts         Post[]
+  posts            Post[]
 }
 
 model VerificationToken {
@@ -86,4 +86,16 @@ model EmailVerificationToken {
   // @@map("verificationtokens")
 
   @@unique([email, token])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  @@index([name])
 }

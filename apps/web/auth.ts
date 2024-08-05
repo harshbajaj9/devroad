@@ -47,10 +47,19 @@ const nextAuthResult = NextAuth({
       return token;
     },
     // Could add  { token: JWT; session: Session } for below types
-    async session({ token, session }) {
+    async session({ token, session, user }) {
       if (token.sub && session.user) session.user.id = token.sub;
       if (token.role && session.user) session.user.role = token.role;
       return session;
+
+      // Below is an alternate way of adding id to the session user
+      // return {
+      //   ...session,
+      //   user: {
+      //     ...session.user,
+      //     id: user.id,
+      //   },
+      // };
     },
     // async signIn({ user }) {
     //   if (!user.id) return false;
@@ -83,5 +92,6 @@ const nextAuthResult = NextAuth({
     },
   },
 });
+// https://github.com/nextauthjs/next-auth/discussions/9950
 export const signIn: NextAuthResult["signIn"] = nextAuthResult.signIn;
 export const { handlers, signOut, auth }: NextAuthResult = nextAuthResult;
