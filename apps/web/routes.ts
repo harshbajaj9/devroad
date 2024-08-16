@@ -3,7 +3,14 @@
  * @type {string[]}
  */
 // export const publicRoutes = ["/", "/settings"];
-export const publicRoutes = ["/", "/auth/email-change-verification"];
+export const publicRoutes = [
+  "/",
+  "/auth/email-change-verification",
+  "/explore",
+  "/learn",
+  "/job",
+  "/home",
+];
 /**
  * routes for authentication, these will redirect user to /settings
  */

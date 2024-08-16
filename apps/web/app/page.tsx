@@ -6,109 +6,282 @@ import {
   AccordionItem,
   AccordionTrigger,
   Button,
+  Card,
+  Input,
 } from "@repo/ui";
 import LoginButton from "@/components/auth/login-button";
 import { cn } from "@/lib/utils";
-import { Poppins } from "next/font/google";
+import { Bricolage_Grotesque, Poppins } from "next/font/google";
 const font = Poppins({
-  weight: "600",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+});
+const font2 = Bricolage_Grotesque({
+  weight: ["300", "400", "500", "600", "700", "800"],
   subsets: ["latin"],
 });
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <div>
-          <p className="font-bold">Hi there,</p>
-          <p className="font-medium">Let's create your first problem set</p>
-          <Button variant={"secondary"}>Create</Button>
-        </div>
-        <div>
-          <h1
-            className={cn(
-              "font-bold text-white drop-shadow-md",
-              font.className
-            )}
-          >
-            Auth
-          </h1>
-          <p className="font-medium">A simple auth service</p>
-          <div>
+    <>
+      <nav>
+        <div className="w-[90vw] min-h-16 m-auto bg-white flex p-4 justify-between">
+          <div className="flex gap-2">
+            <div
+              className={cn(
+                "m-auto font-bold text-black text-3xl drop-shadow-md"
+                // font.className
+              )}
+            >
+              <a
+                className={styles.primary}
+                href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  className={styles.logo}
+                  src="/devroad3.png"
+                  alt="devroad logomark"
+                  width={40}
+                  height={40}
+                />
+              </a>
+            </div>
+
+            <div
+              className={cn(
+                "font-bold text-black text-3xl drop-shadow-md align-bottom pt-[2px]",
+                font.className
+              )}
+            >
+              dev<span className="font-light">road</span>.io
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Input
+              className="rounded-full text-md font-semibold text-gray-700 px-4 placeholder:text-gray-300"
+              placeholder="john@example.com"
+            ></Input>
+            <Button
+              // variant="test"
+              className="m-y-auto rounded-full text-md font-bold"
+            >
+              Join the waitlist
+            </Button>
             <LoginButton mode="redirect">
-              <Button variant={"secondary"} size={"lg"}>
-                Sign in
+              <Button
+                className="m-y-auto rounded-full text-md font-bold"
+                variant={"ghost"}
+                size={"lg"}
+              >
+                Login
               </Button>
             </LoginButton>
           </div>
         </div>
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Is it accessible?</AccordionTrigger>
-            <AccordionContent>
-              Yes. It adheres to the WAI-ARIA design pattern.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger>Is it styled?</AccordionTrigger>
-            <AccordionContent>
-              Yes. It comes with default styles that matches the other
-              components aesthetic.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger>Is it animated?</AccordionTrigger>
-            <AccordionContent>
-              Yes. Its animated by default, but you can disable it if you
-              prefer.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      </nav>
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <div className="m-20 mt-8 max-w-[1200px]  grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* <div className="mx-10 max-w-[1200px]"> */}
+            <div className="">
+              <h1
+                className={cn(
+                  "m-auto font-bold text-black text-6xl drop-shadow-md",
+                  font2.className
+                )}
+              >
+                The all in one super app for every step of your journey
+                {/* <span className=" relative whitespace-nowrap">
+                  <span className="absolute bg-[#f0f0f0] -left-2 -top-1 -bottom-1 -right-2 md:-left-3 md:-top-0 md:-bottom-0 md:-right-3 -rotate-1"></span>
+                  <span className="relative text-neutral italic">prep</span>
+                </span>{" "}
+                and{" "}
+                <span className=" relative whitespace-nowrap">
+                  <span className="absolute bg-[#f0f0f0] -left-2 -top-1 -bottom-1 -right-2 md:-left-3 md:-top-0 md:-bottom-0 md:-right-3 -rotate-1"></span>
+                  <span className="relative text-neutral italic">job-hunt</span>
+                </span> */}
+                .
+              </h1>
+              <div
+                className={cn(
+                  "m-auto mt-4 font-semibold text-gray-600 text-lg"
+                )}
+              >
+                <p className={cn("", font2.className)}>
+                  We have seen the bulls and the bears. These tough times have
+                  uncovered many{" "}
+                  <span className={cn("font-medium italic", font.className)}>
+                    road
+                  </span>
+                  -blocks in our journey.
+                </p>
+                <br />
+                <p className={cn("", font2.className)}>
+                  Whether you are a solopreneur or professional looking for
+                  work, this app is an attempt to assist you in your
+                  preparation, be it sharpening your core skills, managing your
+                  side-projects or a more deterministic job hunt.
+                </p>
+              </div>
+              <div
+                className={cn(
+                  "m-auto mt-8 font-semibold text-gray-600 text-2xl"
+                )}
+              >
+                <p className={cn("", font2.className)}>
+                  Join now to experience the beta.
+                </p>
+              </div>
+              <div className="mt-2 flex gap-2 w-96">
+                <Input
+                  className="rounded-full text-md font-semibold text-gray-700 px-4 placeholder:text-gray-300"
+                  placeholder="john@example.com"
+                ></Input>
+                <Button
+                  // variant="test"
+                  className="m-y-auto rounded-full text-md font-bold"
+                >
+                  Join the waitlist
+                </Button>
+              </div>
+            </div>
+            <div className="">
+              <ul>
+                <li>
+                  <div className="p-4 flex gap-4 items-center ">
+                    <div className="">
+                      <img
+                        className={styles.logo}
+                        src="/devroad3.png"
+                        alt="devroad logomark"
+                        width={40}
+                        height={40}
+                      />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        Create & share repositories
+                      </h2>
+                      <p>Create & share roadmaps, tutorials, courses etc.</p>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div className="p-4 flex gap-4 items-center ">
+                    <div className="">
+                      <img
+                        className={styles.logo}
+                        src="/devroad3.png"
+                        alt="devroad logomark"
+                        width={40}
+                        height={40}
+                      />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        Share repositories
+                      </h2>
+                      <p>Create & share roadmaps, tutorials, courses etc.</p>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div className="p-4 flex gap-4 items-center ">
+                    <div className="">
+                      <img
+                        className={styles.logo}
+                        src="/devroad3.png"
+                        alt="devroad logomark"
+                        width={40}
+                        height={40}
+                      />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        Share repositories
+                      </h2>
+                      <p>Create & share roadmaps, tutorials, courses etc.</p>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div className="p-4 flex gap-4 items-center ">
+                    <div className="">
+                      <img
+                        className={styles.logo}
+                        src="/devroad3.png"
+                        alt="devroad logomark"
+                        width={40}
+                        height={40}
+                      />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        Share repositories
+                      </h2>
+                      <p>Create & share roadmaps, tutorials, courses etc.</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </main>
+        {/* <footer className={styles.footer}> */}
+      </div>
+      <footer className="px-20 flex w-full bg-white">
+        <div className="">
+          <div className="max-w-[1200px] h-16 m-auto bg-white flex p-3 justify-between">
+            <div className="flex gap-2">
+              <div
+                className={cn(
+                  "m-auto font-bold text-black text-3xl drop-shadow-md"
+                  // font.className
+                )}
+              >
+                <a
+                  className={styles.primary}
+                  href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    className={styles.logo}
+                    src="/devroad3.png"
+                    alt="devroad logomark"
+                    width={36}
+                    height={36}
+                  />
+                </a>
+              </div>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+              <div
+                className={cn(
+                  "font-bold text-black text-2xl drop-shadow-md align-bottom pt-[4px]",
+                  font.className
+                )}
+              >
+                dev<span className="font-light">road</span>.io
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Input
+                className="rounded-full text-md font-semibold text-gray-700 px-4 placeholder:text-gray-300"
+                placeholder="john@example.com"
+              ></Input>
+              <Button
+                // variant="test"
+                className="m-y-auto rounded-full text-md font-bold"
+              >
+                Join the waitlist
+              </Button>
+            </div>
+          </div>
         </div>
-        <Button className="mx-auto rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44">
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
+        {/* <a
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
@@ -149,8 +322,8 @@ export default function Home() {
             height={16}
           />
           Go to nextjs.org →
-        </a>
+        </a> */}
       </footer>
-    </div>
+    </>
   );
 }

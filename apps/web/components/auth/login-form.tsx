@@ -61,9 +61,9 @@ const LoginForm = () => {
   const [success, setSuccess] = useState("");
   return (
     <CardWrapper
-      headerLabel="Welcome Back"
-      backButtonHref="/auth/register"
-      backButtonLabel="Dont have an account"
+      headerLabel="Welcome"
+      // backButtonHref="/auth/register"
+      // backButtonLabel="Dont have an account"
       showSocial
     >
       {/* <Form {...form}>

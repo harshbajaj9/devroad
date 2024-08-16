@@ -43,9 +43,11 @@ module.exports = {
       },
       colors: {
         border: "hsl(var(--border))",
+        borderhover: "hsl(var(--border-hover))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
+        backgroundalt: "hsl(var(--background-alt))",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",

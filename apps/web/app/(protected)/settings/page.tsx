@@ -28,10 +28,10 @@ const page = async () => {
   return (
     <HydrateClient>
       <div>
-        <p>{JSON.stringify(session)}</p>
-        {/* <LogoutButton>
-        <Button>Signout</Button>
-      </LogoutButton> */}
+        {/* <p>{JSON.stringify(session)}</p> */}
+        <LogoutButton>
+          <Button>Signout</Button>
+        </LogoutButton>
         <form
           action={async () => {
             "use server";

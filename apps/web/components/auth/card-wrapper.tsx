@@ -7,8 +7,8 @@ import BackButton from "./back-button";
 interface CardWrapperProps {
   children: React.ReactNode;
   headerLabel: string;
-  backButtonLabel: string;
-  backButtonHref: string;
+  backButtonLabel?: string;
+  backButtonHref?: string;
   showSocial?: boolean;
 }
 const CardWrapper = ({
@@ -29,9 +29,9 @@ const CardWrapper = ({
           <Social />
         </CardFooter>
       )}
-      <CardFooter>
+      {/* <CardFooter>
         <BackButton label={backButtonLabel} href={backButtonHref} />
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };
