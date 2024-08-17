@@ -77,7 +77,23 @@ const Sidebar = () => {
     // <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-[#F5F5F5] dark:bg-[#120e17] p-1 pt-16 ">
     // <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-[#F5F5F5] dark:bg-[#1a1b1c] p-1 pt-16 ">
     // <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-[#F5F5F5] dark:bg-[#17181d]  dark:bg-[--background] p-1 pt-16 ">
-    <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-backgroundalt p-1 pt-16 ">
+    <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-backgroundalt px-1  ">
+      <div className={cn(" mx-4 drop-shadow-md py-4")}>
+        <a
+          // className={styles.primary}
+          href={`${process.env.NEXT_URL}`}
+          // target="_blank"
+          // rel="noopener noreferrer"
+        >
+          <img
+            // className={styles.logo}
+            src="/devroad5.png"
+            alt="devroad logomark"
+            width={32}
+            height={32}
+          />
+        </a>
+      </div>
       <div className=" flex flex-col gap-4 justify-start">
         {sidenavs.map((snav) => {
           const isActive = pathname.startsWith(snav.href);
