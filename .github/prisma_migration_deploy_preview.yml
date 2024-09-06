@@ -1,0 +1,51 @@
+name: Preview deploy-db
+
+on:
+  push:
+    paths:
+      - packages/database/prisma/migrations/**
+    branches:
+      - main
+
+jobs:
+  deploy-migrations:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+      POSTGRES_POOLED_URL: ${{ secrets.PROD_POSTGRES_POOLED_URL }}
+      POSTGRES_NON_POOLED_URL: ${{ secrets.PROD_POSTGRES_NON_POOLED_URL }}
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          run_install: true
+
+      - name: Install the dependencies
+        run: pnpm install
+
+      - name: Add .env file to database folder
+        working-directory: ./packages/database/
+        run: |
+          touch .env
+          echo DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }} >> .env
+          echo POSTGRES_POOLED_URL: ${{ secrets.PREVIEW_POSTGRES_POOLED_URL }} >> .env
+          echo POSTGRES_NON_POOLED_URL: ${{ secrets.PREVIEW_POSTGRES_NON_POOLED_URL }} >> .env
+          cat .env
+
+      - name: Deploy Migration to Preview
+        working-directory: ./packages/database/
+        run: npx prisma migrate deploy
+
+      - name: "Migration ran"
+        run: echo "Migration ran on Preview successfully"

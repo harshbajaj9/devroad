@@ -1,5 +1,5 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from 'next/image'
+import styles from './page.module.css'
 import {
   Accordion,
   AccordionContent,
@@ -7,41 +7,54 @@ import {
   AccordionTrigger,
   Button,
   Card,
-  Input,
-} from "@repo/ui";
-import LoginButton from "@/components/auth/login-button";
-import { cn } from "@/lib/utils";
-import { Bricolage_Grotesque, Poppins } from "next/font/google";
+  Input
+} from '@repo/ui'
+import HomePage from '@/app/(sidenav)/home/page'
+import LoginButton from '@/components/auth/login-button'
+import { cn } from '@/lib/utils'
+import { Bricolage_Grotesque, Poppins } from 'next/font/google'
+import { auth } from '@/auth'
 const font = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 const font2 = Bricolage_Grotesque({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
-export default function Home() {
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
+export default async function Home() {
+  // const session = await auth()
+  // if (session) {
+  //   return (
+  //     <div className='absolute left-0 top-0 z-20 ml-[72px] flex w-[calc(100%-72px)] flex-col'>
+  //       <div className='min-h-[58px] bg-backgroundalt'></div>
+  //       <div className='mb-2 mr-2 rounded-md border bg-backgroundalt p-8'>
+  //         <HomePage />
+  //       </div>
+  //     </div>
+  //   )
+  // }
   return (
     <>
       <nav>
-        <div className="w-[90vw] min-h-16 m-auto bg-white flex p-4 justify-between">
-          <div className="flex gap-2">
+        <div className='m-auto flex min-h-16 w-[90vw] justify-between bg-white p-4'>
+          <div className='flex gap-2'>
             <div
               className={cn(
-                "m-auto font-bold text-black text-3xl drop-shadow-md"
+                'm-auto text-3xl font-bold text-black drop-shadow-md'
                 // font.className
               )}
             >
               <a
                 className={styles.primary}
-                href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                target="_blank"
-                rel="noopener noreferrer"
+                href='https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app'
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 <img
                   className={styles.logo}
-                  src="/devroad3.png"
-                  alt="devroad logomark"
+                  src='/devroad3.png'
+                  alt='devroad logomark'
                   width={40}
                   height={40}
                 />
@@ -50,30 +63,30 @@ export default function Home() {
 
             <div
               className={cn(
-                "font-bold text-black text-3xl drop-shadow-md align-bottom pt-[2px]",
+                'pt-[2px] align-bottom text-3xl font-bold text-black drop-shadow-md',
                 font.className
               )}
             >
-              dev<span className="font-light">road</span>.io
+              dev<span className='font-light'>road</span>.io
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Input
-              className="rounded-full text-md font-semibold text-gray-700 px-4 placeholder:text-gray-300"
-              placeholder="john@example.com"
+              className='text-md rounded-full px-4 font-semibold text-gray-700 placeholder:text-gray-300'
+              placeholder='john@example.com'
             ></Input>
             <Button
               // variant="test"
-              className="m-y-auto rounded-full text-md font-bold"
+              className='m-y-auto text-md rounded-full font-bold'
             >
               Join the waitlist
             </Button>
-            <LoginButton mode="redirect">
+            <LoginButton mode='redirect'>
               <Button
-                className="m-y-auto rounded-full text-md font-bold"
-                variant={"ghost"}
-                size={"lg"}
+                className='m-y-auto text-md rounded-full font-bold'
+                variant={'ghost'}
+                size={'lg'}
               >
                 Login
               </Button>
@@ -83,12 +96,12 @@ export default function Home() {
       </nav>
       <div className={styles.page}>
         <main className={styles.main}>
-          <div className="m-20 mt-8 max-w-[1200px]  grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className='m-20 mt-8 grid max-w-[1200px] grid-cols-1 gap-4 md:grid-cols-2'>
             {/* <div className="mx-10 max-w-[1200px]"> */}
-            <div className="">
+            <div className=''>
               <h1
                 className={cn(
-                  "m-auto font-bold text-black text-6xl drop-shadow-md",
+                  'm-auto text-6xl font-bold text-black drop-shadow-md',
                   font2.className
                 )}
               >
@@ -106,19 +119,19 @@ export default function Home() {
               </h1>
               <div
                 className={cn(
-                  "m-auto mt-4 font-semibold text-gray-600 text-lg"
+                  'm-auto mt-4 text-lg font-semibold text-gray-600'
                 )}
               >
-                <p className={cn("", font2.className)}>
+                <p className={cn('', font2.className)}>
                   We have seen the bulls and the bears. These tough times have
-                  uncovered many{" "}
-                  <span className={cn("font-medium italic", font.className)}>
+                  uncovered many{' '}
+                  <span className={cn('font-medium italic', font.className)}>
                     road
                   </span>
                   -blocks in our journey.
                 </p>
                 <br />
-                <p className={cn("", font2.className)}>
+                <p className={cn('', font2.className)}>
                   Whether you are a solopreneur or professional looking for
                   work, this app is an attempt to assist you in your
                   preparation, be it sharpening your core skills, managing your
@@ -127,41 +140,41 @@ export default function Home() {
               </div>
               <div
                 className={cn(
-                  "m-auto mt-8 font-semibold text-gray-600 text-2xl"
+                  'm-auto mt-8 text-2xl font-semibold text-gray-600'
                 )}
               >
-                <p className={cn("", font2.className)}>
+                <p className={cn('', font2.className)}>
                   Join now to experience the beta.
                 </p>
               </div>
-              <div className="mt-2 flex gap-2 w-96">
+              <div className='mt-2 flex w-96 gap-2'>
                 <Input
-                  className="rounded-full text-md font-semibold text-gray-700 px-4 placeholder:text-gray-300"
-                  placeholder="john@example.com"
+                  className='text-md rounded-full px-4 font-semibold text-gray-700 placeholder:text-gray-300'
+                  placeholder='john@example.com'
                 ></Input>
                 <Button
                   // variant="test"
-                  className="m-y-auto rounded-full text-md font-bold"
+                  className='m-y-auto text-md rounded-full font-bold'
                 >
                   Join the waitlist
                 </Button>
               </div>
             </div>
-            <div className="">
+            <div className=''>
               <ul>
                 <li>
-                  <div className="p-4 flex gap-4 items-center ">
-                    <div className="">
+                  <div className='flex items-center gap-4 p-4'>
+                    <div className=''>
                       <img
                         className={styles.logo}
-                        src="/devroad3.png"
-                        alt="devroad logomark"
+                        src='/devroad3.png'
+                        alt='devroad logomark'
                         width={40}
                         height={40}
                       />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold">
+                      <h2 className='text-xl font-semibold'>
                         Create & share repositories
                       </h2>
                       <p>Create & share roadmaps, tutorials, courses etc.</p>
@@ -169,18 +182,18 @@ export default function Home() {
                   </div>
                 </li>
                 <li>
-                  <div className="p-4 flex gap-4 items-center ">
-                    <div className="">
+                  <div className='flex items-center gap-4 p-4'>
+                    <div className=''>
                       <img
                         className={styles.logo}
-                        src="/devroad3.png"
-                        alt="devroad logomark"
+                        src='/devroad3.png'
+                        alt='devroad logomark'
                         width={40}
                         height={40}
                       />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold">
+                      <h2 className='text-xl font-semibold'>
                         Share repositories
                       </h2>
                       <p>Create & share roadmaps, tutorials, courses etc.</p>
@@ -188,18 +201,18 @@ export default function Home() {
                   </div>
                 </li>
                 <li>
-                  <div className="p-4 flex gap-4 items-center ">
-                    <div className="">
+                  <div className='flex items-center gap-4 p-4'>
+                    <div className=''>
                       <img
                         className={styles.logo}
-                        src="/devroad3.png"
-                        alt="devroad logomark"
+                        src='/devroad3.png'
+                        alt='devroad logomark'
                         width={40}
                         height={40}
                       />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold">
+                      <h2 className='text-xl font-semibold'>
                         Share repositories
                       </h2>
                       <p>Create & share roadmaps, tutorials, courses etc.</p>
@@ -207,18 +220,18 @@ export default function Home() {
                   </div>
                 </li>
                 <li>
-                  <div className="p-4 flex gap-4 items-center ">
-                    <div className="">
+                  <div className='flex items-center gap-4 p-4'>
+                    <div className=''>
                       <img
                         className={styles.logo}
-                        src="/devroad3.png"
-                        alt="devroad logomark"
+                        src='/devroad3.png'
+                        alt='devroad logomark'
                         width={40}
                         height={40}
                       />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold">
+                      <h2 className='text-xl font-semibold'>
                         Share repositories
                       </h2>
                       <p>Create & share roadmaps, tutorials, courses etc.</p>
@@ -231,26 +244,26 @@ export default function Home() {
         </main>
         {/* <footer className={styles.footer}> */}
       </div>
-      <footer className="px-20 flex w-full bg-white">
-        <div className="">
-          <div className="max-w-[1200px] h-16 m-auto bg-white flex p-3 justify-between">
-            <div className="flex gap-2">
+      <footer className='flex w-full bg-white px-20'>
+        <div className=''>
+          <div className='m-auto flex h-16 max-w-[1200px] justify-between bg-white p-3'>
+            <div className='flex gap-2'>
               <div
                 className={cn(
-                  "m-auto font-bold text-black text-3xl drop-shadow-md"
+                  'm-auto text-3xl font-bold text-black drop-shadow-md'
                   // font.className
                 )}
               >
                 <a
                   className={styles.primary}
-                  href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href='https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app'
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
                   <img
                     className={styles.logo}
-                    src="/devroad3.png"
-                    alt="devroad logomark"
+                    src='/devroad3.png'
+                    alt='devroad logomark'
                     width={36}
                     height={36}
                   />
@@ -259,22 +272,22 @@ export default function Home() {
 
               <div
                 className={cn(
-                  "font-bold text-black text-2xl drop-shadow-md align-bottom pt-[4px]",
+                  'pt-[4px] align-bottom text-2xl font-bold text-black drop-shadow-md',
                   font.className
                 )}
               >
-                dev<span className="font-light">road</span>.io
+                dev<span className='font-light'>road</span>.io
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className='flex gap-2'>
               <Input
-                className="rounded-full text-md font-semibold text-gray-700 px-4 placeholder:text-gray-300"
-                placeholder="john@example.com"
+                className='text-md rounded-full px-4 font-semibold text-gray-700 placeholder:text-gray-300'
+                placeholder='john@example.com'
               ></Input>
               <Button
                 // variant="test"
-                className="m-y-auto rounded-full text-md font-bold"
+                className='m-y-auto text-md rounded-full font-bold'
               >
                 Join the waitlist
               </Button>
@@ -325,5 +338,5 @@ export default function Home() {
         </a> */}
       </footer>
     </>
-  );
+  )
 }

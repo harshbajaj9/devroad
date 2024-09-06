@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String  @id @default(uuid())
   userId            String  @map("user_id")
   type              String
   provider          String
@@ -89,7 +89,7 @@ model EmailVerificationToken {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -98,4 +98,163 @@ model Post {
   createdById String
 
   @@index([name])
+}
+
+enum DOMAINS {
+  SOFTWARE_DEVELOPMENT
+  PRODUCT_MANAGEMENT
+  DATA_ANALYST
+  PRODUCT_DESIGNER
+}
+
+enum ResourceCategoryTags {
+  DSA
+  GUESSTIMATES
+  SQL
+  PANDAS
+  JAVASCRIPT
+}
+
+enum ProblemSetTypes {
+  DSA
+  CUSTOM
+}
+
+enum DSATopicTags {
+  STRING
+  ARRAY
+  ALGORITHM
+  DATA_STRUCTURE
+  DYNAMIC_PROGRAMMING
+  GREEDY
+  UNION_FIND
+  LINKED_LIST
+  IMPLEMENTATION
+}
+
+// TODO: Should be removed?
+enum DSACompanyTags {
+  FAANG
+  GOOGLE
+}
+
+enum DSAPlatform {
+  LC
+  GFG
+  GFE
+}
+
+// This is currently just being used for storing the actual urls for dsa problems from leetcode, can be used for more platforms as well. This is to allow search by title or link
+model DSAPlatformProblem {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  url         String
+  dsaPlatform DSAPlatform
+  updatedAt   DateTime    @updatedAt
+}
+
+// This is devroad's original copy of the  platform problem
+model DSAProblem {
+  id              String      @id @default(uuid())
+  primaryUrl      String
+  primaryTitle    String
+  primaryPlatform DSAPlatform @default(LC)
+  // contains {id, link , title and tags in future maybe}
+  platformData    Json
+}
+
+model DSAProblemSet {
+  id          String         @id @default(uuid())
+  title       String
+  description String
+  creatorId   String
+  creatorName String
+  companyTags String[]
+  topicTags   DSATopicTags[]
+
+  itemCount    Int
+  sectionCount Int
+  likeCount    Int
+  commentCount Int
+}
+
+enum DSAProblemSetItemType {
+  SECTION
+  QUESTION
+}
+
+enum DSAProblemSetItemParentType {
+  PROBLEM_SET
+  SECTION
+}
+
+enum DSAProblemDifficulty {
+  EASY
+  MED
+  HARD
+}
+
+model DSAProblemSetItem {
+  id                  String                      @id @default(uuid())
+  type                DSAProblemSetItemType
+  // id of the problem set/section it belongs
+  referenceParentId   String
+  referenceParentType DSAProblemSetItemParentType
+
+  // order in the section/set
+  order              Int
+  // Reference to the DSAProblem, if it is a item and references DSAProblem
+  referenceProblemId String?
+
+  // title and description only needed for section type
+  title       String?
+  description String?
+
+  topicTags  DSATopicTags[]
+  difficulty DSAProblemDifficulty
+}
+
+enum LikeReferenceTypes {
+  BLOG
+  TUTORIAL
+  ROADMAP
+  STORYLINE
+  COMMENT
+  DSAPROBLEMSET
+}
+
+model Like {
+  id            Int                @id @default(autoincrement())
+  referenceType LikeReferenceTypes
+  referenceID   String
+}
+
+model Comment {
+  id            Int                @id @default(autoincrement())
+  // TODO: storing markdown in db
+  content       String
+  referenceType LikeReferenceTypes
+  referenceID   String
+}
+
+enum UserDSAProblemAttemptStatus {
+  DONE
+  REVISIT
+  INCOMPLETE
+}
+
+// Notes of every user are added to the DSAProblemSetItem
+model UserDSAProblemSetItemPreferencesAndResources {
+  id              Int                         @id @default(autoincrement())
+  primaryPlatform DSAPlatform?
+  // TODO: storing markdown in db
+  notes           String?
+  kvPairs         Json?
+  // Reference to the problem
+  referenceID     String
+  // could add tags here?
+  timesSolved     Int                         @default(0)
+  timesAttempted  Int                         @default(0)
+  lastStatus      UserDSAProblemAttemptStatus @default(INCOMPLETE)
 }

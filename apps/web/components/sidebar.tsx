@@ -53,7 +53,7 @@ const sidenavs = [
     icon: (
       <BriefcaseIcon className="size-5 group-hover:scale-110 text-muted-foreground group-hover:text-muted duration-150" />
     ),
-    title: "Job",
+    title: "Interview",
     href: "/job",
     activeIcon: (
       <ActiveBriefcaseIcon className="size-5 text-background group-hover:scale-110  duration-150" />
@@ -94,7 +94,7 @@ const Sidebar = () => {
           />
         </a>
       </div>
-      <div className=" flex flex-col gap-4 justify-start">
+      <div className=" flex flex-col gap-4 justify-start mt-4">
         {sidenavs.map((snav) => {
           const isActive = pathname.startsWith(snav.href);
           return (

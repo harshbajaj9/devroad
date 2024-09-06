@@ -1,45 +1,45 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import type { Metadata } from 'next'
+import localFont from 'next/font/local'
 // import "./globals.css";
-import styles from "./page.module.css";
+import styles from './page.module.css'
 
-import "@repo/ui/styles/globals.css";
-import { TRPCReactProvider } from "@/trpc/react";
-import { Bricolage_Grotesque, Poppins } from "next/font/google";
-import { cn } from "@/lib/utils";
-import { Button, Input, ThemeProvider } from "@repo/ui";
-import LoginButton from "@/components/auth/login-button";
+import '@repo/ui/styles/globals.css'
+import { TRPCReactProvider } from '@/trpc/react'
+import { Bricolage_Grotesque, Poppins } from 'next/font/google'
+import { cn } from '@/lib/utils'
+import { Button, Input, ThemeProvider } from '@repo/ui'
+import LoginButton from '@/components/auth/login-button'
 
 const font = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 const font2 = Bricolage_Grotesque({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-});
+  src: './fonts/GeistVF.woff',
+  variable: '--font-geist-sans'
+})
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-});
+  src: './fonts/GeistMonoVF.woff',
+  variable: '--font-geist-mono'
+})
 
 export const metadata: Metadata = {
-  title: "devroad.io",
+  title: 'devroad.io',
   description:
-    "All in one super app to share your Roadmaps, Experiences, Insights and Collections.",
-};
+    'All in one super app to share your Roadmaps, Experiences, Insights and Collections.'
+}
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         // className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] dark:bg-[#120e17]`}
         // className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] dark:bg-[#1a1b1c]`}
@@ -104,8 +104,8 @@ export default function RootLayout({
           </div>
         </nav> */}
         <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
+          attribute='class'
+          defaultTheme='system'
           enableSystem
           disableTransitionOnChange
         >
@@ -113,5 +113,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

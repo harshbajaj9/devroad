@@ -13,7 +13,8 @@ declare module "next-auth" {
   interface Session {
     user: {
       role?: "ADMIN" | "USER";
-      id?: string;
+      id: string;
+      username: string;
     } & DefaultSession["user"];
   }
 }
@@ -22,6 +23,7 @@ declare module "next-auth/jwt" {
   /** Returned by the `jwt` callback and `auth`, when using JWT sessions */
   interface JWT {
     role?: "ADMIN" | "USER";
+    username?: string;
   }
 }
 
@@ -44,12 +46,15 @@ const nextAuthResult = NextAuth({
       const user = await getUserById(token.sub);
       if (!user) return token;
       token.role = user.role;
+      token.username = user.username || "";
       return token;
     },
     // Could add  { token: JWT; session: Session } for below types
     async session({ token, session, user }) {
       if (token.sub && session.user) session.user.id = token.sub;
       if (token.role && session.user) session.user.role = token.role;
+      if (token.username && session.user)
+        session.user.username = token.username;
       return session;
 
       // Below is an alternate way of adding id to the session user

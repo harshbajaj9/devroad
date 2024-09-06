@@ -12,7 +12,7 @@ import {
   FolderIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { Badge } from "@repo/ui";
+import { Badge, Separator } from "@repo/ui";
 import { Poppins } from "next/font/google";
 import React from "react";
 import Illustration1 from "./svgs/illustration1";
@@ -80,7 +80,7 @@ const ProblemSetCard = () => {
       </div>
       <div className="pb-5 ">
         {/* <div className="border-t border-t-border my-2"></div> */}
-        <div className="px-5 flex gap-3 justify-center border-y border-y-border py-2">
+        <div className="px-5 h-16 flex gap-3 justify-center border-y border-y-border py-2">
           <div className="w-14 flex flex-col gap-2 items-center justify-center text-muted-foreground">
             <ClipboardDocumentListIcon className="size-4 " />
             <p className="text-xs">
@@ -88,6 +88,8 @@ const ProblemSetCard = () => {
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
+          <Separator orientation="vertical" />
+
           <div className="w-14 flex flex-col gap-2 items-center justify-center text-muted-foreground">
             <FolderIcon className="size-4" />
             <p className="text-xs">
@@ -95,6 +97,8 @@ const ProblemSetCard = () => {
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
+          <Separator orientation="vertical" />
+
           <div className="w-14 flex flex-col gap-2 items-center justify-center text-muted-foreground">
             <CheckBadgeIcon className="size-4" />
             <p className="text-xs">
@@ -133,13 +137,13 @@ const ProblemSetCard = () => {
         <div className="my-4"></div>
         <div className="flex justify-around text-muted-foreground">
           <div>
-            <HeartIcon className="size-5" />
+            <HeartIcon className="size-5 hover:text-pink-500 hover:drop-shadow-[0_1px_5px_rgba(255,0,0,1)]" />
           </div>
           <div>
-            <ChatBubbleBottomCenterTextIcon className="size-5" />
+            <ChatBubbleBottomCenterTextIcon className="size-5 hover:text-primary hover:drop-shadow-[0_1px_5px_rgba(255,0,255,1)]" />
           </div>
           <div>
-            <BookmarkIcon className="size-5" />
+            <BookmarkIcon className="size-5 hover:text-foreground hover:drop-shadow-[0_1px_5px_hsl(var(--foreground))]" />
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 
-export const postRouter = createTRPCRouter({
+export const dSAProblemSetRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
@@ -16,13 +16,33 @@ export const postRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(
+      z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+        problemSetType: z.string().min(1),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.create({
+      return ctx.db.dSAProblemSet.create({
         data: {
-          name: input.name,
+          title: input.title,
+          description: input.description,
+          creatorId: ctx.session.user.id,
+
+          creatorName: "",
+          // creatorName: ctx.session.user.name,
           // createdBy: { connect: { id: ctx.session.user.id } },
-          createdBy: ctx.session.user.id,
+
+          // companyTags: input.companyTags,
+          // topicTags: input.topicTags,
+          companyTags: [],
+          topicTags: [],
+
+          itemCount: 0,
+          sectionCount: 0,
+          likeCount: 0,
+          commentCount: 0,
         },
       });
     }),
