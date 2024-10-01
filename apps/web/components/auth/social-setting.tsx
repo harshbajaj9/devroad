@@ -1,21 +1,22 @@
-"use client";
-import { unlinkAccount } from "@/actions/unlinkAccount";
-import { updateUserEmail, updateUsername } from "@/actions/updateUsername";
-import { DEFAULT_LOGIN_REDIRECT_URL } from "@/routes";
-import { Button, Card, CardContent, CardHeader } from "@repo/ui";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import Header from "./header";
+'use client'
+import { unlinkAccount } from '@/actions/unlinkAccount'
+import { updateUserEmail, updateUsername } from '@/actions/updateUsername'
+import { DEFAULT_LOGIN_REDIRECT_URL } from '@/routes'
+import { Button, Card, CardContent, CardHeader } from '@repo/ui'
+import { signIn } from 'next-auth/react'
+import { useState } from 'react'
+import { FaGithub } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc'
+import Header from './header'
+import { usePathname } from 'next/navigation'
 
 interface SocialSettingProps {
-  username?: string | null;
-  userMail?: string | null;
-  googleMail?: string | null;
-  googleImage?: string | null;
-  githubMail?: string | null;
-  githubImage?: string | null;
+  username?: string | null
+  userMail?: string | null
+  googleMail?: string | null
+  googleImage?: string | null
+  githubMail?: string | null
+  githubImage?: string | null
 }
 const SocialSetting = ({
   username,
@@ -23,56 +24,58 @@ const SocialSetting = ({
   googleMail,
   googleImage,
   githubMail,
-  githubImage,
+  githubImage
 }: SocialSettingProps) => {
-  const [userName, setUserName] = useState(username);
-  const [email, setEmail] = useState(userMail);
-  const onClick = (provider: "google" | "github") => {
+  const [userName, setUserName] = useState(username)
+  const [email, setEmail] = useState(userMail)
+  const pathname = usePathname()
+
+  const onClick = (provider: 'google' | 'github') => {
     signIn(provider, {
-      callbackUrl: DEFAULT_LOGIN_REDIRECT_URL,
-    });
-  };
-  const onClick2 = (provider: "google" | "github") => {
-    unlinkAccount(provider);
-  };
+      callbackUrl: pathname ?? DEFAULT_LOGIN_REDIRECT_URL
+    })
+  }
+  const onClick2 = (provider: 'google' | 'github') => {
+    unlinkAccount(provider)
+  }
   const onClick3 = () => {
-    if (userName) updateUsername(userName);
-  };
+    if (userName) updateUsername(userName)
+  }
   const onClick4 = () => {
-    if (email) updateUserEmail(email);
-  };
+    if (email) updateUserEmail(email)
+  }
   return (
     <>
       <Card>
         <CardHeader>
-          <Header label={"Settings"} />
+          <Header label={'Settings'} />
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-x-2">
+          <div className='flex flex-col items-center gap-2'>
+            <div className='flex items-center gap-x-2'>
               <p>Username</p>
               <form>
                 <input
-                  className="rounded border px-2"
-                  value={userName ?? ""}
-                  onChange={(e) => setUserName(e.target.value)}
+                  className='rounded border px-2'
+                  value={userName ?? ''}
+                  onChange={e => setUserName(e.target.value)}
                 />
-                <button type="submit" onClick={onClick3}>
+                <button type='submit' onClick={onClick3}>
                   Update
                 </button>
               </form>
             </div>
-            <div className="flex items-center gap-x-2">
+            <div className='flex items-center gap-x-2'>
               <p>Email</p>
               <form>
                 {userMail && (
                   <>
                     <input
-                      className="rounded border px-2"
-                      value={email ?? ""}
-                      onChange={(e) => setEmail(e.target.value)}
+                      className='rounded border px-2'
+                      value={email ?? ''}
+                      onChange={e => setEmail(e.target.value)}
                     />
-                    <button type="submit" onClick={onClick4}>
+                    <button type='submit' onClick={onClick4}>
                       Update
                     </button>
                   </>
@@ -80,53 +83,53 @@ const SocialSetting = ({
               </form>
             </div>
             {googleMail ? (
-              <div className="flex items-center gap-x-2 rounded border p-4">
+              <div className='flex items-center gap-x-2 rounded border p-4'>
                 <div>
-                  <FcGoogle className="h-5 w-5" />
+                  <FcGoogle className='h-5 w-5' />
                   <p>{googleMail}</p>
                 </div>
                 <Button
-                  size="lg"
-                  className="w-full"
-                  variant={"outline"}
-                  onClick={() => onClick2("google")}
+                  size='lg'
+                  className='w-full'
+                  variant={'outline'}
+                  onClick={() => onClick2('google')}
                 >
                   Unlink
                 </Button>
               </div>
             ) : (
               <Button
-                size="lg"
-                className="w-full"
-                variant={"outline"}
-                onClick={() => onClick("google")}
+                size='lg'
+                className='w-full'
+                variant={'outline'}
+                onClick={() => onClick('google')}
               >
-                <FcGoogle className="h-5 w-5" />
+                <FcGoogle className='h-5 w-5' />
               </Button>
             )}
             {githubMail ? (
-              <div className="flex items-center gap-x-2 rounded border p-4">
+              <div className='flex items-center gap-x-2 rounded border p-4'>
                 <div>
-                  <FaGithub className="h-5 w-5" />
+                  <FaGithub className='h-5 w-5' />
                   <p>{githubMail}</p>
                 </div>
                 <Button
-                  size="lg"
-                  className="w-full"
-                  variant={"outline"}
-                  onClick={() => onClick2("github")}
+                  size='lg'
+                  className='w-full'
+                  variant={'outline'}
+                  onClick={() => onClick2('github')}
                 >
                   Unlink
                 </Button>
               </div>
             ) : (
               <Button
-                size="lg"
-                className="w-full"
-                variant={"outline"}
-                onClick={() => onClick("github")}
+                size='lg'
+                className='w-full'
+                variant={'outline'}
+                onClick={() => onClick('github')}
               >
-                <FaGithub className="h-5 w-5" />
+                <FaGithub className='h-5 w-5' />
               </Button>
             )}
             {/* <div className="flex items-center gap-x-2">
@@ -143,7 +146,7 @@ const SocialSetting = ({
         </CardContent>
       </Card>
     </>
-  );
-};
+  )
+}
 
-export default SocialSetting;
+export default SocialSetting

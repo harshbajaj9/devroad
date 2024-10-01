@@ -120,7 +120,53 @@ enum ProblemSetTypes {
   CUSTOM
 }
 
-enum DSATopicTags {
+// enum TopicTags {
+//   STRING
+//   ARRAY
+//   ALGORITHM
+//   DATA_STRUCTURE
+//   DYNAMIC_PROGRAMMING
+//   GREEDY
+//   UNION_FIND
+//   LINKED_LIST
+//   IMPLEMENTATION
+// }
+
+// TODO: Should be removed?
+enum CompanyTags {
+  FAANG
+  GOOGLE
+}
+
+enum Platform {
+  DR
+  LC
+  GFG
+  GFE
+}
+
+enum ProblemCategory {
+  OBJECT_ORIENTED
+  OPERATING_SYSTEM
+  DATABASE_MANAGEMENT
+  NETWORKING
+  DSA
+  SQL
+  SHELL_SCRIPT
+  DATA_ANALYSIS
+  JAVASCRIPT_MORE
+  ROR_MORE
+  PYTHON_MORE
+  SYSTEM_DESIGN
+  FE_SYSTEMDESIGN
+  GUESSTIMATES
+  PRODUCT_DESIGN
+  PRODUCT_IMPROVEMENT
+  METRICS
+  ROOT_CAUSE_ANALYSIS
+}
+
+enum ProblemTags {
   STRING
   ARRAY
   ALGORITHM
@@ -130,98 +176,155 @@ enum DSATopicTags {
   UNION_FIND
   LINKED_LIST
   IMPLEMENTATION
+
+  JOIN
+
+  VANILLA
+  REACT
+  VUE
+  SVELTE
 }
 
-// TODO: Should be removed?
-enum DSACompanyTags {
-  FAANG
-  GOOGLE
-}
-
-enum DSAPlatform {
-  LC
-  GFG
-  GFE
-}
-
-// This is currently just being used for storing the actual urls for dsa problems from leetcode, can be used for more platforms as well. This is to allow search by title or link
-model DSAPlatformProblem {
-  id          String      @id @default(uuid())
-  title       String
-  description String
-  url         String
-  dsaPlatform DSAPlatform
-  updatedAt   DateTime    @updatedAt
-}
+// // This is currently just being used for storing the actual urls for dsa problems from leetcode, can be used for more platforms as well. This is to allow search by title or link
+// model PlatformProblem {
+//   id          String             @id @default(uuid())
+//   title       String
+//   description String?
+//   url         String
+//   platform    Platform
+//   updatedAt   DateTime           @updatedAt
+//   difficulty  ProblemDifficulty?
+// }
 
 // This is devroad's original copy of the  platform problem
-model DSAProblem {
-  id              String      @id @default(uuid())
-  primaryUrl      String
-  primaryTitle    String
-  primaryPlatform DSAPlatform @default(LC)
-  // contains {id, link , title and tags in future maybe}
-  platformData    Json
+model Problem {
+  id           String             @id @default(uuid())
+  url          String
+  title        String
+  description  String?
+  platform     Platform           @default(DR)
+  difficulty   ProblemDifficulty?
+  // contains other kv pair data
+  platformData Json?
+  category     ProblemCategory
+  tags         ProblemTags[]
 }
 
-model DSAProblemSet {
+model SimilarProblem {
+  problem1Id String
+  problem2Id String
+
+  @@id([problem1Id, problem2Id])
+}
+
+model CustomItem {
+  id    String @id @default(uuid())
+  url   String
+  title String
+  // contains {id, link , title and tags in future maybe}
+
+  //NOTE : could be markdown
+  description String
+}
+
+model CustomProblem {
+  id    String @id @default(uuid())
+  url   String
+  title String
+  // contains {id, link , title and tags in future maybe}
+
+  //NOTE : could be markdown
+  description String
+}
+
+enum RepositoryType {
+  PROBLEM_SET
+  ROADMAP
+  COLLECTION
+}
+
+model Repository {
   id          String         @id @default(uuid())
   title       String
-  description String
-  creatorId   String
-  creatorName String
+  description String?
+  type        RepositoryType
+
+  creatorId      String
+  creatorName    String
+  lastChildOrder Int    @default(0)
+
   companyTags String[]
-  topicTags   DSATopicTags[]
+  categories  ProblemCategory[]
+  topicTags   String[]
 
-  itemCount    Int
-  sectionCount Int
-  likeCount    Int
-  commentCount Int
+  // Check later
+  itemCount    Int?
+  sectionCount Int?
+  likeCount    Int?
+  commentCount Int?
 }
 
-enum DSAProblemSetItemType {
+enum RepositoryItemType {
   SECTION
-  QUESTION
+  ITEM
 }
 
-enum DSAProblemSetItemParentType {
-  PROBLEM_SET
+enum RepositoryItemReferenceType {
+  PROBLEM
+  CUSTOM_PROBLEM
+  INTERVIEW_QUESTION
+  INTERVIEW_PROBLEM
+  CUSTOM
+}
+
+enum RepositoryItemParentType {
+  REPOSITORY
   SECTION
 }
 
-enum DSAProblemDifficulty {
+enum ProblemDifficulty {
   EASY
   MED
   HARD
 }
 
-model DSAProblemSetItem {
-  id                  String                      @id @default(uuid())
-  type                DSAProblemSetItemType
-  // id of the problem set/section it belongs
-  referenceParentId   String
-  referenceParentType DSAProblemSetItemParentType
+enum RepositoryItemStatus {
+  CREATED
+  PUBLISH
+  DRAFT
+}
 
+model RepositoryItem {
+  id             String                       @id @default(uuid())
+  type           RepositoryItemType
+  status         RepositoryItemStatus         @default(CREATED)
+  // id of the parent (problem set/section) it belongs
+  parentId       String
+  parentType     RepositoryItemParentType
+  creatorId      String
   // order in the section/set
-  order              Int
-  // Reference to the DSAProblem, if it is a item and references DSAProblem
-  referenceProblemId String?
+  order          Int
+  lastChildOrder Int                          @default(0)
+  // Reference to the Problem, if type is item and references Problem or custom problem
+  referenceId    String?
+  referenceType  RepositoryItemReferenceType?
 
-  // title and description only needed for section type
-  title       String?
-  description String?
+  // title, description and resources only needed for section type
+  title     String?
+  resources Json?
+  note      String?
 
-  topicTags  DSATopicTags[]
-  difficulty DSAProblemDifficulty
+  // topicTags  String[]
+  // difficulty ProblemDifficulty?
+  UserDataItemMapping UserDataItemMapping[]
 }
 
 enum LikeReferenceTypes {
   BLOG
   TUTORIAL
-  ROADMAP
   STORYLINE
   COMMENT
-  DSAPROBLEMSET
+  COLLECTION
 }
 
 model Like {
@@ -244,17 +347,58 @@ enum UserDSAProblemAttemptStatus {
   INCOMPLETE
 }
 
-// Notes of every user are added to the DSAProblemSetItem
-model UserDSAProblemSetItemPreferencesAndResources {
-  id              Int                         @id @default(autoincrement())
-  primaryPlatform DSAPlatform?
+enum UserReferencesAndNotesType {
+  REFERENCE
+  NOTE
+}
+
+// Notes of every user are added to the RepositoryItemReferenceType
+model UserDataItemMapping {
+  repositoryItemId                String
+  RepositoryItem                  RepositoryItem                @relation(fields: [repositoryItemId], references: [id], onDelete: Cascade)
+  userProblemReferencesAndNotesId String
+  UserProblemReferencesAndNotes   UserProblemReferencesAndNotes @relation(fields: [userProblemReferencesAndNotesId], references: [id], onDelete: Cascade)
+
+  // TODO: do i need a relation? what about cascade delete
+
+  @@id(name: "refInRepoId", [userProblemReferencesAndNotesId, repositoryItemId])
+}
+
+enum ReferenceSubType {
+  ARTICLE
+  VIDEO
+}
+
+model UserProblemReferencesAndNotes {
+  id    String                     @id @default(uuid())
+  type  UserReferencesAndNotesType
+  order Int
+
+  userId              String
   // TODO: storing markdown in db
-  notes           String?
-  kvPairs         Json?
-  // Reference to the problem
-  referenceID     String
+  title               String
+  // for reference 
+  link                String?
+  subType             ReferenceSubType?            @default(ARTICLE)
+  // for note
+  content             String?
+  // Reference to the resource in case of item, leave for section
+  referenceId         String?
+  referenceType       RepositoryItemReferenceType?
+  UserDataItemMapping UserDataItemMapping[]
+}
+
+model UserProblemPreferences {
+  id     String @id @default(uuid())
+  userId String
+  // itemId String
+
+  // primaryPlatform Platform?
+
+  referenceID   String
+  referenceType RepositoryItemReferenceType
+
   // could add tags here?
-  timesSolved     Int                         @default(0)
-  timesAttempted  Int                         @default(0)
-  lastStatus      UserDSAProblemAttemptStatus @default(INCOMPLETE)
+  timesSolved Int?                         @default(0)
+  lastStatus  UserDSAProblemAttemptStatus? @default(INCOMPLETE)
 }

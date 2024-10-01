@@ -8,7 +8,8 @@ export const publicRoutes = [
   '/auth/email-change-verification',
   // '/explore',
   // '/learn',
-  '/job'
+  '/job',
+  '/repos'
   // "/home",
 ]
 /**

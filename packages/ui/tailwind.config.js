@@ -111,6 +111,10 @@ module.exports = {
           DEFAULT: "#EAECF0",
           orange: "#F8A477",
         },
+        tint: {
+          DEFAULT: "hsl(var(--tint))",
+          foreground: "hsl(var(--tint-foreground))",
+        },
         // tremor overrides
         // light mode
         tremor: {

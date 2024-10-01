@@ -14,6 +14,8 @@ import LoginButton from '@/components/auth/login-button'
 import { cn } from '@/lib/utils'
 import { Bricolage_Grotesque, Poppins } from 'next/font/google'
 import { auth } from '@/auth'
+import Illustration2 from '@/components/svgs/illustration2'
+import Illustration3 from '@/components/svgs/illustration3'
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
@@ -23,17 +25,25 @@ const font2 = Bricolage_Grotesque({
   subsets: ['latin']
 })
 export default async function Home() {
-  // const session = await auth()
-  // if (session) {
-  //   return (
-  //     <div className='absolute left-0 top-0 z-20 ml-[72px] flex w-[calc(100%-72px)] flex-col'>
-  //       <div className='min-h-[58px] bg-backgroundalt'></div>
-  //       <div className='mb-2 mr-2 rounded-md border bg-backgroundalt p-8'>
-  //         <HomePage />
-  //       </div>
-  //     </div>
-  //   )
-  // }
+  const session = await auth()
+  if (session) {
+    return (
+      // <div className='absolute left-0 top-0 z-20 ml-[72px] flex w-[calc(100%-72px)] flex-col'>
+      //   <div className='min-h-[58px] bg-backgroundalt'></div>
+      //   <div className='mb-2 mr-2 rounded-md border bg-backgroundalt p-8'>
+      //     <HomePage />
+      //   </div>
+      // </div>
+      <div className='relative'>
+        <div className='p-8 xl:mx-20'>
+          <HomePage />
+        </div>
+        {/* <div className='absolute bottom-0 right-0 -z-10 h-64 overflow-hidden opacity-30'>
+          <Illustration2 />
+        </div> */}
+      </div>
+    )
+  }
   return (
     <>
       <nav>

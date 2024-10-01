@@ -7,8 +7,17 @@ import '@repo/ui/styles/globals.css'
 import { TRPCReactProvider } from '@/trpc/react'
 import { Bricolage_Grotesque, Poppins } from 'next/font/google'
 import { cn } from '@/lib/utils'
-import { Button, Input, ThemeProvider } from '@repo/ui'
+import { Button, Input, ThemeProvider, Toaster } from '@repo/ui'
 import LoginButton from '@/components/auth/login-button'
+import Link from 'next/link'
+import { ModeToggle } from '@/components/theme-toggle-button'
+import Image from 'next/image'
+import { NavigationMenuDemo } from '@/components/navigation-menu'
+import Nav from '@/components/nav'
+import SessionProvider from '@/components/auth/session-provider'
+import LoginModal from '@/components/auth/login-modal'
+import { auth } from '@/auth'
+import { BreadcrumbDemo } from '@/components/breadcrumb'
 
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -33,19 +42,37 @@ export const metadata: Metadata = {
     'All in one super app to share your Roadmaps, Experiences, Insights and Collections.'
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
+
   return (
     <html lang='en'>
       <body
         // className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] dark:bg-[#120e17]`}
         // className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] dark:bg-[#1a1b1c]`}
-        className={`${geistSans.variable} ${geistMono.variable} bg-background`}
+        className={`${geistSans.variable} ${geistMono.variable} max-w-screen-[1800px] mx-auto max-w-[1920px] bg-backgroundalt dark:bg-backgroundalt`}
       >
-        {/* <nav className="z-10 fixed w-full bg-white">
+        <SessionProvider session={session}>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            {/* <nav className='sticky left-0 top-0 z-20 flex h-16 items-center justify-between border-b bg-backgroundalt px-4'> */}
+            <div className='flex justify-between border-b bg-background px-4'>
+              <NavigationMenuDemo />
+            </div>
+            {/* <div className='px-8 pt-4 xl:mx-20'>
+              <BreadcrumbDemo />
+            </div> */}
+
+            {/* <Nav /> */}
+            {/* <nav className="z-10 fixed w-full bg-white">
           <div className="w-[90vw] max-w-[1200px] h-16 m-auto bg-white flex p-3 justify-between">
             <div className="flex gap-2">
               <div
@@ -103,14 +130,26 @@ export default function RootLayout({
             </div>
           </div>
         </nav> */}
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </ThemeProvider>
+
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+            <Toaster
+              richColors
+              closeButton
+              toastOptions={{
+                // className:
+                //   'bg-background text-foreground h-20 border border-muted-foreground rounded-none',
+                className: '  rounded-none',
+                style: {
+                  fontSize: '14px'
+                }
+              }}
+            />
+          </ThemeProvider>
+        </SessionProvider>
+        {/* <footer className='bg-background'>
+          <div className='h-16 w-full border-t px-8 pt-4'>
+          </div>
+        </footer> */}
       </body>
     </html>
   )

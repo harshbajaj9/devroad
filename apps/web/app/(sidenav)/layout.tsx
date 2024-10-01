@@ -38,13 +38,10 @@ export default function Layout({
   children: React.ReactNode
 }>) {
   return (
-    <div className='flex items-start justify-between'>
-      <Sidebar />
-      {/* <div className="relative w-full h-full bg-[#F5F5F5] dark:bg-[#120e17]"> */}
-      {/* <div className="relative w-full h-full bg-[#F5F5F5] dark:bg-[#1a1b1c]"> */}
-      <div className='relative h-full w-full bg-[#F5F5F5] dark:bg-[#17181d]'>
+    <main className='flex max-h-[1920px] w-full items-start justify-between'>
+      <div className='h-full w-full bg-backgroundalt bg-[radial-gradient(hsl(var(--muted))_1px,transparent_1px)] [background-size:16px_16px]'>
         {children}
       </div>
-    </div>
+    </main>
   )
 }

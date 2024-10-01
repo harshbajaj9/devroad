@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 import {
   ArrowUpRightIcon,
   BookmarkIcon,
@@ -10,21 +10,21 @@ import {
   ClipboardDocumentListIcon,
   FolderArrowDownIcon,
   FolderIcon,
-  HeartIcon,
-} from "@heroicons/react/24/outline";
-import { Badge, Separator } from "@repo/ui";
-import { Poppins } from "next/font/google";
-import React from "react";
-import Illustration1 from "./svgs/illustration1";
+  HeartIcon
+} from '@heroicons/react/24/outline'
+import { Badge, Separator } from '@repo/ui'
+import { Poppins } from 'next/font/google'
+import React from 'react'
+import Illustration1 from './svgs/illustration1'
 
 const font = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 
 const ProblemSetCard = () => {
   return (
-    <div className="w-72 overflow-hidden border border-border hover:border-borderhover rounded-xl select-none">
+    <div className='w-72 select-none overflow-hidden rounded-xl border border-border bg-background hover:border-borderhover'>
       {/* <div className="h-40">
         <a
           // className={styles.primary}
@@ -49,60 +49,60 @@ const ProblemSetCard = () => {
             <ArrowUpRightIcon className="size-2 stroke-2" />
           </a>
         </div> */}
-      <div className="relative h-40 bg-green-300 dark:bg-green-600">
-        <div className="absolute overflow-hidden opacity-20 left-1/2">
+      <div className='relative h-40 bg-green-300 dark:bg-green-600'>
+        <div className='absolute left-1/2 overflow-hidden opacity-20'>
           <Illustration1 />
         </div>
-        <div className={cn("absolute z-10 p-6  ", font.className)}>
-          <a className="">
-            <p className="text-foreground/80">Love Babbar's</p>
-            <p className="text-2xl text-foreground/80 dark:text-foreground">
+        <div className={cn('absolute z-10 p-6', font.className)}>
+          <a className=''>
+            <p className='text-foreground/80'>Love Babbar's</p>
+            <p className='text-2xl text-foreground/80 dark:text-foreground'>
               Faang DSA sheet 169
             </p>
           </a>
         </div>
         <div
           className={cn(
-            "absolute bottom-0 pb-4 px-4 flex gap-2",
+            'absolute bottom-0 flex gap-2 px-4 pb-4',
             font.className
           )}
         >
-          <Badge className="rounded-md text-xs text-foreground bg-muted border-background cursor-pointer">
+          <Badge className='cursor-pointer rounded-md border-background bg-muted text-xs text-foreground'>
             Faang
           </Badge>
-          <Badge className="rounded-md text-xs text-foreground bg-muted border-background cursor-pointer">
+          <Badge className='cursor-pointer rounded-md border-background bg-muted text-xs text-foreground'>
             Graphs
           </Badge>
-          <Badge className="rounded-md text-xs text-foreground bg-muted border-background cursor-pointer">
+          <Badge className='cursor-pointer rounded-md border-background bg-muted text-xs text-foreground'>
             Trees
           </Badge>
         </div>
       </div>
-      <div className="pb-5 ">
+      <div className='pb-5'>
         {/* <div className="border-t border-t-border my-2"></div> */}
-        <div className="px-5 h-16 flex gap-3 justify-center border-y border-y-border py-2">
-          <div className="w-14 flex flex-col gap-2 items-center justify-center text-muted-foreground">
-            <ClipboardDocumentListIcon className="size-4 " />
-            <p className="text-xs">
-              <span className="font-semibold">120</span> items
+        <div className='flex h-16 justify-center gap-3 border-y border-y-border px-5 py-2'>
+          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <ClipboardDocumentListIcon className='size-4' />
+            <p className='text-xs'>
+              <span className='font-semibold'>120</span> items
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
-          <Separator orientation="vertical" />
+          <Separator orientation='vertical' />
 
-          <div className="w-14 flex flex-col gap-2 items-center justify-center text-muted-foreground">
-            <FolderIcon className="size-4" />
-            <p className="text-xs">
-              <span className="font-semibold">7</span> sections
+          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <FolderIcon className='size-4' />
+            <p className='text-xs'>
+              <span className='font-semibold'>7</span> sections
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
-          <Separator orientation="vertical" />
+          <Separator orientation='vertical' />
 
-          <div className="w-14 flex flex-col gap-2 items-center justify-center text-muted-foreground">
-            <CheckBadgeIcon className="size-4" />
-            <p className="text-xs">
-              <span className="font-semibold">Verified</span>
+          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <CheckBadgeIcon className='size-4' />
+            <p className='text-xs'>
+              <span className='font-semibold'>Verified</span>
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
@@ -134,21 +134,21 @@ const ProblemSetCard = () => {
         </div> */}
 
         {/* <div className="border-t border-t-border my-2"></div> */}
-        <div className="my-4"></div>
-        <div className="flex justify-around text-muted-foreground">
+        <div className='my-4'></div>
+        <div className='flex justify-around text-muted-foreground'>
           <div>
-            <HeartIcon className="size-5 hover:text-pink-500 hover:drop-shadow-[0_1px_5px_rgba(255,0,0,1)]" />
+            <HeartIcon className='size-5 hover:text-pink-500 hover:drop-shadow-[0_1px_5px_rgba(255,0,0,1)]' />
           </div>
           <div>
-            <ChatBubbleBottomCenterTextIcon className="size-5 hover:text-primary hover:drop-shadow-[0_1px_5px_rgba(255,0,255,1)]" />
+            <ChatBubbleBottomCenterTextIcon className='size-5 hover:text-primary hover:drop-shadow-[0_1px_5px_rgba(255,0,255,1)]' />
           </div>
           <div>
-            <BookmarkIcon className="size-5 hover:text-foreground hover:drop-shadow-[0_1px_5px_hsl(var(--foreground))]" />
+            <BookmarkIcon className='size-5 hover:text-foreground hover:drop-shadow-[0_1px_5px_hsl(var(--foreground))]' />
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProblemSetCard;
+export default ProblemSetCard

@@ -8,6 +8,7 @@ import { Poppins } from 'next/font/google'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import CreateProblemSetModal from '@/components/create-problemset-modal'
+import Illustration2 from '@/components/svgs/illustration2'
 
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -122,9 +123,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      {isCreateModalOpen && (
-        <div className='fixed inset-0 z-10 bg-foreground/10'></div>
-      )}
       <CreateProblemSetModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
