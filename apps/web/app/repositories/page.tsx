@@ -67,17 +67,6 @@ const font2 = Jost({
   subsets: ['latin']
 })
 
-export const createUrl = (
-  pathname: string,
-  params: URLSearchParams | ReadonlyURLSearchParams
-) => {
-  console.log('createurl', pathname, params.toString())
-
-  const paramsString = params.toString()
-  const queryString = `${paramsString.length ? '?' : ''}${paramsString}`
-  console.log('createurl', paramsString, queryString)
-  return `${pathname}${queryString}`
-}
 const Repositories = async ({
   searchParams
 }: {

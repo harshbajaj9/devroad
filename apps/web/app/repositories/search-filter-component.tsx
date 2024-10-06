@@ -10,12 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@repo/ui/components/ui/dropdown-menu'
-import { createUrl } from './page'
 import { Button, Input } from '@repo/ui'
 import {
   ChevronDownIcon,
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
+import { createUrl } from '@/lib/utils'
 const SearchFilterComponent = ({
   role,
   company,
