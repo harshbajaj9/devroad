@@ -27,6 +27,8 @@ import { cn } from '@/lib/utils'
 import { Jost, Poppins } from 'next/font/google'
 import Image from 'next/image'
 import {
+  BriefcaseIcon,
+  BuildingOffice2Icon,
   ChatBubbleLeftRightIcon,
   CircleStackIcon,
   ClipboardDocumentListIcon,
@@ -99,52 +101,64 @@ const questionComponents: {
   }
 ]
 
-const resourceComponents: {
+const learnSubMenuItems: {
   title: string
   icon: any
   href: string
   description: string
 }[] = [
   {
+    title: 'Problem Sets',
+    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+    // href: '/repositories?type=ps',
+    href: '/repositories',
+    description: 'Explore problem sets and get better at solving them.'
+  },
+  {
+    title: 'Collections',
+    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+    // href: '/repositories?type=cs',
+    href: '/repositories',
+    description:
+      'Make the most out of collections, extensible sets of resources created by the community.'
+  },
+  // {
+  //   title: 'Road Maps',
+  //   icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+  //   // href: '/repositories?type=rs',
+  //   href: '/repositories',
+  //   description:
+  //     'Find road maps for a targeted approach for preparation and upskilling.'
+  // },
+  {
     title: 'DSA Problem Sets',
     icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    href: '/docs/primitives/alert-dialog',
-    description: 'Explore DSA problem sets and start solving them'
+    // href: '/repositories?type=ps',
+    href: '/repositories',
+    description: 'Find all problem sets on Data Structures and Algorithms.'
   },
   {
-    title: 'Hover Card',
+    title: 'Resources',
     icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    href: '/docs/primitives/hover-card',
-    description: 'For sighted users to preview content available behind a link.'
-  },
-  {
-    title: 'Progress',
-    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    href: '/docs/primitives/progress',
+    href: '/resources',
     description:
-      'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.'
+      'Get exposed to blogs, youtube channels, courses, websites etc.'
   },
   {
-    title: 'Scroll-area',
+    title: 'Problems',
     icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    href: '/docs/primitives/scroll-area',
-    description: 'Visually or semantically separates content.'
-  },
-  {
-    title: 'Tabs',
-    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    href: '/docs/primitives/tabs',
+    href: '/problems',
     description:
-      'A set of layered sections of content—known as tab panels—that are displayed one at a time.'
-  },
-  {
-    title: 'Tooltip',
-    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-
-    href: '/docs/primitives/tooltip',
-    description:
-      'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.'
+      'Find assorted problems from various platforms covering a range of categories.'
   }
+  // {
+  //   title: 'Tooltip',
+  //   icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+
+  //   href: '/docs/primitives/tooltip',
+  //   description:
+  //     'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.'
+  // }
 ]
 
 export function NavigationMenuDemo() {
@@ -159,9 +173,17 @@ export function NavigationMenuDemo() {
       <NavigationMenu>
         <NavigationMenuList>
           {/* <div className={cn('mx-4 py-4 drop-shadow-md')}> */}
-          <Link href={`${process.env.NEXT_URL || '/'}`} legacyBehavior passHref>
-            <NavigationMenuItem className='mx-4 flex cursor-pointer gap-2 py-4 drop-shadow-md'>
-              {/* <Image
+
+          <NavigationMenuItem className='mx-4 flex cursor-pointer gap-2 py-4 drop-shadow-md'>
+            <Link
+              href={`${process.env.NEXT_URL || '/'}`}
+              legacyBehavior
+              passHref
+            >
+              <NavigationMenuLink
+              // className={navigationMenuTriggerStyle()}
+              >
+                {/* <Image
                 src='/devroad4.png'
                 width={32}
                 height={32}
@@ -177,18 +199,19 @@ export function NavigationMenuDemo() {
                 className='hidden dark:block'
                 unoptimized={true}
               /> */}
-              <div
-                className={cn(
-                  'pt-[2px] align-bottom text-2xl font-bold text-foreground drop-shadow-md',
-                  // font.className,
-                  font2.className
-                )}
-              >
-                {/* dev<span className='font-light'>road</span>.io */}
-                devroad
-              </div>
-            </NavigationMenuItem>
-          </Link>
+                <div
+                  className={cn(
+                    'pt-[2px] align-bottom text-2xl font-bold text-foreground',
+                    // font.className,
+                    font2.className
+                  )}
+                >
+                  {/* dev<span className='font-light'>road</span>.io */}
+                  devroad
+                </div>
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
           {/* </div> */}
           {/* <NavigationMenuItem>
             <Link href='/problem-sets' legacyBehavior passHref>
@@ -224,13 +247,13 @@ export function NavigationMenuDemo() {
                 font2.className
               )}
             >
-              Resources
+              Learn
             </NavigationMenuTrigger>
             <NavigationMenuContent
               className={cn(navigationMenuContentStyle(), 'left-0')}
             >
               <ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]'>
-                {resourceComponents.map(component => (
+                {learnSubMenuItems.map(component => (
                   <ListItem
                     icon={component.icon}
                     key={component.title}
@@ -241,7 +264,7 @@ export function NavigationMenuDemo() {
                   </ListItem>
                 ))}
               </ul>
-              <Link
+              {/* <Link
                 // className='w-full border-t'
                 href='/problem-sets'
                 legacyBehavior
@@ -256,11 +279,11 @@ export function NavigationMenuDemo() {
                 >
                   Browse All Resources
                 </NavigationMenuLink>
-              </Link>
+              </Link> */}
             </NavigationMenuContent>
           </NavigationMenuItem>
 
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
                 navigationMenuTriggerStyle(),
@@ -280,7 +303,7 @@ export function NavigationMenuDemo() {
                       className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
                       href='/'
                     >
-                      {/* <Icons.logo className='h-6 w-6' /> */}
+                      <Icons.logo className='h-6 w-6' />
                       <div className='mb-2 mt-4 text-lg font-medium'>
                         shadcn/ui
                       </div>
@@ -302,7 +325,77 @@ export function NavigationMenuDemo() {
                 </ListItem>
               </ul>
             </NavigationMenuContent>
+          </NavigationMenuItem> */}
+
+          <NavigationMenuItem>
+            <NavigationMenuTrigger
+              className={cn(
+                navigationMenuTriggerStyle(),
+                'cursor-pointer text-sm font-semibold text-foreground/80',
+                font2.className
+              )}
+            >
+              Job hunt
+            </NavigationMenuTrigger>
+            <NavigationMenuContent
+              className={cn(navigationMenuContentStyle(), '')}
+            >
+              <ul className='grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
+                <li className='row-span-3'>
+                  <NavigationMenuLink asChild>
+                    <a
+                      className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
+                      href='/jobs'
+                    >
+                      <div
+                        className={cn(
+                          'mb-2 mt-4 text-lg font-medium',
+                          font2.className
+                        )}
+                      >
+                        Jobs archive
+                      </div>
+                      <p
+                        className={cn(
+                          'text-sm leading-tight text-muted-foreground',
+                          font2.className
+                        )}
+                      >
+                        Collected from various sources across internet, stay
+                        updated!
+                      </p>
+                    </a>
+                  </NavigationMenuLink>
+                </li>
+
+                <ListItem
+                  href='/companies'
+                  title='Companies'
+                  icon={<BuildingOffice2Icon className='size-5 text-primary' />}
+                >
+                  How to install dependencies and structure your app.
+                </ListItem>
+                <ListItem
+                  href='/interview-questions'
+                  title='Interview Questions'
+                  icon={
+                    <ClipboardDocumentListIcon className='size-5 text-primary' />
+                  }
+                >
+                  Interview questions across categories and companies
+                </ListItem>
+                <ListItem
+                  href='/interview-experiences'
+                  title='Interview Experiences'
+                  icon={<BriefcaseIcon className='size-5 text-primary' />}
+                >
+                  Grab your popcorn to watch world's most thrilling
+                  documentaries
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
           </NavigationMenuItem>
+
           <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
@@ -362,11 +455,11 @@ export function NavigationMenuDemo() {
         </NavigationMenuList>
       </NavigationMenu>
       <div className='flex items-center gap-4'>
-        <div>
+        {/* <div>
           <Button className='w-24' onClick={() => handleParser()}>
             Parser
           </Button>
-        </div>
+        </div> */}
         <div>
           <ModeToggle />
         </div>
@@ -392,7 +485,10 @@ export function NavigationMenuDemo() {
           </div>
         ) : (
           <div>
-            <Button className='w-24' onClick={() => setIsLoginModalOpen(true)}>
+            <Button
+              className='w-24 rounded-full'
+              onClick={() => setIsLoginModalOpen(true)}
+            >
               Log in
             </Button>
           </div>

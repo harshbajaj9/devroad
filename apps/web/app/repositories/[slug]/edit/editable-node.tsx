@@ -1,5 +1,10 @@
 'use client'
-import { useEditRepository, useRepository, useRepoStructure } from '@/store'
+import {
+  useEditRepository,
+  useNotes,
+  useRepository,
+  useRepoStructure
+} from '@/store'
 import {
   ArrowRightStartOnRectangleIcon,
   CalendarDaysIcon,
@@ -11,6 +16,7 @@ import {
   DocumentIcon,
   EllipsisVerticalIcon,
   PencilIcon,
+  PencilSquareIcon,
   PlusIcon,
   QuestionMarkCircleIcon,
   TrashIcon,
@@ -241,12 +247,14 @@ const SectionNode = ({
         // isEditMode && 'scale-[1.01] border border-primary shadow-md'
         // isEditMode && 'border border-primary shadow-md'
       )}
-      onClick={e => {
+      onDoubleClick={e => {
         e.stopPropagation()
         // setOpenNotes(true)
-        if (e.detail === 2) {
-          setOpenItem(sectionData)
-        }
+        // if (e.detail === 2) {
+        //   setOpenItem(sectionData)
+        // }
+        setOpenItem(sectionData)
+
         setExpanded(true)
       }}
     >
@@ -290,6 +298,24 @@ const SectionNode = ({
               </DropdownMenuItem> */}
 
               {/* <DropdownMenuSeparator /> */}
+              {/* <DropdownMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  // setCurrentPath(path)
+                  setEditingItem({
+                    id: itemData.id,
+                    title: itemData.problem?.title
+                      ? itemData.problem.title
+                      : itemData.title,
+                    parentId: itemData.parentId,
+                    type: 'ITEM'
+                  })
+                  setIsEditItemModalOpen(true)
+                }}
+              >
+                <PencilSquareIcon className='mr-2 h-4 w-4' />
+                Edit
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 // onClick={() => handlecreateRepositoryItem('SECTION')}
                 onClick={e => {
@@ -482,14 +508,16 @@ export const getPlatformIcon = (platform: $Enums.Platform) => {
         src={'/lc.png'}
         width={20}
         height={20}
+        // unoptimized={true}
         alt='lc'
       ></Image>
     )
 }
 interface ItemNodeProps {
   itemData: RepositoryItem & { children: RepositoryItem }
+  path: { id: string; title: string }[]
 }
-const ItemNode = ({ itemData }: ItemNodeProps) => {
+const ItemNode = ({ itemData, path }: ItemNodeProps) => {
   // const [mode, setMode] = useState(0)
   const [isEditMode, setIsEditMode] = useState(false)
   const { setOpenItem, openItem } = useRepository()
@@ -503,6 +531,8 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
     setMovingItem
   } = useEditRepository()
 
+  const { setOpenReferences } = useNotes()
+
   return (
     <div
       className={cn(
@@ -510,13 +540,16 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
         // isEditMode && 'scale-[1.01] border border-primary shadow-md'
         isEditMode && 'border border-primary shadow-md'
       )}
-      onClick={e => {
+      onDoubleClick={e => {
         e.stopPropagation()
         // if (e.target !== e.currentTarget) return
 
         // console.log('hey', itemData.id)
         // setOpenNotes(true)
-        if (e.detail === 2) setOpenItem(itemData)
+
+        // if (e.detail === 2) setOpenItem(itemData)
+        setOpenReferences(undefined)
+        setOpenItem(itemData)
       }}
     >
       {isEditMode ? (
@@ -547,19 +580,29 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {itemData.referenceType === 'CUSTOM' && (
-              <DropdownMenuItem
-                onClick={e => {
-                  e.stopPropagation()
-                }}
-              >
-                <PencilIcon className='mr-2 h-4 w-4' />
-                Edit
-              </DropdownMenuItem>
-            )}
+            {/* <DropdownMenuItem
+              onClick={e => {
+                e.stopPropagation()
+                // setCurrentPath(path)
+                setEditingItem({
+                  id: itemData.id,
+                  title: itemData.problem?.title
+                    ? itemData.problem.title
+                    : itemData.title,
+                  parentId: itemData.parentId,
+                  type: 'ITEM'
+                })
+                setIsEditItemModalOpen(true)
+              }}
+            >
+              <PencilSquareIcon className='mr-2 h-4 w-4' />
+              Edit
+            </DropdownMenuItem> */}
+
             <DropdownMenuItem
               onClick={e => {
                 e.stopPropagation()
+                setCurrentPath(path)
                 setMovingItem({
                   id: itemData.id,
                   title: itemData.problem?.title
@@ -625,8 +668,22 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className='border-0 p-1'>
-                      <p
+                    <div className='border-0'>
+                      <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href={itemData.problem?.url ?? '#'}
+                        className={cn(
+                          'flex items-center gap-1 font-semibold leading-7 text-muted-foreground [&:not(:first-child)]:mt-6',
+                          font2.className
+                        )}
+                      >
+                        <span className=''>
+                          {getPlatformIcon(itemData.problem.platform ?? 'LC')}
+                        </span>
+                        {itemData.problem?.title ?? itemData.id}
+                      </a>
+                      {/* <p
                         className={cn(
                           'font-semibold leading-7 text-muted-foreground [&:not(:first-child)]:mt-6',
                           font2.className
@@ -642,7 +699,7 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
                           // ? formatDate(new Date(problem.lastVisited), 'do MMM yyyy')
                           // : '-'
                         }
-                      </p>
+                      </p> */}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -653,7 +710,7 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
                 </Tooltip>
               </TooltipProvider>
 
-              <div className='p-auto flex min-h-full items-center justify-start border-0 px-2'>
+              {/* <div className='p-auto flex min-h-full items-center justify-start border-0 px-2'>
                 <a
                   target='_blank'
                   rel='noopener noreferrer'
@@ -662,8 +719,7 @@ const ItemNode = ({ itemData }: ItemNodeProps) => {
                 >
                   {getPlatformIcon('LC')}
                 </a>
-                {/* {problem.url ?? '-'} */}
-              </div>
+              </div> */}
 
               {/* <div className='border-0 p-2'>
             <p className='flex justify-start'>
@@ -799,6 +855,7 @@ export const EditableNode = ({
         />
       ) : (
         <ItemNode
+          path={path}
           itemData={nodeData}
           // deleteItem={deleteItem}
         />

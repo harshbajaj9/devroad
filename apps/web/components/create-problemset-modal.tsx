@@ -103,7 +103,7 @@ const CreateProblemSetModal = ({
       //   autoGreet.segment_id
       // )
       // setLiveFeedCards(data)
-      router.push(`/repos/${createdCollection.id}`)
+      router.push(`/repositories/${createdCollection.id}`)
     },
     onError(error: { message: any }) {
       Toast({

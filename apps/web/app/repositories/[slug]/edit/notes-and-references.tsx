@@ -24,9 +24,7 @@ const NotesAndReferences = () => {
   if (!openItem) return
   return (
     <div
-      className={cn(
-        'sticky top-0 h-screen max-h-[1920px] flex-[5] p-4 pl-2 pt-2'
-      )}
+      className={cn('sticky top-0 mt-2 h-screen max-h-[1920px] flex-[5] pl-2')}
     >
       <div
         className={cn(
@@ -59,7 +57,7 @@ const NotesAndReferences = () => {
             />
           </div>
 
-          <div className='flex flex-col gap-4 px-8 py-4'>
+          <div className='flex flex-col gap-4 px-8 pt-4'>
             <EditDescription />
 
             <div className='flex'>
@@ -121,6 +119,7 @@ const NotesAndReferences = () => {
               {/* <div className='flex-1 border-b'></div> */}
             </div>
             {/* <div className='min-h-20'>{activeItem?.id}</div> */}
+
             <EditReferences itemId={openItem.id} />
             <EditNotes itemId={openItem.id} />
             {/* <div className='mt-8 flex-1'>

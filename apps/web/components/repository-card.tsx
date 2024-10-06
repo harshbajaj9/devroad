@@ -1,3 +1,4 @@
+'use client'
 import { cn } from '@/lib/utils'
 import {
   ArrowUpRightIcon,
@@ -12,52 +13,63 @@ import {
   FolderIcon,
   HeartIcon
 } from '@heroicons/react/24/outline'
-import { Badge, Separator } from '@repo/ui'
-import { Poppins } from 'next/font/google'
+import { Badge, Button, Separator } from '@repo/ui'
+import { Jost, Poppins } from 'next/font/google'
 import React from 'react'
 import Illustration1 from './svgs/illustration1'
+import { useRouter } from 'next/navigation'
 
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
 })
+const font2 = Jost({
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 
-const ProblemSetCard = () => {
+const RepositoryCard = ({
+  title,
+  creatorName,
+  id
+}: {
+  title?: string | undefined
+  creatorName?: string | undefined
+  id?: string | undefined
+}) => {
+  const router = useRouter()
   return (
-    <div className='w-72 select-none overflow-hidden rounded-xl border border-border bg-background hover:border-borderhover'>
-      {/* <div className="h-40">
-        <a
-          // className={styles.primary}
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            // src="https://images.pexels.com/photos/2801312/pexels-photo-2801312.jpeg"
-            src="https://picsum.photos/200"
-            width={240}
-            height={124}
-            alt="Authentication"
-            className="block w-full h-full"
-          />
-        </a>
-      </div>
-      <div className="py-5 ">
-        <div className={cn("px-4 text-muted-foreground mb-3", font.className)}>
-          <a className="flex w-fit hover:cursor-pointer hover:underline">
-            <p className="">LoveBabbar's DSA sheet 169</p>
-            <ArrowUpRightIcon className="size-2 stroke-2" />
-          </a>
-        </div> */}
-      <div className='relative h-40 bg-green-300 dark:bg-green-600'>
-        <div className='absolute left-1/2 overflow-hidden opacity-20'>
+    <div
+      // className='hover w-72 select-none overflow-hidden rounded-xl border bg-background shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] duration-200 hover:shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]'
+      className='hover w-72 select-none overflow-hidden rounded-xl bg-background shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] duration-200 hover:shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]'
+    >
+      <div
+        // className="relative h-40 bg-green-300 bg-[url('https://takeuforward.org/static/media/img.e05e06671578591d1613.jpg')] bg-center dark:bg-green-600"
+        className='relative h-44 rounded-t-md bg-center'
+        style={{
+          backgroundImage: `url('https://takeuforward.org/static/media/img.e05e06671578591d1613.jpg')`
+        }}
+      >
+        {/* <div className='absolute left-1/2 -z-10 overflow-hidden opacity-20'>
           <Illustration1 />
-        </div>
-        <div className={cn('absolute z-10 p-6', font.className)}>
+        </div> */}
+        <div className={cn('absolute p-6', font.className)}>
           <a className=''>
-            <p className='text-foreground/80'>Love Babbar's</p>
-            <p className='text-2xl text-foreground/80 dark:text-foreground'>
-              Faang DSA sheet 169
+            <p
+              className={cn(
+                'font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground',
+                font2.className
+              )}
+            >
+              {creatorName ?? "Love Babbar's"}
+            </p>
+            <p
+              className={cn(
+                'text-2xl font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground',
+                font2.className
+              )}
+            >
+              {title ?? 'Faang DSA sheet 169'}
             </p>
           </a>
         </div>
@@ -147,8 +159,19 @@ const ProblemSetCard = () => {
           </div>
         </div>
       </div>
+      <div className='flex justify-center pb-4'>
+        <Button
+          className='w-36'
+          onClick={() => {
+            if (id) router.push(`/repositories/${id}`)
+          }}
+          // variant={'bg'}
+        >
+          View
+        </Button>
+      </div>
     </div>
   )
 }
 
-export default ProblemSetCard
+export default RepositoryCard

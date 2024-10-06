@@ -2,9 +2,15 @@
 import { cn } from '@/lib/utils'
 import { useEditRepository } from '@/store'
 import {
+  BookmarkIcon,
   CalendarDaysIcon,
+  ChatBubbleBottomCenterTextIcon,
+  CheckBadgeIcon,
   ClipboardDocumentIcon,
+  ClipboardDocumentListIcon,
   EllipsisVerticalIcon,
+  FolderIcon,
+  HeartIcon,
   PencilIcon,
   QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline'
@@ -33,6 +39,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Separator,
+  Tabs,
+  TabsList,
+  TabsTrigger,
   Textarea
 } from '@repo/ui'
 import {
@@ -72,7 +82,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
     setIsEditMode(false)
   }
   return (
-    <div className='flex gap-4 px-8 pb-2 pt-8'>
+    <div className='flex gap-4 pb-2'>
       <div
         className={cn(
           'flex flex-[3] gap-8',
@@ -226,7 +236,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
               }
             </h1>
           )}
-          {isEditMode ? (
+          {/* {isEditMode ? (
             <div className='mb-4 max-w-prose'>
               <Textarea
                 placeholder='Description'
@@ -247,7 +257,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
                 laborum dolor eiusmod. Read more...
               </p>
             </div>
-          )}
+          )} */}
 
           {!isEditMode && (
             <HoverCard>
@@ -282,10 +292,118 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
       </div>
       <div
         className={cn(
-          'flex-[1] rounded-md border bg-background p-8',
+          'flex flex-[1] flex-col justify-center rounded-md border bg-background p-8',
           'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
         )}
-      ></div>
+      >
+        {/* <div className="border-t border-t-border my-2"></div> */}
+        <div className='flex items-center justify-center'>
+          {/* <div className={cn('', font2.className)}>Privacy:</div> */}
+          <Tabs className=''>
+            <TabsList className='rounded-full'>
+              <TabsTrigger
+                value='private'
+                className={cn('rounded-full', font2.className)}
+              >
+                Private
+              </TabsTrigger>
+              <TabsTrigger
+                value='share'
+                className={cn('rounded-full', font2.className)}
+              >
+                Shared
+              </TabsTrigger>
+              <TabsTrigger
+                value='discoverable'
+                className={cn('rounded-full', font2.className)}
+              >
+                Discoverable
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        {/* <Separator orientation='horizontal' /> */}
+
+        <div className='my-4 flex h-16 justify-around gap-3'>
+          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <ClipboardDocumentListIcon className='size-5' />
+            <p className='text-xs'>
+              <span className='font-semibold'>120</span> items
+            </p>
+            {/* <p className="text-[10px]">items</p> */}
+          </div>
+          {/* <Separator orientation='vertical' /> */}
+
+          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <FolderIcon className='size-5' />
+            <p className='text-xs'>
+              <span className='font-semibold'>7</span> sections
+            </p>
+            {/* <p className="text-[10px]">items</p> */}
+          </div>
+          {/* <Separator orientation='vertical' /> */}
+
+          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <CheckBadgeIcon className='size-5' />
+            <p className='text-xs'>
+              <span className='font-semibold'>Verified</span>
+            </p>
+            {/* <p className="text-[10px]">items</p> */}
+          </div>
+        </div>
+        {/* <Separator orientation='horizontal' /> */}
+
+        {/* <div className="border-t border-t-border my-2"></div> */}
+        {/* <div className="mb-4"></div> */}
+        {/* <div
+          className={cn(
+            "pt-4 px-4 text-muted-foreground flex gap-2",
+            font.className
+          )}
+        >
+          <Badge className="text-xs bg-muted-foreground cursor-pointer">
+            Faang
+          </Badge>
+          <Badge className="text-xs bg-muted-foreground cursor-default">
+            Graphs
+          </Badge>
+          <Badge className="text-xs bg-muted-foreground">Trees</Badge>
+        </div> */}
+        {/* <div className="p-4 text-xs text-muted-foreground line-clamp-3">
+          Love Babbar is a youtuber known for his expertise in Data Structures
+          and Algorithms (DSA). He has created a comprehensive love babbar dsa
+          sheet that is widely used by students to prepare for coding
+          interviews. The love Babbar dsa sheet contains a curated list of
+          important DSA topics. Practice love babbar dsa sheet here to enhance
+          your dsa knowledge.
+        </div> */}
+        {/* <div className="border-t border-t-border my-2"></div> */}
+        {/* <div className='my-4'></div> */}
+        <div className='flex cursor-pointer justify-around py-1 text-muted-foreground'>
+          <div className='flex items-center gap-1 text-pink-500'>
+            <HeartIcon className='size-5' />
+            {/* <Separator orientation='vertical' /> */}
+            <span className={cn('text-xs font-semibold', font2.className)}>
+              210
+            </span>
+          </div>
+          <div className='flex cursor-pointer items-center gap-1 text-primary'>
+            <ChatBubbleBottomCenterTextIcon className='size-5' />
+            {/* <Separator orientation='vertical' /> */}
+            <span className={cn('text-xs font-semibold', font2.className)}>
+              21
+            </span>
+          </div>
+          <div className='flex cursor-pointer items-center gap-1 text-foreground'>
+            <BookmarkIcon className='size-5' />
+            {/* <Separator orientation='vertical' /> */}
+            <span className={cn('text-xs font-semibold', font2.className)}>
+              130
+            </span>
+          </div>
+        </div>
+        {/* <div className='my-4'></div> */}
+      </div>
     </div>
   )
 }

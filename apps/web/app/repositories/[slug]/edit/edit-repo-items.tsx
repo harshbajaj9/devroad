@@ -123,6 +123,7 @@ import DeleteItemModal from './delete-item-modal'
 import MoveItemModal from './move-item-modal'
 import NotesAndReferences from './notes-and-references'
 import SectionDescriptionAndReferences from './section-desc-and-ref'
+import RepoDescriptionAndReferences from './repo-desc-and-ref'
 
 interface EditRepositoryItemsProps {
   repository: Repository
@@ -134,10 +135,10 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
     setIsEditMode,
     isCreateItemModalOpen,
     setIsCreateItemModalOpen,
-    setIsMoveItemModalOpen,
     isDeleteItemModalOpen,
-    isMoveItemModalOpen,
     setIsDeleteItemModalOpen,
+    isMoveItemModalOpen,
+    setIsMoveItemModalOpen,
     activeItem,
     setActiveItem
   } = useEditRepository()
@@ -145,7 +146,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   // const handleSave = () => {
   //   setIsEditMode(false)
   // }
-
+  const { setRepositoryDetails } = useRepository()
   // TODO: check this for touch
   const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor))
 
@@ -161,6 +162,10 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
     console.log('repoItems>>', repoItems, repoKids)
     if (repoItems) setRepoKids(repoItems.children)
   }, [repoItems])
+
+  useEffect(() => {
+    setRepositoryDetails(repository)
+  }, [])
 
   const { isOver, setNodeRef } = useDroppable({
     id: 'droppable'
@@ -413,7 +418,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
 
   return (
     <>
-      <div className='flex max-w-full px-4 pt-0'>
+      <div className='flex max-w-full pt-0'>
         <div
           className={cn(
             // 'min-w-[748px]',
@@ -502,7 +507,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
                 <div
                   ref={setNodeRef}
                   style={style}
-                  className='m-4 mr-2 mt-2 flex flex-col gap-1'
+                  className='mr-2 mt-2 flex flex-col gap-1'
                 >
                   {repoKids?.map(repoKid => {
                     return (
@@ -552,6 +557,11 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
                
               </ScrollArea>
             </div> */}
+          </>
+        )}
+        {!openItem && (
+          <>
+            <RepoDescriptionAndReferences />
           </>
         )}
         {openItem?.type === 'SECTION' && (

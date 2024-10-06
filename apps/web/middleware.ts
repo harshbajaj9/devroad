@@ -19,8 +19,8 @@ export default auth(req => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthRoutePrefix)
   const isPublicRoute =
     publicRoutes.includes(nextUrl.pathname) ||
-    nextUrl.pathname.startsWith('/learn') ||
-    nextUrl.pathname.startsWith('/repos')
+    // nextUrl.pathname.startsWith('/learn') ||
+    nextUrl.pathname.startsWith('/repositories')
   // TODO: check above condition, basically I want all /learn/subroute routes to be public
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 

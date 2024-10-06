@@ -1,84 +1,109 @@
-"use client";
-import { cn } from "@/lib/utils";
+'use client'
+import { cn } from '@/lib/utils'
 import {
+  BookmarkIcon,
   BookOpenIcon,
   BriefcaseIcon,
+  Cog6ToothIcon,
+  CogIcon,
   DevicePhoneMobileIcon,
-  HomeIcon,
-} from "@heroicons/react/24/outline";
+  HomeIcon
+} from '@heroicons/react/24/outline'
 import {
   HomeIcon as ActiveHomeIcon,
   BookOpenIcon as ActiveBookOpenIcon,
   BriefcaseIcon as ActiveBriefcaseIcon,
   DevicePhoneMobileIcon as ActiveDevicePhoneMobileIcon,
-} from "@heroicons/react/24/solid";
+  Cog6ToothIcon as ActiveCog6ToothIcon,
+BookmarkIcon as ActiveBookmarkIcon,
+} from '@heroicons/react/24/solid'
 
-import { Bricolage_Grotesque, Poppins, Stick } from "next/font/google";
-import React from "react";
-import { ModeToggle } from "./theme-toggle-button";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { Bricolage_Grotesque, Poppins, Stick } from 'next/font/google'
+import React, { useEffect } from 'react'
+import { ModeToggle } from './theme-toggle-button'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 const font = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 const font2 = Bricolage_Grotesque({
-  weight: ["300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 
 const sidenavs = [
   {
     icon: (
-      <HomeIcon className="size-5 group-hover:scale-110 text-muted-foreground group-hover:text-muted duration-150" />
+      <HomeIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
     ),
-    title: "Home",
-    href: "/home",
+    title: 'Home',
+    href: '/',
     activeIcon: (
-      <ActiveHomeIcon className="size-5 text-background group-hover:scale-110  duration-150" />
-    ),
+      <ActiveHomeIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+    )
   },
   {
     icon: (
-      <BookOpenIcon className="size-5 group-hover:scale-110 text-muted-foreground group-hover:text-muted duration-150" />
+      <BookmarkIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
     ),
-    title: "Learn",
-    href: "/learn",
+    title: 'Saved',
+    href: '/saved',
     activeIcon: (
-      <ActiveBookOpenIcon className="size-5 text-background group-hover:scale-110  duration-150" />
-    ),
+      <ActiveBookmarkIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+    )
   },
   {
     icon: (
-      <BriefcaseIcon className="size-5 group-hover:scale-110 text-muted-foreground group-hover:text-muted duration-150" />
+      <Cog6ToothIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
     ),
-    title: "Interview",
-    href: "/job",
+    title: 'Account',
+    href: '/account',
     activeIcon: (
-      <ActiveBriefcaseIcon className="size-5 text-background group-hover:scale-110  duration-150" />
-    ),
-  },
-  {
-    icon: (
-      <DevicePhoneMobileIcon className="size-5 group-hover:scale-110 text-muted-foreground group-hover:text-muted duration-150" />
-    ),
-    title: "Explore",
-    href: "/explore",
-    activeIcon: (
-      <ActiveDevicePhoneMobileIcon className="size-5 text-background group-hover:scale-110  duration-150" />
-    ),
-  },
-];
+      <ActiveCog6ToothIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+    )
+  }
+  // {
+  //   icon: (
+  //     <BookOpenIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
+  //   ),
+  //   title: 'Learn',
+  //   href: '/learn',
+  //   activeIcon: (
+  //     <ActiveBookOpenIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+  //   )
+  // },
+  // {
+  //   icon: (
+  //     <BriefcaseIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
+  //   ),
+  //   title: 'Interview',
+  //   href: '/job',
+  //   activeIcon: (
+  //     <ActiveBriefcaseIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+  //   )
+  // },
+  // {
+  //   icon: (
+  //     <DevicePhoneMobileIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
+  //   ),
+  //   title: 'Explore',
+  //   href: '/explore',
+  //   activeIcon: (
+  //     <ActiveDevicePhoneMobileIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+  //   )
+  // }
+]
 const Sidebar = () => {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     // <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-[#F5F5F5] dark:bg-[#120e17] p-1 pt-16 ">
     // <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-[#F5F5F5] dark:bg-[#1a1b1c] p-1 pt-16 ">
     // <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-[#F5F5F5] dark:bg-[#17181d]  dark:bg-[--background] p-1 pt-16 ">
-    <div className="top-0 left-0 fixed z-10 h-screen min-w-[72px] bg-backgroundalt px-1  ">
-      <div className={cn(" mx-4 drop-shadow-md py-4")}>
+    <div className='sticky left-0 top-0 z-10 h-screen min-w-[72px] border-r bg-background'>
+      {/* <div className={cn('mx-4 py-4 drop-shadow-md')}>
         <a
           // className={styles.primary}
           href={`${process.env.NEXT_URL}`}
@@ -87,26 +112,26 @@ const Sidebar = () => {
         >
           <img
             // className={styles.logo}
-            src="/devroad5.png"
-            alt="devroad logomark"
+            src='/devroad5.png'
+            alt='devroad logomark'
             width={32}
             height={32}
           />
         </a>
-      </div>
-      <div className=" flex flex-col gap-4 justify-start mt-4">
-        {sidenavs.map((snav) => {
-          const isActive = pathname.startsWith(snav.href);
+      </div> */}
+      <div className='mt-4 flex flex-col justify-start gap-4'>
+        {sidenavs.map(snav => {
+          const isActive = pathname.startsWith(snav.href)
           return (
             <div
               key={snav.title}
-              className="flex flex-col gap-1 items-center cursor-pointer"
+              className='flex cursor-pointer flex-col items-center gap-1'
             >
               <div
-                className={`group hover:bg-foreground p-2 rounded-lg duration-150 ${isActive ? "bg-foreground" : ""}`}
+                className={`group rounded-lg p-2 duration-150 hover:bg-foreground ${isActive ? 'bg-foreground' : ''}`}
               >
                 <Link
-                  className="group-hover:scale-110 duration-150"
+                  className='duration-150 group-hover:scale-110'
                   href={snav.href}
                 >
                   {isActive ? snav.activeIcon : snav.icon}
@@ -115,29 +140,29 @@ const Sidebar = () => {
               <div
                 className={cn(
                   // "font-semibold text-[11px] text-zinc-700 dark:text-zinc-400",
-                  "font-semibold text-[11px] text-muted-foreground",
+                  'text-[11px] font-semibold text-muted-foreground',
                   font.className,
-                  isActive ? "text-foreground" : ""
+                  isActive ? 'text-foreground' : ''
                 )}
               >
                 {snav.title}
               </div>
             </div>
-          );
+          )
         })}
       </div>
-      <div className="bottom-0 left-0 w-full absolute flex flex-col items-center gap-2 mb-2">
+      {/* <div className='absolute bottom-0 left-0 mb-2 flex w-full flex-col items-center gap-2'>
         <div>
           <ModeToggle />
         </div>
-        <div className="w-8 h-8  bg-green-900 rounded-full flex items-center justify-center">
-          <div className="text-yellow-300 text-center">
-            <div className="mb-1">sp</div>
+        <div className='flex h-8 w-8 items-center justify-center rounded-full bg-green-900'>
+          <div className='text-center text-yellow-300'>
+            <div className='mb-1'>sp</div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

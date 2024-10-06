@@ -42,7 +42,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const isOwner = session?.user.id === repository.creatorId
   return (
     <main
-      className='bg-backgroundalt p-8'
+      className='bg-backgroundalt p-16'
       // className='bg-transparent bg-[linear-gradient(180deg,#FFFFFF_0%,#F0EBE3_100%)] p-8 dark:bg-[linear-gradient(0deg,#31363c_0%,#222831_100%)]'
     >
       {isOwner ? (

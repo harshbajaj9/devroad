@@ -1,6 +1,6 @@
 'use client'
 import Post2 from '@/components/post2'
-import ProblemSetCard from '@/components/ps-card'
+import ProblemSetCard from '@/components/repository-card'
 import { cn } from '@/lib/utils'
 import { Button, Tabs, TabsList, TabsTrigger } from '@repo/ui'
 import { PlusCircleIcon } from 'lucide-react'

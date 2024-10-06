@@ -38,7 +38,8 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue
+  SelectValue,
+  Skeleton
 } from '@repo/ui'
 import React, { useEffect, useState } from 'react'
 import { DndContextWithNoSSR } from './edit-repo-items'
@@ -490,13 +491,26 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         | 'CUSTOM_PROBLEM'
         | 'SECTION'
     })
-  const { showReferences, toggleShowReferences } = useNotes()
+  const {
+    showReferences,
+    toggleShowReferences,
+    openReferences,
+    setOpenReferences
+  } = useNotes()
   const [editRefMode, setEditRefMode] = useState<boolean>(false)
-  const [references, setReferences] = useState<refType[]>([])
+  // const [references, setReferences] = useState<refType[]>([])
   useEffect(() => {
-    console.log('refs changing')
-    if (referencesData) setReferences(referencesData)
+    console.log('refs changing', referencesData)
+    if (!isReferencesLoading && referencesData)
+      setOpenReferences(referencesData)
   }, [referencesData])
+
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('triggered')
+  //     setOpenReferences(undefined)
+  //   }
+  // }, [])
 
   // create reference
   const { mutateAsync: createItemReferences } =
@@ -596,10 +610,10 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
   const deleteItem = async (id: string) => {
     console.log('deleting')
 
-    const items = Array.from(references)
+    const items = Array.from(openReferences)
     const idChildMap = new Map<string, any>(items.map(item => [item.id, item]))
 
-    const updated = references
+    const updated = openReferences
       .filter(item => item.id !== id)
       .map((item, i) => ({ ...item, order: i + 1 }))
 
@@ -625,7 +639,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
   //   isSuccess
   // } = api.referenceItem.get.useQuery(itemId)
   // useEffect(() => {
-  //   setReferences(referenceItems)
+  //   setOpenReferences(referenceItems)
   // }, [isSuccess])
 
   const { isOver, setNodeRef } = useDroppable({
@@ -672,10 +686,10 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         })
       },
       onSuccess: () => {
-        const updated = references
+        const updated = openReferences
           .filter(item => item.id !== id)
           .map((item, i) => ({ ...item, order: i + 1 }))
-        setReferences(updated)
+        setOpenReferences(updated)
 
         utils.repository.get.invalidate()
         Toast({
@@ -687,13 +701,11 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         utils.repository.get.cancel()
       }
     })
-  if (!references) {
-    return
-  }
+
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event
     console.log('heya')
-    setActiveRef(references.find(ref => ref.order === active.id))
+    setActiveRef(openReferences.find(ref => ref.order === active.id))
   }
   const onDragCancel = (event: DragCancelEvent) => {
     console.log('heya')
@@ -706,14 +718,14 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       return
     }
     setDisableDnD(true)
-    const oldIndex = references.findIndex(
+    const oldIndex = openReferences.findIndex(
       reference => reference.order === active.id
     )
-    const newIndex = references.findIndex(
+    const newIndex = openReferences.findIndex(
       reference => reference.order === over.id
     )
     // create a duplicate array
-    const items = Array.from(references)
+    const items = Array.from(openReferences)
     // create an id to item map from the initial array
     const idChildMap = new Map<string, any>(items.map(item => [item.id, item]))
     const [reorderedItem] = items.splice(oldIndex, 1)
@@ -723,14 +735,14 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       ...item,
       order: index + 1
     }))
-    setReferences(references => {
+    setOpenReferences(openReferences => {
       // const oldIndex = references?.findIndex(
       //   reference => reference.order === active.id
       // )
       // const newIndex = references?.findIndex(
       //   repoKid => repoKid.order === over.id
       // )
-      return arrayMove(references, oldIndex, newIndex)
+      return arrayMove(openReferences, oldIndex, newIndex)
     })
 
     // Update the priorities of the items
@@ -764,11 +776,14 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         link: link,
         type: type,
         title: title,
-        order: references.length + 1,
+        order: openReferences.length + 1,
         itemId: openItem.referenceId as string,
         itemType: openItem.referenceType as 'PROBLEM' | 'CUSTOM_PROBLEM'
       })
   }
+  // if (!openReferences) {
+  //   return
+  // }
   return (
     <div className=''>
       <div
@@ -791,10 +806,17 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       </div>
       <div className='flex justify-between'>
         <div>
+          {showReferences && isReferencesLoading && (
+            <div className='space-y-2'>
+              <Skeleton className='h-4 w-[250px]' />
+              <Skeleton className='h-4 w-[200px]' />
+              <Skeleton className='h-4 w-[200px]' />
+            </div>
+          )}
           {showReferences &&
             !editRefMode &&
-            references &&
-            references.length > 0 && (
+            openReferences &&
+            openReferences.length > 0 && (
               // <div className='flex flex-col gap-2'>
               <div className='flex flex-col gap-1'>
                 <DndContextWithNoSSR
@@ -805,11 +827,11 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
                   onDragCancel={onDragCancel}
                 >
                   <SortableContext
-                    items={references.map(reference => reference.order)}
+                    items={openReferences.map(reference => reference.order)}
                     strategy={verticalListSortingStrategy}
                   >
                     <div>
-                      {references.map(refer => (
+                      {openReferences.map(refer => (
                         <Reference
                           key={refer.id}
                           reference={refer}
@@ -823,7 +845,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
               </DragOverlay> */}
                 </DndContextWithNoSSR>
 
-                {/* {references.map(refer => (
+                {/* {openReferences.map(refer => (
               <Reference key={refer.id} reference={refer} />
             ))} */}
               </div>
@@ -831,9 +853,11 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
             )}
           {editRefMode && (
             <div>
-              {showReferences && references && references.length > 0 && (
-                <div className='flex flex-col gap-2'>
-                  {/* <DndContextWithNoSSR
+              {showReferences &&
+                openReferences &&
+                openReferences.length > 0 && (
+                  <div className='flex flex-col gap-2'>
+                    {/* <DndContextWithNoSSR
             // sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={onDragStart}
@@ -841,11 +865,11 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
             onDragCancel={onDragCancel}
           >
             <SortableContext
-              items={references.map(reference => reference.order)}
+              items={openReferences.map(reference => reference.order)}
               strategy={verticalListSortingStrategy}
             >
               <div>
-                {references.map(refer => (
+                {openReferences.map(refer => (
                   <ReferenceEdit key={refer.id} reference={refer} />
                 ))}
               </div>
@@ -854,16 +878,16 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
               {activeRef ? <ReferenceEdit reference={activeRef} /> : null}
             </DragOverlay>
           </DndContextWithNoSSR> */}
-                  {references.map(refer => (
-                    <ReferenceEdit
-                      key={refer.id}
-                      reference={refer}
-                      addReferencefn={handleaddReference}
-                      removeReferencefn={handleRemoveReference}
-                    />
-                  ))}
-                </div>
-              )}
+                    {openReferences.map(refer => (
+                      <ReferenceEdit
+                        key={refer.id}
+                        reference={refer}
+                        addReferencefn={handleaddReference}
+                        removeReferencefn={handleRemoveReference}
+                      />
+                    ))}
+                  </div>
+                )}
               <div className='p-1'>
                 <div className='flex items-center gap-2'>
                   {/* <Input

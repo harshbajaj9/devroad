@@ -36,7 +36,7 @@ export * from "./components/ui/dropdown-menu";
 // export * from "./components/custom/multi-text";
 // export * from "./components/ui/progress";
 // export * from "./components/ui/icon-button";
-// export * from "./components/ui/skeleton";
+export * from "./components/ui/skeleton";
 export * from "./components/ui/card";
 export * from "./components/ui/separator";
 export * from "./components/ui/resizable";

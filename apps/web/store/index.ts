@@ -1,4 +1,4 @@
-import { RepositoryItem } from '@prisma/client'
+import { Repository, RepositoryItem } from '@prisma/client'
 import { create } from 'zustand'
 // import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
@@ -66,7 +66,7 @@ export const useEditRepository = create<{
   isCreateItemModalOpen: boolean
   setIsCreateItemModalOpen: (open: boolean) => void
   isMoveItemModalOpen: boolean
-  setIsMoveItemModalOpen: (open: boolean) => void
+  setIsMoveItemModalOpen: (open1: boolean) => void
   deletionItem: { id: string; title: string } | undefined
   setDeletionItem: (item: { id: string; title: string } | undefined) => void
   movingItem:
@@ -93,11 +93,21 @@ export const useEditRepository = create<{
 }>()(
   immer(set => ({
     isCreateItemModalOpen: false,
-    setIsCreateItemModalOpen: (open: boolean) =>
-      set({ isCreateItemModalOpen: open }),
+    setIsCreateItemModalOpen: (open: boolean) => {
+      set({ isCreateItemModalOpen: open })
+      console.log(
+        'stateA>>>>>>>>>>>>>',
+        useEditRepository.getState().isCreateItemModalOpen
+      )
+    },
     isMoveItemModalOpen: false,
-    setIsMoveItemModalOpen: (open: boolean) =>
-      set({ isMoveItemModalOpen: open }),
+    setIsMoveItemModalOpen: (open1: boolean) => {
+      set({ isMoveItemModalOpen: open1 })
+      console.log(
+        'state>>>>>>>>>>>>>',
+        useEditRepository.getState().isMoveItemModalOpen
+      )
+    },
     deletionItem: undefined,
     setDeletionItem: (item: { id: string; title: string } | undefined) =>
       set({ deletionItem: item }),
@@ -128,21 +138,26 @@ export const useEditRepository = create<{
 )
 
 export const useRepository = create<{
+  repositoryDetails: Repository | undefined
+  setRepositoryDetails: (details: Repository | undefined) => void
   openItem: (RepositoryItem & { children: RepositoryItem }) | undefined
   setOpenItem: (
     openItem: (RepositoryItem & { children: RepositoryItem }) | undefined
   ) => void
-  openNotes: NoteType[]
-  setOpenNotes: (openNotes: NoteType[]) => void
-  openReferences: ReferenceType[]
-  setOpenReferences: (openReferences: ReferenceType[]) => void
+  // openNotes: NoteType[]
+  // setOpenNotes: (openNotes: NoteType[]) => void
+  // openReferences: ReferenceType[]
+  // setOpenReferences: (openReferences: ReferenceType[]) => void
 }>()(
   immer(set => ({
-    openNotes: [],
-    setOpenNotes: (openNotes: NoteType[]) => set({ openNotes: openNotes }),
-    openReferences: [],
-    setOpenReferences: (openReferences: ReferenceType[]) =>
-      set({ openReferences: openReferences }),
+    repositoryDetails: undefined,
+    setRepositoryDetails: (details: Repository | undefined) =>
+      set({ repositoryDetails: details }),
+    // openNotes: [],
+    // setOpenNotes: (openNotes: NoteType[]) => set({ openNotes: openNotes }),
+    // openReferences: [],
+    // setOpenReferences: (openReferences: ReferenceType[]) =>
+    //   set({ openReferences: openReferences }),
     openItem: undefined,
     setOpenItem: (
       openItem: (RepositoryItem & { children: RepositoryItem }) | undefined
@@ -161,6 +176,9 @@ export const useNotes = create<{
   setActiveNotesTab: (activeNotesTab: 'MyNotes' | 'Notes') => void
   activeNote: NoteType | undefined
   setActiveNote: (activeNote: NoteType | undefined) => void
+  openReferences: ReferenceType[]
+  setOpenReferences: (openReferences: ReferenceType[]) => void
+
   // showNotes: boolean
   // setShowNotes: (notesState: boolean) => void
   // toggleShowNotes: () => void
@@ -183,7 +201,10 @@ export const useNotes = create<{
       set({ activeNotesTab: activeNotesTab }),
     activeNote: undefined,
     setActiveNote: (activeNote: NoteType | undefined) =>
-      set({ activeNote: activeNote })
+      set({ activeNote: activeNote }),
+    openReferences: [],
+    setOpenReferences: (openReferences: ReferenceType[]) =>
+      set({ openReferences: openReferences })
     // showNotes: false,
     // setShowNotes: (notesState: boolean) => set({ showNotes: notesState }),
     // toggleShowNotes: () =>

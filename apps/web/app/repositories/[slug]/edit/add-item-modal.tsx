@@ -49,14 +49,26 @@ import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger
+  TooltipTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
 } from '@repo/ui'
+
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { ProblemData } from '@/typing'
 import { cn } from '@/lib/utils'
 import { getPlatformIcon } from './editable-node'
 import {
+  ArrowPathIcon,
   ChevronDownIcon,
   DocumentIcon,
   EllipsisVerticalIcon
@@ -64,9 +76,18 @@ import {
 import { XCircleIcon } from '@heroicons/react/24/solid'
 import { RepoStructureNode, useEditRepository, useRepoStructure } from '@/store'
 import SelectDirectoryModal from './select-directory-modal'
-import { ChevronRight, Folder, FolderOpen, Search, X } from 'lucide-react'
+import {
+  ChevronRight,
+  CopyrightIcon,
+  Folder,
+  FolderOpen,
+  Search,
+  X
+} from 'lucide-react'
 import { $Enums } from '@prisma/client'
 import SectionPicker from './section-picker'
+import { Jost } from 'next/font/google'
+import Image from 'next/image'
 // export const allowedProblemSetTypes: any[] = ['PROBLEM', 'RESOURCE', 'CUSTOM']
 // export const createRepositoryItemProblemSchema = z.object({
 //   id: z.string().min(2).optional()
@@ -98,7 +119,14 @@ type Props = {
   // parentName: string
   path?: { id: string; title: string }[]
 }
-export type ItemType = 'PROBLEM' | 'CUSTOM' | 'SECTION' | null
+// export type ItemType = 'PROBLEM' | 'CUSTOM' | 'SECTION' | null
+export type ItemType = 'PROBLEM' | 'SECTION' | null
+
+const font2 = Jost({
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
+
 const AddItemModal = ({
   // isOpen,
   // flowDetails,
@@ -129,7 +157,7 @@ const AddItemModal = ({
         utils.repository.get.invalidate()
         setIsCreateItemModalOpen(false)
 
-        // router.push(`/repos/${createdCollection.id}`)
+        // router.push(`/repositories/${createdCollection.id}`)
       },
       onError(error: { message: any }) {
         Toast({
@@ -281,7 +309,7 @@ const AddItemModal = ({
     //   setItemDescription(customLinkData.ogTitle)
     // }
   }, [customItemLink, customLinkData, isCustomLinkDataLoading])
-
+  const [problemTab, setProblemTab] = useState<'problem' | 'custom'>('problem')
   return (
     <>
       {/* <Dialog open={open} onOpenChange={setOpen}>
@@ -363,13 +391,13 @@ const AddItemModal = ({
         <div className='sm:max-w-[425px]'>
           <div>
             <h4 className='scroll-m-20 text-xl font-semibold tracking-tight'>
-              {step === 1 && 'Choose the type of item you want to create.'}
+              {step === 1 && 'Choose A the type of item you want to create.'}
               {step === 2 &&
                 itemType &&
                 {
                   PROBLEM: 'Enter problem title.',
-                  SECTION: 'Enter section title.',
-                  CUSTOM: 'Enter the details for your custom problem.'
+                  SECTION: 'Enter section title.'
+                  // CUSTOM: 'Enter the details for your custom problem.'
                 }[itemType]}
             </h4>
           </div>
@@ -396,195 +424,327 @@ const AddItemModal = ({
                     <span className='flex items-baseline gap-2'>
                       Problem
                       <span className='text-xs'>
-                        Choose from platform problems and problems created by
-                        you
+                        Choose from existing problems,or create a new one
                       </span>
                     </span>
                   </Label>
                 </div>
-                <div className='flex items-center space-x-2'>
+                {/* <div className='flex items-center space-x-2'>
                   <RadioGroupItem value='CUSTOM' id='custom' />
                   <Label htmlFor='custom'>
                     <span className='flex items-baseline gap-2'>
-                      Custom Problem
-                      <span className='text-xs'>Create custom problem</span>
+                      Custom Item
+                      <span className='text-xs'>Create custom item</span>
                     </span>
                   </Label>
-                </div>
+                </div> */}
               </RadioGroup>
             )}
             {step === 2 && itemType === 'PROBLEM' && (
               <>
-                <Popover
-                  open={
-                    itemSearchTerm.length > 0 && filteredProblems?.length > 0
-                  }
+                <Tabs
+                  defaultValue='problem'
+                  value={problemTab}
+                  className='w-[400px]'
                 >
-                  <PopoverTrigger>
-                    <div className='space-y-2'>
-                      {/* <Label htmlFor='itemSearchTerm'>Problem ID</Label> */}
-                      <Input
-                        id='itemSearchTerm'
-                        value={itemSearchTerm}
-                        onChange={e => {
-                          handleProblemTitleChange(e.target.value)
-                        }}
-                        // placeholder='Enter problem ID or Title'
-                        placeholder='Enter problem Title'
-                      />
-                    </div>
-                  </PopoverTrigger>
+                  <TabsList className='grid w-full grid-cols-2'>
+                    <TabsTrigger
+                      value='problem'
+                      onClick={() => {
+                        setProblemTab('problem')
+                      }}
+                    >
+                      Existing Problem
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value='custom'
+                      onClick={() => {
+                        setProblemTab('custom')
+                      }}
+                    >
+                      Create new
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value='problem'>
+                    <Popover
+                      open={
+                        itemSearchTerm.length > 0 &&
+                        filteredProblems?.length > 0
+                      }
+                    >
+                      <PopoverTrigger>
+                        <div className='flex gap-4 space-y-2'>
+                          {/* <Label htmlFor='itemSearchTerm'>Problem ID</Label> */}
+                          <Input
+                            id='itemSearchTerm'
+                            value={itemSearchTerm}
+                            onChange={e => {
+                              handleProblemTitleChange(e.target.value)
+                            }}
+                            // placeholder='Enter problem ID or Title'
+                            placeholder='Enter problem Title'
+                          />
+                          {isSearchResultLoading && (
+                            <ArrowPathIcon className='size-5' />
+                          )}
+                        </div>
+                      </PopoverTrigger>
 
-                  {itemSearchTerm && (
-                    <PopoverContent className='w-80' align='start'>
-                      <ScrollArea className='h-60'>
-                        {filteredProblems.length > 0 &&
-                          filteredProblems.map(problem => (
-                            <div
-                              className={cn(
-                                'hover:muted relative flex-1 border bg-background p-1 text-sm text-foreground'
-                                // isEditMode && 'scale-[1.01] border border-primary shadow-md'
-                              )}
-                              onClick={() => {
-                                setSelectedProblem(problem),
-                                  setItemSearchTerm('')
-                              }}
-                            >
-                              <div
-                                className={cn(
-                                  'flex cursor-default justify-between text-sm text-foreground'
-                                )}
-                              >
-                                <div className='flex items-center justify-start'>
-                                  <div className='flex'>
-                                    <div className='border-0 p-1'>
-                                      <p className=''>{problem.title}</p>
+                      {itemSearchTerm && (
+                        <PopoverContent className='w-80' align='start'>
+                          <ScrollArea className='h-60'>
+                            {filteredProblems.length > 0 &&
+                              filteredProblems.map(problem => (
+                                <div
+                                  className={cn(
+                                    'hover:muted relative flex-1 border bg-background p-1 text-sm text-foreground'
+                                    // isEditMode && 'scale-[1.01] border border-primary shadow-md'
+                                  )}
+                                  onClick={() => {
+                                    setSelectedProblem(problem),
+                                      setItemSearchTerm('')
+                                  }}
+                                >
+                                  <div
+                                    className={cn(
+                                      'flex cursor-default justify-between text-sm text-foreground'
+                                    )}
+                                  >
+                                    <div className='flex items-center justify-start'>
+                                      <div className='flex'>
+                                        <div className='border-0 p-1'>
+                                          <p className=''>{problem.title}</p>
+                                        </div>
+                                        <div className='p-auto flex min-h-full items-center justify-start border-0 px-2'>
+                                          <a
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            href={problem.url ?? '#'}
+                                            className=''
+                                          >
+                                            {getPlatformIcon('LC')}
+                                          </a>
+                                        </div>
+                                      </div>
+                                      <div className='flex items-center'>
+                                        <TooltipProvider>
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <div className='border-0 p-1'>
+                                                <p className='flex justify-start'>
+                                                  <span className='px-1 text-[10px] font-semibold text-background text-green-600 dark:text-green-400'>
+                                                    {/* {problem.difficulty ?? '-'} */}
+                                                    EASY
+                                                  </span>
+                                                </p>
+                                              </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                              <p>Difficulty</p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </TooltipProvider>
+                                        <TooltipProvider>
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <div className='border-0 p-1'>
+                                                <p className='flex justify-start text-xs font-semibold text-muted-foreground'>
+                                                  {/* {problem.category ?? '-'} */}
+                                                  DSA
+                                                </p>
+                                              </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                              <p>Category</p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </TooltipProvider>
+                                      </div>
                                     </div>
-                                    <div className='p-auto flex min-h-full items-center justify-start border-0 px-2'>
-                                      <a
-                                        target='_blank'
-                                        rel='noopener noreferrer'
-                                        href={problem.url ?? '#'}
-                                        className=''
-                                      >
-                                        {getPlatformIcon('LC')}
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <div className='flex items-center'>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <div className='border-0 p-1'>
-                                            <p className='flex justify-start'>
-                                              <span className='px-1 text-[10px] font-semibold text-background text-green-600 dark:text-green-400'>
-                                                {/* {problem.difficulty ?? '-'} */}
-                                                EASY
-                                              </span>
-                                            </p>
-                                          </div>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Difficulty</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <div className='border-0 p-1'>
-                                            <p className='flex justify-start text-xs font-semibold text-muted-foreground'>
-                                              {/* {problem.category ?? '-'} */}
-                                              DSA
-                                            </p>
-                                          </div>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Category</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
                                   </div>
                                 </div>
+                              ))}
+                          </ScrollArea>
+                        </PopoverContent>
+                      )}
+                    </Popover>
+                    {!isSearchResultLoading &&
+                      debouncedSearchQuery &&
+                      filteredProblems.length === 0 && (
+                        <div className='m-2'>
+                          <p className={cn('text-sm', font2.className)}>
+                            Not found!
+                          </p>
+                        </div>
+                      )}
+                    {selectedProblem && (
+                      <div
+                        className={cn(
+                          'group relative my-4 flex cursor-pointer justify-between rounded-md border p-1 text-sm text-foreground shadow-md transition-colors duration-200 hover:bg-muted'
+                        )}
+                        key={selectedProblem.id}
+                      >
+                        <div
+                          className='invisible absolute right-0 top-0 z-10 -translate-y-1/2 translate-x-1/2 group-hover:visible'
+                          onClick={() => setSelectedProblem(null)}
+                        >
+                          <XCircleIcon className='hover: size-6 text-primary' />
+                        </div>
+                        <div className='flex items-center justify-start'>
+                          <div>
+                            <div className='flex'>
+                              <div className='border-0 p-1'>
+                                <p className=''>{selectedProblem.title}</p>
+                              </div>
+                              <div className='p-auto flex min-h-full items-center justify-start border-0 px-2'>
+                                <a
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  href={selectedProblem.url ?? '#'}
+                                  className=''
+                                >
+                                  {getPlatformIcon(selectedProblem.platform)}
+                                </a>
                               </div>
                             </div>
-                          ))}
-                      </ScrollArea>
-                    </PopoverContent>
-                  )}
-                </Popover>
-                {selectedProblem && (
-                  <div
-                    className={cn(
-                      'group relative my-4 flex cursor-pointer justify-between rounded-md border p-1 text-sm text-foreground shadow-md transition-colors duration-200 hover:bg-muted'
-                    )}
-                    key={selectedProblem.id}
-                  >
-                    <div
-                      className='invisible absolute right-0 top-0 z-10 -translate-y-1/2 translate-x-1/2 group-hover:visible'
-                      onClick={() => setSelectedProblem(null)}
-                    >
-                      <XCircleIcon className='hover: size-6 text-primary' />
-                    </div>
-                    <div className='flex items-center justify-start'>
-                      <div>
-                        <div className='flex'>
-                          <div className='border-0 p-1'>
-                            <p className=''>{selectedProblem.title}</p>
+                            <div className='flex items-center'>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className='border-0 p-1'>
+                                      <p className='flex justify-start'>
+                                        <span className='rounded-md bg-green-500 p-[2px] px-1 text-[10px] font-semibold text-background'>
+                                          {selectedProblem.difficulty ?? '-'}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Difficulty</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className='border-0 p-1'>
+                                      <p className='flex justify-start text-xs font-semibold text-muted-foreground'>
+                                        {selectedProblem.category ?? '-'}
+                                      </p>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Category</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
                           </div>
-                          <div className='p-auto flex min-h-full items-center justify-start border-0 px-2'>
-                            <a
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              href={selectedProblem.url ?? '#'}
-                              className=''
-                            >
-                              {getPlatformIcon(selectedProblem.platform)}
-                            </a>
-                          </div>
-                        </div>
-                        <div className='flex items-center'>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className='border-0 p-1'>
-                                  <p className='flex justify-start'>
-                                    <span className='rounded-md bg-green-500 p-[2px] px-1 text-[10px] font-semibold text-background'>
-                                      {selectedProblem.difficulty ?? '-'}
-                                    </span>
-                                  </p>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Difficulty</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className='border-0 p-1'>
-                                  <p className='flex justify-start text-xs font-semibold text-muted-foreground'>
-                                    {selectedProblem.category ?? '-'}
-                                  </p>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Category</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
                         </div>
                       </div>
+                    )}
+                    <div
+                      className={cn('m-2 w-fit text-sm', font2.className)}
+                      // onClick={() => setAddCustom(prev => !prev)}
+                      onClick={() => setProblemTab('custom')}
+                    >
+                      <span
+                        className={cn(
+                          'cursor-pointer text-sm hover:underline',
+                          font2.className
+                        )}
+                      >
+                        Add your own problem?
+                      </span>
                     </div>
-                  </div>
-                )}
+                  </TabsContent>
+                  <TabsContent value='custom'>
+                    <div className='grid gap-4 py-4'>
+                      <div className='grid grid-cols-5 items-center gap-4'>
+                        <Label htmlFor='link' className='text-right'>
+                          Link
+                        </Label>
+                        <Input
+                          id='link'
+                          // defaultValue=''
+                          placeholder='Drop a link to auto fetch'
+                          className='col-span-3'
+                          value={customItemLink}
+                          onChange={e => setCustomItemLink(e.target.value)}
+                        />
+                        {isCustomLinkDataLoading && (
+                          <div className='col-span-1'>
+                            <ArrowPathIcon className='size-5' />
+                          </div>
+                        )}
+                      </div>
+                      <div className='grid grid-cols-5 items-center gap-4'>
+                        <Label htmlFor='name' className='text-right'>
+                          Title
+                        </Label>
+                        <Input
+                          id='itemTitle'
+                          // defaultValue='Pedro Duarte'
+                          onChange={e => setItemTitle(e.target.value)}
+                          value={itemTitle}
+                          placeholder='Enter custom item title'
+                          className='col-span-3'
+                        />
+                      </div>
+                      <div className='grid grid-cols-5 items-center gap-4'>
+                        <Label htmlFor='description' className='text-right'>
+                          Description
+                        </Label>
+                        <Input
+                          id='itemDescription'
+                          onChange={e => setItemDescription(e.target.value)}
+                          value={itemDescription}
+                          placeholder='Enter custom item description'
+                          className='col-span-3'
+                        />
+                      </div>
+                    </div>
+                    {customItemLink && customLinkData && (
+                      <div className='flex items-start gap-4 rounded-md border border-primary p-2'>
+                        {/* <div className='overflow-hidden rounded'>
+                          <img
+                            alt={itemTitle}
+                            src={itemImageUrl}
+                            width={40}
+                            height={40}
+                            className='h-10 w-20 object-cover'
+                          />
+                        </div> */}
+                        <div className='flex flex-col'>
+                          <a
+                            className={cn(
+                              'flex items-center gap-2 font-semibold text-muted-foreground',
+                              font2.className
+                            )}
+                            href={customItemLink}
+                          >
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <CopyrightIcon className='size-4' />
+                                </TooltipTrigger>
+                                <TooltipContent>Custom</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            {itemTitle}
+                          </a>
+                          {/* <p>{itemDescription}</p> */}
+                        </div>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
               </>
             )}
             {step === 2 && itemType === 'CUSTOM' && (
               <>
                 <div className='grid gap-4 py-4'>
-                  <div className='grid grid-cols-4 items-center gap-4'>
+                  <div className='grid grid-cols-5 items-center gap-4'>
                     <Label htmlFor='link' className='text-right'>
                       Link
                     </Label>
@@ -595,8 +755,13 @@ const AddItemModal = ({
                       value={customItemLink}
                       onChange={e => setCustomItemLink(e.target.value)}
                     />
+                    {isCustomLinkDataLoading && (
+                      <div className='col-span-1'>
+                        <ArrowPathIcon className='size-5' />
+                      </div>
+                    )}
                   </div>
-                  <div className='grid grid-cols-4 items-center gap-4'>
+                  <div className='grid grid-cols-5 items-center gap-4'>
                     <Label htmlFor='name' className='text-right'>
                       Title
                     </Label>
@@ -609,7 +774,7 @@ const AddItemModal = ({
                       className='col-span-3'
                     />
                   </div>
-                  <div className='grid grid-cols-4 items-center gap-4'>
+                  <div className='grid grid-cols-5 items-center gap-4'>
                     <Label htmlFor='description' className='text-right'>
                       Description
                     </Label>

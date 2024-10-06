@@ -9,13 +9,14 @@ import {
   Card,
   Input
 } from '@repo/ui'
-import HomePage from '@/app/(sidenav)/home/page'
+import HomePage from '@/app/home/page'
 import LoginButton from '@/components/auth/login-button'
 import { cn } from '@/lib/utils'
 import { Bricolage_Grotesque, Poppins } from 'next/font/google'
 import { auth } from '@/auth'
 import Illustration2 from '@/components/svgs/illustration2'
 import Illustration3 from '@/components/svgs/illustration3'
+import Sidebar from '@/components/sidebar'
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
@@ -34,8 +35,11 @@ export default async function Home() {
       //     <HomePage />
       //   </div>
       // </div>
-      <div className='relative'>
-        <div className='p-8 xl:mx-20'>
+      <div className='relative flex'>
+          <Sidebar />
+
+        <div className=' p-8 xl:mx-20'>
+
           <HomePage />
         </div>
         {/* <div className='absolute bottom-0 right-0 -z-10 h-64 overflow-hidden opacity-30'>

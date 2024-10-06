@@ -62,7 +62,7 @@ const AddItemButtons = ({
         //   autoGreet.segment_id
         // )
         // setLiveFeedCards(data)
-        // router.push(`/repos/${createdItem.id}`)
+        // router.push(`/repositories/${createdItem.id}`)
         setChildNodes(prev =>
           prev
             ? [

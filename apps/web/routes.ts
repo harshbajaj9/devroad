@@ -9,7 +9,7 @@ export const publicRoutes = [
   // '/explore',
   // '/learn',
   '/job',
-  '/repos'
+  '/repositories'
   // "/home",
 ]
 /**

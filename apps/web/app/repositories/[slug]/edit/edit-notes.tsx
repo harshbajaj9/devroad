@@ -38,7 +38,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   Input,
-  Toast
+  Toast,
+  Skeleton
 } from '@repo/ui'
 import { ChevronDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -728,6 +729,13 @@ const EditNotes = ({ itemId }: EditNotesProps) => {
           </Button>
         </div>
       </div> */}
+      {showNotes && isNotesLoading && (
+        <div className='space-y-2'>
+          <Skeleton className='h-4 w-[250px]' />
+          <Skeleton className='h-4 w-[200px]' />
+          <Skeleton className='h-4 w-[200px]' />
+        </div>
+      )}
       {showNotes && notes && notes?.length > 0 && (
         <>
           <DndContextWithNoSSR
@@ -755,23 +763,6 @@ const EditNotes = ({ itemId }: EditNotesProps) => {
                     disableDnD={disableDnD}
                   />
                 ))}
-                <Button
-                  variant={'ghost'}
-                  className='flex gap-2'
-                  onClick={() => {
-                    console.log('you')
-                    createItemNotes({
-                      itemId: openItem.referenceId,
-                      itemType: openItem.referenceType as
-                        | 'CUSTOM_PROBLEM'
-                        | 'PROBLEM',
-                      order: notes.length + 1
-                    })
-                  }}
-                >
-                  <PlusIcon className='size-5' />
-                  New
-                </Button>
               </div>
             </SortableContext>
             <DragOverlay style={{ transformOrigin: '0 0 ' }}>
@@ -782,6 +773,23 @@ const EditNotes = ({ itemId }: EditNotesProps) => {
           </DndContextWithNoSSR>
           <ActiveNote />
         </>
+      )}
+      {showNotes && (
+        <Button
+          variant={'ghost'}
+          className='flex gap-2'
+          onClick={() => {
+            console.log('you')
+            createItemNotes({
+              itemId: openItem.referenceId,
+              itemType: openItem.referenceType as 'CUSTOM_PROBLEM' | 'PROBLEM',
+              order: notes.length + 1
+            })
+          }}
+        >
+          <PlusIcon className='size-5' />
+          New
+        </Button>
       )}
       {/* <Accordion type='single' collapsible className='w-full'>
         {notes.map(note => (

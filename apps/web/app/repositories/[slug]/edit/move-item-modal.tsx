@@ -28,33 +28,31 @@ import { getPlatformIcon } from './editable-node'
 
 import { RepoStructureNode, useEditRepository, useRepoStructure } from '@/store'
 import SectionPicker from './section-picker'
+import MoveSectionPicker from './section-picker-move'
 export const allowedProblemSetTypes: any[] = ['PROBLEM', 'RESOURCE', 'CUSTOM']
 export const createRepositoryItemProblemSchema = z.object({
   id: z.string().min(2).optional()
 })
 
 type Props = {
-  // onClose: () => void
   refetchData?: () => void
-  // deleteItem: (id: string) => void
+  // movingItem: (id: string) => void
 }
 type ItemType = 'PROBLEM' | 'CUSTOM' | 'SECTION' | null
-const DeleteItemModal = ({ refetchData }: Props) => {
+const MoveItemModal = ({ refetchData }: Props) => {
   const { currentPath, setCurrentPath, setDirectoryModal, repoStructure } =
     useRepoStructure()
-  const { setIsDeleteItemModalOpen } = useEditRepository()
   const utils = api.useUtils()
 
   const { mutateAsync: createRepositoryItem } =
     api.repositoryItem.create.useMutation({
       // refetchOnWindowFocus: false,
       onSuccess(createdCollection: { id: String }) {
+        Toast({ title: 'Item created', type: 'success' })
         // utils.repository.get.invalidate('lucky-you-cm11ct0ur0000egusctw514he')
         utils.repository.get.invalidate()
-        setIsDeleteItemModalOpen(false)
-        Toast({ title: 'Item created', type: 'success' })
 
-        // router.push(`/repos/${createdCollection.id}`)
+        // router.push(`/repositories/${createdCollection.id}`)
       },
       onError(error: { message: any }) {
         Toast({
@@ -66,33 +64,6 @@ const DeleteItemModal = ({ refetchData }: Props) => {
       }
     })
 
-  const { mutateAsync: deleteNode, isPending: isDeletePending } =
-    api.repositoryItem.deleteNode.useMutation({
-      onError: error => {
-        utils.repository.get.invalidate()
-        Toast({
-          type: 'error',
-          title: 'Error!',
-          message: error?.message || 'Something went wrong',
-          duration: 2000
-        })
-      },
-      onSuccess: (deletedItemId: string) => {
-        // const updated = repoKids
-        //   .filter(item => item.id !== deletedItemId)
-        //   .map((item, i) => ({ ...item, order: i + 1 }))
-        // setRepoKids(updated)
-
-        utils.repository.get.invalidate()
-        Toast({
-          title: 'Deleted',
-          type: 'success'
-        })
-      },
-      onMutate() {
-        utils.repository.get.cancel()
-      }
-    })
   const [step, setStep] = useState(1)
 
   const [itemSearchTerm, setItemSearchTerm] = useState('')
@@ -106,12 +77,55 @@ const DeleteItemModal = ({ refetchData }: Props) => {
 
   const [customItemLink, setCustomItemLink] = useState('')
   // const [searchQuery, setSearchQuery] = useState('')
-  const { deletionItem } = useEditRepository()
-  if (!deletionItem) {
+  const { movingItem, setIsMoveItemModalOpen } = useEditRepository()
+  if (!movingItem) {
     return
   }
-  const handleDelete = async () => {
-    await deleteNode({ node_id: deletionItem.id })
+
+  const { mutateAsync: moveNode, isPending: isMovingPending } =
+    api.repositoryItem.moveNode.useMutation({
+      onError: error => {
+        utils.repository.get.invalidate()
+        Toast({
+          type: 'error',
+          title: 'Error!',
+          message: error?.message || 'Something went wrong',
+          duration: 2000
+        })
+      },
+      onSuccess: (movedItemId: string) => {
+        utils.repository.get.invalidate()
+        Toast({
+          title: 'Item moved',
+          type: 'success'
+        })
+        setIsMoveItemModalOpen(false)
+      },
+      onMutate() {
+        utils.repository.get.cancel()
+      }
+    })
+  // if (!currentPath || currentPath.length < 1) {
+  //   console.log('here')
+  //   return
+  // }
+  const handleMove = async () => {
+    if (!currentPath || !(currentPath.length > 0)) {
+      console.log('here')
+      return
+    }
+    if (currentPath[currentPath.length - 1]?.id === movingItem.parentId) {
+      Toast({
+        title: 'Same moved',
+        type: 'success'
+      })
+      return
+    }
+    await moveNode({
+      node_id: movingItem.id,
+      newparent_id: currentPath[currentPath.length - 1]?.id as string,
+      newparent_type: currentPath.length === 1 ? 'REPOSITORY' : 'SECTION'
+    })
   }
 
   return (
@@ -121,25 +135,26 @@ const DeleteItemModal = ({ refetchData }: Props) => {
       <div className='border-gray fixed inset-0 left-[50%] top-[50%] z-50 m-4 flex h-fit -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-2xl border bg-background p-8'>
         <div>
           <h2 className='scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
-            Delete {deletionItem.title} ?
+            Move {movingItem.title} ?
           </h2>
         </div>
+        <MoveSectionPicker itemType={movingItem.type} />
 
         <div className='flex justify-end gap-2'>
           <Button
             variant='outline'
             onClick={() => {
-              setIsDeleteItemModalOpen(false)
+              setIsMoveItemModalOpen(false)
             }}
           >
             Cancel
           </Button>
 
-          <Button onClick={handleDelete}>Delete</Button>
+          <Button onClick={handleMove}>Move</Button>
         </div>
       </div>
     </>
   )
 }
 
-export default DeleteItemModal
+export default MoveItemModal

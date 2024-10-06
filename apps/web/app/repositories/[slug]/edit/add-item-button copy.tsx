@@ -47,7 +47,7 @@ const AddItemButtons = ({
         //   autoGreet.segment_id
         // )
         // setLiveFeedCards(data)
-        // router.push(`/repos/${createdItem.id}`)
+        // router.push(`/repositories/${createdItem.id}`)
 
         // TODO:refresh and invalidate the useQuery for get Repo Items
       },
