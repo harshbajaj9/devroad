@@ -5,6 +5,12 @@ import { useProblemSearchFilter } from '@/store'
 import CategorySelect from './category-select'
 import PlatformSelect from './platform-select'
 
+interface HeaderProps {
+  totalCount: number
+  onSearchChange: (searchQuery: string | undefined) => void
+  searchQuery: string
+  activeTab: string
+}
 function Header({
   activeTab = 'all',
   // onTabClick,
@@ -12,7 +18,7 @@ function Header({
   totalCount,
   onSearchChange,
   searchQuery
-}) {
+}: HeaderProps) {
   const { platforms, setPlatforms } = useProblemSearchFilter()
   // const router = useRouter()
   // const searchParams = useSearchParams()
