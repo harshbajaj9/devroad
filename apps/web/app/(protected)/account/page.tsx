@@ -64,7 +64,7 @@ const page = async () => {
                   // className={styles.logo}
                   className='h-20 w-20'
                   src={session?.user?.image}
-                  alt={session?.user?.name}
+                  alt={session?.user?.name??'NA'}
                   width={100}
                   height={100}
                   priority
