@@ -22,7 +22,7 @@ import {
   recursiveDeleteNode
 } from './utils/repository-item-utils'
 import { extractOpenGraph } from '@devmehq/open-graph-extractor'
-import { JsonEditorInputSchema } from '@/zod'
+import { JsonEditorInputSchema } from '@/zod/editorschema'
 
 export const repositoryItemRouter = createTRPCRouter({
   create: protectedProcedure

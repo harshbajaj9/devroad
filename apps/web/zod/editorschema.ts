@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/zod/editorschema'
 
 const baseContent = z.object({
   type: z.string().optional(),

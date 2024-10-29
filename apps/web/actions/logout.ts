@@ -6,7 +6,6 @@ import { LoginSchema } from '@/schemas'
 import { AuthError } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { z } from 'zod'
 
 export const logout = async () => {
   try {

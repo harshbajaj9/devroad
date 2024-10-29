@@ -20,7 +20,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       // redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT_URL,
       redirectTo: DEFAULT_LOGIN_REDIRECT_URL
     })
-  } catch (err) {
+  } catch (err:any) {
     console.log('hello1')
     if (err instanceof AuthError) {
       switch (err.type) {

@@ -29,13 +29,13 @@ export const parser = async () => {
         break
     }
 
-    let diff: 'EASY' | 'MED' | 'HARD' = 'EASY'
+    let diff: 'EASY' | 'MEDIUM' | 'HARD' = 'EASY'
     switch (obj.Category) {
       case 'Easy':
         diff = 'EASY'
         break
       case 'Medium':
-        diff = 'MED'
+        diff = 'MEDIUM'
         break
       case 'Hard':
         diff = 'HARD'
