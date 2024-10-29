@@ -26,7 +26,7 @@ const SearchFilterComponent = ({
 }: {
   // roleId: string
   // company: string
-  catId: string
+  catId: string | undefined
   sortId: 'popular' | 'latest'
 }) => {
   const [selectedType, setSelectedType] = useState()
