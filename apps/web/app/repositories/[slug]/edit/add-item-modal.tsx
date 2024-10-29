@@ -698,7 +698,7 @@ const AddItemModal = ({
                         </div> */}
                           <div
                             className='invisible absolute right-4 top-4 z-10 -translate-y-1/2 translate-x-1/2 group-hover:visible'
-                            onClick={() => setSelectedProblem(null)}
+                            onClick={() => setSelectedProblem(undefined)}
                           >
                             <XMarkIcon className='size-5' />
                           </div>
