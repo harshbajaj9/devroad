@@ -100,7 +100,7 @@ const Problems = () => {
           </div>
         </div>
         <Header
-          totalCount={problemsData?.problemsCount}
+          totalCount={problemsData?.problemsCount ?? 0}
           onSearchChange={setSearchQuery}
           searchQuery={searchQuery}
         />
