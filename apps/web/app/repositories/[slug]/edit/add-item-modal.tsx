@@ -272,7 +272,8 @@ const AddItemModal = ({
             title: itemTitle,
             parentType: currentPath.length === 1 ? 'REPOSITORY' : 'SECTION',
             type: $Enums.RepositoryItemType.SECTION,
-            parentId: currentPath[currentPath.length - 1]?.id as string
+            parentId: currentPath[currentPath.length - 1]?.id as string,
+            repositoryId: repoStructure.id
           })
         } else {
           Toast({
