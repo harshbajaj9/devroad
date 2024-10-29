@@ -4,9 +4,9 @@ import { X } from 'lucide-react'
 import React, { useState } from 'react'
 
 interface SearchInputProps {
-  onSearchChange: string
-  searchQuery: string
-  placeholder: string
+  onSearchChange:(searchQuery:string)=>void,
+  searchQuery:string,
+  placeholder:string
 }
 function SearchInput({
   onSearchChange,
