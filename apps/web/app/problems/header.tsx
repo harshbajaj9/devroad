@@ -6,10 +6,10 @@ import CategorySelect from './category-select'
 import PlatformSelect from './platform-select'
 
 interface HeaderProps {
+  activeTab: string
   totalCount: number
   onSearchChange: (searchQuery: string) => void
   searchQuery: string
-  activeTab: string
 }
 function Header({
   activeTab = 'all',
