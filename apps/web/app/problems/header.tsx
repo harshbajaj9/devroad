@@ -7,7 +7,7 @@ import PlatformSelect from './platform-select'
 
 interface HeaderProps {
   totalCount: number
-  onSearchChange: (searchQuery: string | undefined) => void
+  onSearchChange: (searchQuery: string) => void
   searchQuery: string
   activeTab: string
 }
