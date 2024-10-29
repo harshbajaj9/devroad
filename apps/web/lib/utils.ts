@@ -84,7 +84,8 @@ export const getRoleById = (roleId: string) => {
   return undefined // Return undefined if the id doesn't exist
 }
 
-export const getCatById = (catId: string) => {
+export const getCatById = (catId: string | undefined) => {
+  if (catId === undefined) return undefined
   const foundCategory = PSCategoryFilter.find(item => item.id === catId)
   if (foundCategory) {
     return foundCategory // Return the value if a matching id is found
@@ -92,8 +93,8 @@ export const getCatById = (catId: string) => {
   return undefined // Return undefined if the id doesn't exist
 }
 
-export const getCompanyById = (catId: string) => {
-  const foundCompany = DefaultCompanies.find(item => item.id === catId)
+export const getCompanyById = (compId: string) => {
+  const foundCompany = DefaultCompanies.find(item => item.id === compId)
   if (foundCompany) {
     return foundCompany // Return the value if a matching id is found
   }
