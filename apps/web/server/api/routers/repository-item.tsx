@@ -41,7 +41,7 @@ export const repositoryItemRouter = createTRPCRouter({
         repositoryId: z.string(),
         link: z.string().optional(),
         difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']).optional(),
-        category: z.enum(['DSA', 'SQL', 'OPERATING_SYSTEM']).optional()
+        category: z.enum(['DSA', 'SQL', 'OS']).optional()
         // TODO: Pro Plan limit 50 -> 200
       })
     )
