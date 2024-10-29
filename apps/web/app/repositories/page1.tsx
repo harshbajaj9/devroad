@@ -54,18 +54,14 @@ const Tag = ({ title, count }: { title: string; count: string }) => {
   )
 }
 
-const tagsList = [
-  { title: 'DSA', count: '231' },
-  { title: 'Guesstimates', count: '140' },
-  { title: 'Database', count: '95' },
-  { title: 'ML', count: '42' },
-  { title: 'System Design', count: '77' },
-  { title: 'Data Science', count: '56' }
-]
-const font2 = Jost({
-  weight: ['300', '400', '500', '600', '700', '800'],
-  subsets: ['latin']
-})
+// const tagsList = [
+//   { title: 'DSA', count: '231' },
+//   { title: 'Guesstimates', count: '140' },
+//   { title: 'Database', count: '95' },
+//   { title: 'ML', count: '42' },
+//   { title: 'System Design', count: '77' },
+//   { title: 'Data Science', count: '56' }
+// ]
 
 const Repositories = async ({
   searchParams
@@ -86,7 +82,6 @@ const Repositories = async ({
         <h1
           className={cn(
             'mb-4 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
-            font2.className
           )}
         >
           Repositories {searchParams['role'] && `for ${searchParams['role']}`}

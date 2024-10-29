@@ -152,7 +152,8 @@ module.exports = {
           "linear-gradient(180deg,#F7931E -6.42%,#F6911D 18.92%,#F68A1D 28.42%, #F57E1C 34.75%, #F36C1B 41.08%, #F3681B 42.67%, #2D2DA0 117.08%)",
       },
       fontFamily: {
-        inter: ["Inter", "sans-serif"],
+        // inter: ["Inter", "sans-serif"],
+        // jost: ["Jost", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -247,6 +248,35 @@ module.exports = {
             "code::after": {
               content: "normal",
             },
+            // https://stackoverflow.com/questions/66594385/how-do-i-modify-the-default-styling-of-the-typography-prose-class-in-tailwindcss
+            // ul: {
+            //   marginTop: theme("margin[1]"),
+            //   marginBottom: theme("margin[1]"),
+            //   "> li": {
+            //     marginTop: theme("margin[0]"),
+            //     marginBottom: theme("margin[0]"),
+            //   },
+            // },
+            // p: {
+            //   marginTop: theme("margin[3]"),
+            //   marginBottom: theme("margin[3]"),
+            // },
+
+            // p: {
+            //   margin: "0",
+            // },
+            // h1: {
+            //   margin: "0",
+            // },
+            // h2: {
+            //   margin: "0",
+            // },
+            // ul: {
+            //   margin: "0",
+            // },
+            // li: {
+            //   margin: "0",
+            // },
           },
         },
         bot: {
@@ -338,6 +368,6 @@ module.exports = {
     // require("@headlessui/tailwindcss"),
     require("tailwindcss-animate"),
     // require("tailwind-scrollbar-hide"),
-    // require("@tailwindcss/typography"),
+    require("@tailwindcss/typography"),
   ],
 };

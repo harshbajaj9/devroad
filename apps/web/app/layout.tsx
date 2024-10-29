@@ -1,32 +1,15 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 // import "./globals.css";
-import styles from './page.module.css'
 
-import '@repo/ui/styles/globals.css'
-import { TRPCReactProvider } from '@/trpc/react'
-import { Bricolage_Grotesque, Poppins } from 'next/font/google'
-import { cn } from '@/lib/utils'
-import { Button, Input, ThemeProvider, Toaster } from '@repo/ui'
-import LoginButton from '@/components/auth/login-button'
-import Link from 'next/link'
-import { ModeToggle } from '@/components/theme-toggle-button'
-import Image from 'next/image'
-import { NavigationMenuDemo } from '@/components/navigation-menu'
-import Nav from '@/components/nav'
-import SessionProvider from '@/components/auth/session-provider'
-import LoginModal from '@/components/auth/login-modal'
 import { auth } from '@/auth'
-import { BreadcrumbDemo } from '@/components/breadcrumb'
+import SessionProvider from '@/components/auth/session-provider'
+import { NavigationMenuDemo } from '@/components/navigation-menu'
+import { cn } from '@/lib/utils'
+import { TRPCReactProvider } from '@/trpc/react'
+import { ThemeProvider, Toaster } from '@repo/ui'
+import '@repo/ui/styles/globals.css'
 
-const font = Poppins({
-  weight: ['300', '400', '500', '600', '700', '800'],
-  subsets: ['latin']
-})
-const font2 = Bricolage_Grotesque({
-  weight: ['300', '400', '500', '600', '700', '800'],
-  subsets: ['latin']
-})
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans'
@@ -54,7 +37,11 @@ export default async function RootLayout({
       <body
         // className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] dark:bg-[#120e17]`}
         // className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] dark:bg-[#1a1b1c]`}
-        className={`${geistSans.variable} ${geistMono.variable} max-w-screen-[1800px] mx-auto max-w-[1920px] bg-backgroundalt dark:bg-backgroundalt`}
+        // className={`${geistSans.variable} ${geistMono.variable} max-w-screen-[1800px] mx-auto max-w-[1920px] bg-backgroundalt dark:bg-backgroundalt`}
+        // className={`max-w-screen-[1800px] mx-auto max-w-[1920px] bg-backgroundalt dark:bg-backgroundalt`}
+        className={cn(
+          'max-w-screen-[1800px] mx-auto max-w-[1920px] bg-backgroundalt dark:bg-backgroundalt'
+        )}
       >
         <SessionProvider session={session}>
           <ThemeProvider

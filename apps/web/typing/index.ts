@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client'
+import { $Enums } from '@repo/database'
 
 export type ProblemData = {
   // companyId: string

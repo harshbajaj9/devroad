@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure
 } from '@/server/api/trpc'
-import { $Enums } from '@prisma/client'
+import { $Enums } from '@repo/database'
 import { TRPCError } from '@trpc/server'
 import cuid from 'cuid'
 import { notFound } from 'next/navigation'
@@ -37,19 +37,20 @@ export const repositoryRouter = createTRPCRouter({
 
       const collection = await ctx.db.repository.create({
         data: {
-          id:
-            input.title
-              .toLowerCase()
-              .replace(/ /g, '-')
-              .replace(/[-]+/g, '-')
-              .replace(/[^\w-]+/g, '') +
-            '-' +
-            cuid(),
+          // id:
+          //   input.title
+          //     .toLowerCase()
+          //     .replace(/ /g, '-')
+          //     .replace(/[-]+/g, '-')
+          //     .replace(/[^\w-]+/g, '') +
+          //   '-' +
+          //   cuid(),
           title: input.title,
           description: input.description,
           type: input.type,
           creatorId: ctx.session.user.id,
-          creatorName: ctx.session.user.name
+          creatorName: ctx.session.user.name,
+          creatorWebsiteLink: ctx.session.user.websiteLink
         }
       })
 
@@ -74,8 +75,79 @@ export const repositoryRouter = createTRPCRouter({
       //   where: { parentId: repository.id }
       // })
       const userId = ctx.session?.user.id
-
+      // console.log(repository, userId, 'hit>')
       return getItems({ node: repository, userId })
+    }),
+
+  getUserRepositories: protectedProcedure.query(async ({ ctx }) => {
+    // const post = await ctx.db.post.findFirst({
+    //   orderBy: { createdAt: 'desc' },
+    //   where: { createdBy: { id: ctx.session.user.id } }
+    // })
+    const userId = ctx.session?.user.id
+    const repositories = await ctx.db.repository.findMany({
+      where: { creatorId: userId }
+    })
+
+    // const repositoryItems = await ctx.db.repositoryItem.findMany({
+    //   where: { parentId: repository.id }
+    // })
+    // console.log(repository, userId, 'hit>')
+    return repositories
+  }),
+
+  getUserSavedRepositories: protectedProcedure.query(async ({ ctx }) => {
+    // const post = await ctx.db.post.findFirst({
+    //   orderBy: { createdAt: 'desc' },
+    //   where: { createdBy: { id: ctx.session.user.id } }
+    // })
+    const userId = ctx.session?.user.id
+
+    // TODO:
+
+    // get all repo ids from saved table
+
+    // get all repositories with id in the above list of ids
+
+    const repositories = await ctx.db.repository.findMany({
+      where: { creatorId: userId }
+    })
+
+    // const repositoryItems = await ctx.db.repositoryItem.findMany({
+    //   where: { parentId: repository.id }
+    // })
+    // console.log(repository, userId, 'hit>')
+    return repositories
+  }),
+
+  updateVisibility: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        value: z.enum(['PRIVATE', 'SHARED', 'DISCOVERABLE'])
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // const post = await ctx.db.post.findFirst({
+      //   orderBy: { createdAt: 'desc' },
+      //   where: { createdBy: { id: ctx.session.user.id } }
+      // })
+      const repository = await ctx.db.repository.update({
+        where: { id: input.id },
+        data: {
+          visibility: input.value
+        }
+      })
+      // if (!repository) {
+      //   return notFound()
+      // }
+
+      // // const repositoryItems = await ctx.db.repositoryItem.findMany({
+      // //   where: { parentId: repository.id }
+      // // })
+      // const userId = ctx.session?.user.id
+      // // console.log(repository, userId, 'hit>')
+      // return getItems({ node: repository, userId })
     }),
 
   getSecretMessage: protectedProcedure.query(() => {

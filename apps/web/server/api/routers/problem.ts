@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure
 } from '@/server/api/trpc'
-import { $Enums } from '@prisma/client'
+import { $Enums } from '@repo/database'
 
 export const problemRouter = createTRPCRouter({
   getAllProblems: publicProcedure
@@ -20,20 +20,26 @@ export const problemRouter = createTRPCRouter({
       const pageSize = input?.pageSize ?? 20
       const problemsCount = await ctx.db.problem.count({
         where: {
-          primaryPlatform: $Enums.Platform.LC,
+          platform: $Enums.Platform.LC,
+          // category: {
+          //   has: $Enums.ProblemCategory.DSA
+          // }
           category: $Enums.ProblemCategory.DSA
         }
       })
       const problems = await ctx.db.problem.findMany({
         where: {
-          primaryPlatform: $Enums.Platform.LC,
+          platform: $Enums.Platform.LC,
+          // category: {
+          //   has: $Enums.ProblemCategory.DSA
+          // }
           category: $Enums.ProblemCategory.DSA
         },
         select: {
           id: true,
-          primaryTitle: true,
-          primaryUrl: true,
-          primaryPlatform: true,
+          title: true,
+          url: true,
+          platform: true,
           difficulty: true,
           category: true
           //   logo: true,
@@ -67,6 +73,20 @@ export const problemRouter = createTRPCRouter({
         skip: (page - 1) * pageSize, // Calculate how many records to skip
         take: pageSize
       })
+
+      // TODO: see if needed
+      // for (const problem of problems) {
+      //   const userItemData = await ctx.db.userItemData.findUnique({
+      //     where: {
+      //       userId_referenceId: {
+      //         referenceId: problem.id,
+      //         userId: ctx.session.user.id
+      //       }
+      //     }
+      //   })
+      //   problem['status'] = userItemData?.lastStatus
+      // }
+
       console.log('>>', problems)
       return {
         problemsCount,
@@ -100,7 +120,7 @@ export const problemRouter = createTRPCRouter({
 
       const searchedProblems = await ctx.db.problem.findMany({
         where: {
-          primaryTitle: {
+          title: {
             contains: searchQuery,
             mode: 'insensitive'
           }

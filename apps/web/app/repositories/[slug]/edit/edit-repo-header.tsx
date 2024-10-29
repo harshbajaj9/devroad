@@ -1,6 +1,8 @@
 'use client'
+import Illustration1 from '@/components/svgs/illustration1'
 import { cn } from '@/lib/utils'
 import { useEditRepository } from '@/store'
+import { api } from '@/trpc/react'
 import {
   BookmarkIcon,
   CalendarDaysIcon,
@@ -12,9 +14,11 @@ import {
   FolderIcon,
   HeartIcon,
   PencilIcon,
+  PlayIcon,
   QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline'
-import { $Enums, Repository } from '@prisma/client'
+import { PlayIcon as PlayIconSolid } from '@heroicons/react/24/solid'
+import { $Enums, Repository } from '@repo/database'
 import {
   Avatar,
   AvatarFallback,
@@ -43,7 +47,11 @@ import {
   Tabs,
   TabsList,
   TabsTrigger,
-  Textarea
+  Textarea,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
 } from '@repo/ui'
 import {
   DropdownMenu,
@@ -64,7 +72,8 @@ import {
   UserPlus
 } from 'lucide-react'
 import { Bricolage_Grotesque, Jost } from 'next/font/google'
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
 // const font2 = Bricolage_Grotesque({
 //   weight: ['300', '400', '500', '600', '700', '800'],
 //   subsets: ['latin']
@@ -81,27 +90,81 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
   const handleSave = () => {
     setIsEditMode(false)
   }
+  const router = useRouter()
+  const { mutateAsync: createNewSession } =
+    api.repository.createNewSession.useMutation({
+      // refetchOnWindowFocus: false,
+      onSuccess(createdSession: { id: String }) {
+        router.push(`/sessions/${createdSession.id}`)
+
+        Toast({ title: 'Visibility Updated', type: 'success' })
+      },
+      onError(error: { message: any }) {
+        utils.repository.get.invalidate()
+        Toast({
+          type: 'error',
+          title: 'Error!',
+          message: error?.message || 'Something went wrong',
+          duration: 5000
+        })
+      }
+    })
+  const handleStartSession = () => {
+    createNewSession({
+      id: repository.id
+    })
+  }
+  const [visibility, setVisibility] = useState(repository.visibility)
+  const utils = api.useUtils()
+  const { mutateAsync: updateVisibility } =
+    api.repository.updateVisibility.useMutation({
+      // refetchOnWindowFocus: false,
+      onSuccess(createdCollection: { id: String }) {
+        utils.repository.get.invalidate()
+        Toast({ title: 'Visibility Updated', type: 'success' })
+      },
+      onError(error: { message: any }) {
+        utils.repository.get.invalidate()
+        Toast({
+          type: 'error',
+          title: 'Error!',
+          message: error?.message || 'Something went wrong',
+          duration: 5000
+        })
+      }
+    })
+
+  // const onVisibilityTabChange = value => {
+  //   setVisibility(value)
+  // }
   return (
     <div className='flex gap-4 pb-2'>
       <div
         className={cn(
           'flex flex-[3] gap-8',
-          'rounded-md border bg-background p-8',
+          'rounded-3xl border bg-background p-8',
           // 'shadow-[0_3px_10px_rgb(0,0,0,0.2)]',
           'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
           // isEditMode && 'border-primary'
         )}
       >
-        <div className='overflow-hidden rounded-xl'>
-          <img
-            className='h-full w-96'
-            src={
-              'https://tiptap.dev/docs/_next/static/media/content-templates.bf560925.png'
-            }
-            width={'384px'}
-            height={'384px'}
-          />
-        </div>
+        {/* <div className='flex items-center overflow-hidden rounded-2xl'>
+          {true ? (
+            <img
+              src={
+                'https://tiptap.dev/docs/_next/static/media/content-templates.bf560925.png'
+              }
+              alt={repository.title}
+              className='h-60 w-80 object-cover object-center'
+              width={'384px'}
+              height={'384px'}
+            />
+          ) : (
+            <div className='h-30 flex w-40 items-center justify-end'>
+              <Illustration1 />
+            </div>
+          )}
+        </div> */}
         <div className='flex-1'>
           <div className='flex justify-end px-8'>
             {!isEditMode ? (
@@ -189,29 +252,32 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
                 </SelectContent>
               </Select>
             ) : (
-              <Badge className='rounded-md border-foreground' variant='outline'>
-                {repository.type}
-              </Badge>
-            )}
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <QuestionMarkCircleIcon className='size-4' />
-              </HoverCardTrigger>
-              <HoverCardContent
-                align={'start'}
-                className='mt-4 w-80 bg-background'
-              >
-                <div className='grid gap-4'>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium leading-none'>Problem Set</h4>
-                    <p className='text-sm text-muted-foreground'>
-                      Problem Set allows you to start a session and keep track
-                      of your progress.
-                    </p>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Badge
+                    className='cursor-default rounded-md border-foreground'
+                    variant='outline'
+                  >
+                    {repository.type}
+                  </Badge>
+                </HoverCardTrigger>
+                <HoverCardContent
+                  align={'start'}
+                  className='mt-4 w-80 bg-background'
+                >
+                  <div className='grid gap-4'>
+                    <div className='space-y-2'>
+                      <h4 className='font-medium leading-none'>Problem Set</h4>
+                      <p className='text-sm text-muted-foreground'>
+                        Problem Set allows you to start a session and keep track
+                        of your progress.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
+                </HoverCardContent>
+              </HoverCard>
+            )}
+
             {/* {isOwner && <EditCollectionButton />} */}
           </div>
           {isEditMode ? (
@@ -226,14 +292,10 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
           ) : (
             <h1
               className={cn(
-                'mb-4 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
-                font2.className
+                'mb-4 scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-4xl'
               )}
             >
-              {
-                repository.title
-                // 'test it yell'
-              }
+              {repository.title}
             </h1>
           )}
           {/* {isEditMode ? (
@@ -260,62 +322,79 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
           )} */}
 
           {!isEditMode && (
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <Button variant='link' className='pl-0 text-muted-foreground'>
-                  @{repository.creatorName}
-                </Button>
-              </HoverCardTrigger>
-              <HoverCardContent align={'start'} className='w-80'>
-                <div className='flex justify-between space-x-4'>
-                  <Avatar>
-                    <AvatarImage src='https://github.com/vercel.png' />
-                    <AvatarFallback>VC</AvatarFallback>
-                  </Avatar>
-                  <div className='space-y-1'>
-                    <h4 className='text-sm font-semibold'>
-                      @{repository.creatorName}
-                    </h4>
-                    <p className='text-sm'>The dude who owns @devroad.</p>
-                    <div className='flex items-center pt-2'>
-                      <CalendarDaysIcon className='mr-2 h-4 w-4 opacity-70' />
-                      <span className='text-xs text-muted-foreground'>
-                        Joined December 2021
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
+            // <HoverCard>
+            //   <HoverCardTrigger asChild>
+            //     <Button variant='link' className='pl-0 text-muted-foreground'>
+            //       @{repository.creatorName}
+            //     </Button>
+            //   </HoverCardTrigger>
+            //   <HoverCardContent align={'start'} className='w-80'>
+            //     <div className='flex justify-between space-x-4'>
+            //       <Avatar>
+            //         <AvatarImage src='https://github.com/vercel.png' />
+            //         <AvatarFallback>VC</AvatarFallback>
+            //       </Avatar>
+            //       <div className='space-y-1'>
+            //         <h4 className='text-sm font-semibold'>
+            //           @{repository.creatorName}
+            //         </h4>
+            //         <p className='text-sm'>The dude who owns @devroad.</p>
+            //         <div className='flex items-center pt-2'>
+            //           <CalendarDaysIcon className='mr-2 h-4 w-4 opacity-70' />
+            //           <span className='text-xs text-muted-foreground'>
+            //             Joined December 2021
+            //           </span>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   </HoverCardContent>
+            // </HoverCard>
+            <a
+              href={repository.creatorWebsiteLink}
+              target='_blank'
+              rel='noopener noreferrer'
+              variant='link'
+              className='pl-0 font-semibold text-muted-foreground'
+            >
+              @{repository.creatorName}
+            </a>
           )}
         </div>
       </div>
       <div
         className={cn(
-          'flex flex-[1] flex-col justify-center rounded-md border bg-background p-8',
+          'flex flex-[1] flex-col justify-center rounded-3xl border bg-background p-8',
           'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
         )}
       >
         {/* <div className="border-t border-t-border my-2"></div> */}
+        {/* <div className={cn('', )}>Privacy:</div> */}
         <div className='flex items-center justify-center'>
-          {/* <div className={cn('', font2.className)}>Privacy:</div> */}
-          <Tabs className=''>
-            <TabsList className='rounded-full'>
+          <Tabs
+            className='w-full'
+            value={visibility}
+            onValueChange={value => {
+              setVisibility(value as 'PRIVATE' | 'SHARED' | 'DISCOVERABLE')
+              updateVisibility({
+                id: repository.id,
+                value: value as 'PRIVATE' | 'SHARED' | 'DISCOVERABLE'
+              })
+            }}
+          >
+            <TabsList className='w-full rounded-full'>
               <TabsTrigger
-                value='private'
-                className={cn('rounded-full', font2.className)}
+                value='PRIVATE'
+                className={cn('w-full rounded-full')}
               >
                 Private
               </TabsTrigger>
-              <TabsTrigger
-                value='share'
-                className={cn('rounded-full', font2.className)}
-              >
+              <TabsTrigger value='SHARED' className={cn('w-full rounded-full')}>
                 Shared
               </TabsTrigger>
               <TabsTrigger
-                value='discoverable'
-                className={cn('rounded-full', font2.className)}
+                disabled={true}
+                value='DISCOVERABLE'
+                className={cn('w-full rounded-full')}
               >
                 Discoverable
               </TabsTrigger>
@@ -379,30 +458,47 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
         </div> */}
         {/* <div className="border-t border-t-border my-2"></div> */}
         {/* <div className='my-4'></div> */}
-        <div className='flex cursor-pointer justify-around py-1 text-muted-foreground'>
+        {/* <div className='flex cursor-pointer justify-around py-1 text-muted-foreground'>
           <div className='flex items-center gap-1 text-pink-500'>
             <HeartIcon className='size-5' />
-            {/* <Separator orientation='vertical' /> */}
-            <span className={cn('text-xs font-semibold', font2.className)}>
+            <span className={cn('text-xs font-semibold', )}>
               210
             </span>
           </div>
           <div className='flex cursor-pointer items-center gap-1 text-primary'>
             <ChatBubbleBottomCenterTextIcon className='size-5' />
-            {/* <Separator orientation='vertical' /> */}
-            <span className={cn('text-xs font-semibold', font2.className)}>
+            <span className={cn('text-xs font-semibold', )}>
               21
             </span>
           </div>
           <div className='flex cursor-pointer items-center gap-1 text-foreground'>
             <BookmarkIcon className='size-5' />
-            {/* <Separator orientation='vertical' /> */}
-            <span className={cn('text-xs font-semibold', font2.className)}>
+            <span className={cn('text-xs font-semibold', )}>
               130
             </span>
           </div>
+        </div> */}
+        <div className='mt-4 w-full'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={'bg'}
+                  className='group flex w-full gap-2 rounded-full'
+                  onClick={handleStartSession}
+                  disabled={true}
+                >
+                  <PlayIcon className='size-5 group-hover:hidden' />
+                  <PlayIconSolid className='hidden size-5 group-hover:inline-block' />
+                  <span className={cn()}>Start Solving</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Start a new session on this problem set</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-        {/* <div className='my-4'></div> */}
       </div>
     </div>
   )

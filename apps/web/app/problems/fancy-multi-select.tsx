@@ -53,7 +53,9 @@ const FRAMEWORKS: { value: string; label: string }[] = [
 export function FancyMultiSelect() {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [open, setOpen] = React.useState(false)
-  const [selected, setSelected] = React.useState<Framework[]>([FRAMEWORKS[1]])
+  const [selected, setSelected] = React.useState<Framework[]>([
+    FRAMEWORKS[1] as Record<'value' | 'label', string>
+  ])
   const [inputValue, setInputValue] = React.useState('')
 
   const handleUnselect = React.useCallback((framework: Framework) => {

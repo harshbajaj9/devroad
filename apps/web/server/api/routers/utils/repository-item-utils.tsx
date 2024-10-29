@@ -1,5 +1,5 @@
 import { db } from '@/server/db'
-import { Repository, RepositoryItem } from '@prisma/client'
+import { Repository, RepositoryItem } from '@repo/database'
 import { Overwrite, Simplify } from '@trpc/server/unstable-core-do-not-import'
 import { TestContext } from 'node:test'
 
@@ -16,6 +16,19 @@ export const getItems = async ({
   }
 
   if (node.type === 'ITEM') {
+    // TODO: is there a better way to fetch all logged in user's preference
+    let userItemData
+    if (userId && node.referenceId) {
+      userItemData = await db.userItemData.findUnique({
+        where: {
+          userId_referenceId: {
+            referenceId: node.referenceId,
+            userId: userId
+          }
+        }
+      })
+    }
+
     // combine the details
     if (node.referenceType === 'PROBLEM') {
       const problem = await db.problem.findUnique({
@@ -23,36 +36,33 @@ export const getItems = async ({
       })
       nodeObject.details['problem'] = problem
 
-      // TODO: is there a better way to fetch all logged in user's preference
-      // const userPreferencesAndResources =
-      //   await db.userItemPreferencesAndResources.findUnique({
-      //     where: {
-      //       id: node.referenceId ?? undefined,
-      //       userId: userId
-      //     }
-      //   })
-
-      nodeObject.details['problem'] = problem
+      nodeObject.details.lastStatus = userItemData?.lastStatus ?? 0
+      nodeObject.details.tags = userItemData?.tags ?? []
+    } else if (node.referenceType === 'CUSTOM_PROBLEM') {
+      const customProblem = await db.customItem.findUnique({
+        where: { id: node.referenceId ?? undefined, type: 'PROBLEM' }
+      })
+      nodeObject.details['customProblem'] = customProblem
+      nodeObject.details.lastStatus = userItemData?.lastStatus ?? 0
+      nodeObject.details.tags = userItemData?.tags ?? []
     } else if (node.referenceType === 'CUSTOM') {
       const custom = await db.customItem.findUnique({
         where: { id: node.referenceId ?? undefined }
       })
       nodeObject.details['custom'] = custom
     }
+
     return { ...nodeObject.details, children: nodeObject.children }
   }
   // get the children
   const items: RepositoryItem[] = await db.repositoryItem.findMany({
     where: { parentId: node.id }
   })
-
   items.sort((a, b) => {
     const A = a.order
     const B = b.order
     if (A < B) return -1
-
     if (A > B) return 1
-
     return 0
   })
   let maxDepth = 0
@@ -70,7 +80,7 @@ export const getItems = async ({
 export const changePriorities = async ({ priorityOrder }) => {
   await Promise.all(
     priorityOrder.map(async item => {
-      console.log(`Updating Item ${item.id} to ${item.order}`)
+      // console.log(`Updating Item ${item.id} to ${item.order}`)
       await db.repositoryItem.update({
         where: {
           id: item.id
@@ -85,10 +95,10 @@ export const changePriorities = async ({ priorityOrder }) => {
   console.log('updated')
 }
 
-export const changeNoteReferenceOrder = async ({ referenceOrder }) => {
+export const changeReferenceOrder = async ({ referenceOrder }) => {
   await Promise.all(
     referenceOrder.map(async item => {
-      await db.userProblemReferencesAndNotes.update({
+      await db.userProblemReferences.update({
         where: {
           id: item.id
         },

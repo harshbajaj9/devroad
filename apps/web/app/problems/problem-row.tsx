@@ -19,7 +19,7 @@ import {
 import { CustomTooltip, TableCell, TableRow } from '@repo/ui'
 import { ProblemData } from '@/typing'
 import { useRouter } from 'next/navigation'
-import { $Enums } from '@prisma/client'
+import { $Enums } from '@repo/database'
 // import { useFeatureFlagEnabled } from 'posthog-js/react'
 // import { cn } from '~/lib/utils'
 

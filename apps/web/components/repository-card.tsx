@@ -41,7 +41,11 @@ const RepositoryCard = ({
   return (
     <div
       // className='hover w-72 select-none overflow-hidden rounded-xl border bg-background shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] duration-200 hover:shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]'
-      className='hover w-72 select-none overflow-hidden rounded-xl bg-background shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] duration-200 hover:shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]'
+      // className='hover w-72 select-none overflow-hidden rounded-xl bg-background shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] duration-200 hover:shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]'
+      className='hover w-72 select-none overflow-hidden rounded-xl border bg-background shadow-sm duration-200 hover:shadow-md'
+      onClick={() => {
+        if (id) router.push(`/repositories/${id}`)
+      }}
     >
       <div
         // className="relative h-40 bg-green-300 bg-[url('https://takeuforward.org/static/media/img.e05e06671578591d1613.jpg')] bg-center dark:bg-green-600"
@@ -55,18 +59,17 @@ const RepositoryCard = ({
         </div> */}
         <div className={cn('absolute p-6', font.className)}>
           <a className=''>
-            <p
+            {/* <p
               className={cn(
                 'font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground',
-                font2.className
+                
               )}
             >
-              {creatorName ?? "Love Babbar's"}
-            </p>
+              {creatorName ? creatorName + "'s" : "Love Babbar's"}
+            </p> */}
             <p
               className={cn(
-                'text-2xl font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground',
-                font2.className
+                'text-2xl font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground'
               )}
             >
               {title ?? 'Faang DSA sheet 169'}
@@ -158,17 +161,6 @@ const RepositoryCard = ({
             <BookmarkIcon className='size-5 hover:text-foreground hover:drop-shadow-[0_1px_5px_hsl(var(--foreground))]' />
           </div>
         </div>
-      </div>
-      <div className='flex justify-center pb-4'>
-        <Button
-          className='w-36'
-          onClick={() => {
-            if (id) router.push(`/repositories/${id}`)
-          }}
-          // variant={'bg'}
-        >
-          View
-        </Button>
       </div>
     </div>
   )

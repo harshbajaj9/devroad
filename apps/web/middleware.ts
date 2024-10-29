@@ -17,14 +17,16 @@ export default auth(req => {
   const isLoggedIn = !!req.auth
   // console.log("is logged in:", isLoggedIn);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthRoutePrefix)
+  const isTrpcRoute = nextUrl.pathname.startsWith('/api/trpc')
   const isPublicRoute =
     publicRoutes.includes(nextUrl.pathname) ||
     // nextUrl.pathname.startsWith('/learn') ||
+    nextUrl.pathname.startsWith('/problemsets') ||
     nextUrl.pathname.startsWith('/repositories')
   // TODO: check above condition, basically I want all /learn/subroute routes to be public
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-  if (isApiAuthRoute) return
+  if (isApiAuthRoute || isTrpcRoute) return
 
   if (isAuthRoute) {
     if (isLoggedIn)

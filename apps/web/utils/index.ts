@@ -1,4 +1,4 @@
-// import { RepositoryItem } from '@prisma/client'
+// import { RepositoryItem } from '@repo/database'
 
 // type NodeType = RepositoryItem & {
 //   children?: NodeType[] | undefined

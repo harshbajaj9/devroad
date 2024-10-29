@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure
 } from '@/server/api/trpc'
-import { $Enums, RepositoryType } from '@prisma/client'
+import { $Enums, RepositoryType } from '@repo/database'
 import { TRPCError } from '@trpc/server'
 import cuid from 'cuid'
 import { notFound } from 'next/navigation'

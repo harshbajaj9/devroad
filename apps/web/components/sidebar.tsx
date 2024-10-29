@@ -15,7 +15,7 @@ import {
   BriefcaseIcon as ActiveBriefcaseIcon,
   DevicePhoneMobileIcon as ActiveDevicePhoneMobileIcon,
   Cog6ToothIcon as ActiveCog6ToothIcon,
-BookmarkIcon as ActiveBookmarkIcon,
+  BookmarkIcon as ActiveBookmarkIcon
 } from '@heroicons/react/24/solid'
 
 import { Bricolage_Grotesque, Poppins, Stick } from 'next/font/google'
@@ -44,16 +44,16 @@ const sidenavs = [
       <ActiveHomeIcon className='size-5 text-background duration-150 group-hover:scale-110' />
     )
   },
-  {
-    icon: (
-      <BookmarkIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
-    ),
-    title: 'Saved',
-    href: '/saved',
-    activeIcon: (
-      <ActiveBookmarkIcon className='size-5 text-background duration-150 group-hover:scale-110' />
-    )
-  },
+  // {
+  //   icon: (
+  //     <BookmarkIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
+  //   ),
+  //   title: 'Saved',
+  //   href: '/saved',
+  //   activeIcon: (
+  //     <ActiveBookmarkIcon className='size-5 text-background duration-150 group-hover:scale-110' />
+  //   )
+  // },
   {
     icon: (
       <Cog6ToothIcon className='size-5 text-muted-foreground duration-150 group-hover:scale-110 group-hover:text-muted' />
@@ -121,7 +121,8 @@ const Sidebar = () => {
       </div> */}
       <div className='mt-4 flex flex-col justify-start gap-4'>
         {sidenavs.map(snav => {
-          const isActive = pathname.startsWith(snav.href)
+          // const isActive = pathname.startsWith(snav.href)
+          const isActive = pathname === snav.href
           return (
             <div
               key={snav.title}

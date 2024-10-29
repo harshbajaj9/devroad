@@ -11,6 +11,16 @@ const nextConfig = {
   //   locales: ["en"],
   //   defaultLocale: "en",
   // },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+        port: "",
+        pathname: "**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

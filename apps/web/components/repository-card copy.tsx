@@ -61,16 +61,14 @@ const RepositoryCard = () => {
           <a className=''>
             <p
               className={cn(
-                'font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground',
-                font2.className
+                'font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground'
               )}
             >
               Love Babbar's
             </p>
             <p
               className={cn(
-                'text-2xl font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground',
-                font2.className
+                'text-2xl font-semibold text-background [text-shadow:_1px_1px_0_rgba(0,0,0,0.35),1px_1px_5px_rgba(0,0,0,0.5)] dark:text-foreground'
               )}
             >
               Faang DSA sheet 169

@@ -1,4 +1,6 @@
-import { Repository, RepositoryItem } from '@prisma/client'
+// import { Repository, RepositoryItem } from '@repo/database'
+import { Repository, RepositoryItem } from '@repo/database'
+import { JSONContent } from 'novel'
 import { create } from 'zustand'
 // import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
@@ -51,7 +53,7 @@ export const useProblemSearchFilter = create<{
 export type NoteType = {
   id: string
   title: string
-  content: string | null
+  content: JSONContent
   order: number
   added: boolean
 }
@@ -137,19 +139,38 @@ export const useEditRepository = create<{
   }))
 )
 
+export type OpenItemType = RepositoryItem & {
+  children: RepositoryItem
+  lastStatus: number
+  tags: string[]
+}
+
 export const useRepository = create<{
+  doneItems: string[]
+  setDoneItems: (fn: (doneItemsNew: string[]) => string[]) => void
+  revisitItems: string[]
+  setRevisitItems: (fn: (doneItemsNew: string[]) => string[]) => void
+  // itemStatusMap: Record<string, number>
+  // setItemStatusMap: (id: string, status: number) => void
+  // setItemStatusMap: (
+  //   fn: (
+  //     prev: { id: string; status: number }[]
+  //   ) => { id: string; status: number }[]
+  // ) => void
+  repositoryTags: string[]
+  setRepositoryTags: (tags: string[]) => void
   repositoryDetails: Repository | undefined
   setRepositoryDetails: (details: Repository | undefined) => void
-  openItem: (RepositoryItem & { children: RepositoryItem }) | undefined
-  setOpenItem: (
-    openItem: (RepositoryItem & { children: RepositoryItem }) | undefined
-  ) => void
+  openItem: OpenItemType | undefined
+  setOpenItem: (openItem: OpenItemType | undefined) => void
   // openNotes: NoteType[]
   // setOpenNotes: (openNotes: NoteType[]) => void
   // openReferences: ReferenceType[]
   // setOpenReferences: (openReferences: ReferenceType[]) => void
 }>()(
   immer(set => ({
+    repositoryTags: [],
+    setRepositoryTags: (tags: string[]) => set({ repositoryTags: tags }),
     repositoryDetails: undefined,
     setRepositoryDetails: (details: Repository | undefined) =>
       set({ repositoryDetails: details }),
@@ -159,12 +180,57 @@ export const useRepository = create<{
     // setOpenReferences: (openReferences: ReferenceType[]) =>
     //   set({ openReferences: openReferences }),
     openItem: undefined,
-    setOpenItem: (
-      openItem: (RepositoryItem & { children: RepositoryItem }) | undefined
-    ) => set({ openItem: openItem })
+    setOpenItem: (openItem: OpenItemType | undefined) =>
+      set({ openItem: openItem }),
+    // itemStatusMap: {} as Record<string, number>,
+    // setItemStatusMap: (id: string, status: number) =>
+    //   set(state => ({
+    //     statusMap: { ...state.itemStatusMap, [id]: status } // Add or update entry
+    //   }))
+    // setItemStatusMap: (
+    //   fn: (
+    //     prev: { id: string; status: number }[]
+    //   ) => { id: string; status: number }[]
+    // ) => {
+    //   set(state => ({ itemStatusMap: fn(state.itemStatusMap) }))
+    // }
+
+    doneItems: [],
+    setDoneItems: (fn: (prev: string[]) => string[]) => {
+      set(state => ({ doneItems: fn(state.doneItems) }))
+    },
+    revisitItems: [],
+    setRevisitItems: (fn: (prev: string[]) => string[]) => {
+      set(state => ({ revisitItems: fn(state.revisitItems) }))
+    }
   }))
 )
 
+export const useFilterTags = create<{
+  difficultyTag: 'EASY' | 'MED' | 'HARD' | undefined
+  setDifficultyTag: (tag: 'EASY' | 'MED' | 'HARD' | undefined) => void
+  filterTags: string[]
+  setFilterTags: (fn: (prev: string[]) => string[]) => void
+  hideTags: boolean
+  setHideTags: (fn: (hTags: boolean) => boolean) => void
+  // openNotes: NoteType[]
+  // setOpenNotes: (openNotes: NoteType[]) => void
+  // openReferences: ReferenceType[]
+  // setOpenReferences: (openReferences: ReferenceType[]) => void
+}>()(
+  immer(set => ({
+    difficultyTag: undefined,
+    setDifficultyTag: (tag: 'EASY' | 'MED' | 'HARD' | undefined) =>
+      set({ difficultyTag: tag }),
+    filterTags: [],
+    setFilterTags: (fn: (prev: string[]) => string[]) =>
+      set(state => ({ filterTags: fn(state.filterTags) })),
+    hideTags: false,
+    setHideTags: (fn: (hTags: boolean) => boolean) =>
+      set(state => ({ hideTags: fn(state.hideTags) }))
+  }))
+)
+// type ReactStyleStateSetter<T> = T | ((prev: T) => T)
 export const useNotes = create<{
   showDescription: boolean
   toggleShowDescription: () => void
@@ -172,12 +238,15 @@ export const useNotes = create<{
   toggleShowNotes: () => void
   showReferences: boolean
   toggleShowReferences: () => void
-  activeNotesTab: 'MyNotes' | 'Notes'
-  setActiveNotesTab: (activeNotesTab: 'MyNotes' | 'Notes') => void
+  activeNotesTab: 'MyNotes' | 'Description'
+  setActiveNotesTab: (activeNotesTab: 'MyNotes' | 'Description') => void
   activeNote: NoteType | undefined
   setActiveNote: (activeNote: NoteType | undefined) => void
+  activeNoteContent: JSONContent | undefined
+  setActiveNoteContent: (activeNote: JSONContent | undefined) => void
   openReferences: ReferenceType[]
-  setOpenReferences: (openReferences: ReferenceType[]) => void
+  // setOpenReferences: (fn: ReactStyleStateSetter<ReferenceType[]>) => void
+  setOpenReferences: (fn: (prev: ReferenceType[]) => ReferenceType[]) => void
 
   // showNotes: boolean
   // setShowNotes: (notesState: boolean) => void
@@ -197,14 +266,31 @@ export const useNotes = create<{
       set(state => ({ showReferences: !state.showReferences }))
     },
     activeNotesTab: 'MyNotes',
-    setActiveNotesTab: (activeNotesTab: 'MyNotes' | 'Notes') =>
+    setActiveNotesTab: (activeNotesTab: 'MyNotes' | 'Description') =>
       set({ activeNotesTab: activeNotesTab }),
     activeNote: undefined,
     setActiveNote: (activeNote: NoteType | undefined) =>
       set({ activeNote: activeNote }),
+    activeNoteContent: undefined,
+    setActiveNoteContent: (activeNoteContent: JSONContent | undefined) =>
+      set({ activeNoteContent: activeNoteContent }),
     openReferences: [],
-    setOpenReferences: (openReferences: ReferenceType[]) =>
-      set({ openReferences: openReferences })
+    setOpenReferences: (fn: (prev: ReferenceType[]) => ReferenceType[]) => {
+      set(state => ({ openReferences: fn(state.openReferences) }))
+    }
+    // setOpenReferences: (fn) => {
+    //   set(({ openReferences }) => {
+    //     // your type check equivalent here
+    //     if (isArray(fn)) {
+    //       const newArr = fn;
+    //       return { selectedImageIds: newArr };
+    //     }
+    //     const setterFn = fn;
+    //     return {
+    //       openReferences: setterFn(openReferences)
+    //     };
+    //   });
+    // }
     // showNotes: false,
     // setShowNotes: (notesState: boolean) => set({ showNotes: notesState }),
     // toggleShowNotes: () =>

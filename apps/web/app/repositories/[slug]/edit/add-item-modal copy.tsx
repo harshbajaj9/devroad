@@ -1,7 +1,11 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { cn } from '@/lib/utils'
+import { useEditRepository, useRepoStructure } from '@/store'
 import { api } from '@/trpc/react'
+import { ProblemData } from '@/typing'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { XCircleIcon } from '@heroicons/react/24/solid'
+import { $Enums } from '@repo/database'
 import {
   Button,
   Input,
@@ -12,63 +16,16 @@ import {
   RadioGroup,
   RadioGroupItem,
   ScrollArea,
-  Toast
-} from '@repo/ui'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@repo/ui/components/ui/select'
-import {
-  CustomTooltip,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-  TableCell,
-  TableRow,
+  Toast,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from '@repo/ui'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { ProblemData } from '@/typing'
-import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { getPlatformIcon } from './editable-node'
-import {
-  ArrowPathIcon,
-  ChevronDownIcon,
-  DocumentIcon,
-  EllipsisVerticalIcon
-} from '@heroicons/react/24/outline'
-import { XCircleIcon } from '@heroicons/react/24/solid'
-import { RepoStructureNode, useEditRepository, useRepoStructure } from '@/store'
-import SelectDirectoryModal from './select-directory-modal'
-import { ChevronRight, Folder, FolderOpen, Search, X } from 'lucide-react'
-import { $Enums } from '@prisma/client'
 import SectionPicker from './section-picker'
-import { Jost } from 'next/font/google'
 // export const allowedProblemSetTypes: any[] = ['PROBLEM', 'RESOURCE', 'CUSTOM']
 // export const createRepositoryItemProblemSchema = z.object({
 //   id: z.string().min(2).optional()
@@ -102,11 +59,6 @@ type Props = {
 }
 // export type ItemType = 'PROBLEM' | 'CUSTOM' | 'SECTION' | null
 export type ItemType = 'PROBLEM' | 'SECTION' | null
-
-const font2 = Jost({
-  weight: ['300', '400', '500', '600', '700', '800'],
-  subsets: ['latin']
-})
 
 const AddItemModal = ({
   // isOpen,
@@ -528,11 +480,9 @@ const AddItemModal = ({
                   itemSearchTerm &&
                   filteredProblems.length === 0 && (
                     <div className='m-1'>
-                      <p className={cn('text-sm', font2.className)}>
+                      <p className={cn('text-sm')}>
                         Not found?{' '}
-                        <span
-                          className={cn('text-sm underline', font2.className)}
-                        >
+                        <span className={cn('text-sm underline')}>
                           Add custom
                         </span>
                       </p>

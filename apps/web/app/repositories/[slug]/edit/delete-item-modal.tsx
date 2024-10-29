@@ -28,6 +28,7 @@ import { getPlatformIcon } from './editable-node'
 
 import { RepoStructureNode, useEditRepository, useRepoStructure } from '@/store'
 import SectionPicker from './section-picker'
+import { ProblemData } from '@/typing'
 export const allowedProblemSetTypes: any[] = ['PROBLEM', 'RESOURCE', 'CUSTOM']
 export const createRepositoryItemProblemSchema = z.object({
   id: z.string().min(2).optional()
@@ -45,27 +46,6 @@ const DeleteItemModal = ({ refetchData }: Props) => {
   const { setIsDeleteItemModalOpen } = useEditRepository()
   const utils = api.useUtils()
 
-  const { mutateAsync: createRepositoryItem } =
-    api.repositoryItem.create.useMutation({
-      // refetchOnWindowFocus: false,
-      onSuccess(createdCollection: { id: String }) {
-        // utils.repository.get.invalidate('lucky-you-cm11ct0ur0000egusctw514he')
-        utils.repository.get.invalidate()
-        setIsDeleteItemModalOpen(false)
-        Toast({ title: 'Item created', type: 'success' })
-
-        // router.push(`/repositories/${createdCollection.id}`)
-      },
-      onError(error: { message: any }) {
-        Toast({
-          type: 'error',
-          title: 'Error!',
-          message: error?.message || 'Something went wrong',
-          duration: 5000
-        })
-      }
-    })
-
   const { mutateAsync: deleteNode, isPending: isDeletePending } =
     api.repositoryItem.deleteNode.useMutation({
       onError: error => {
@@ -82,12 +62,9 @@ const DeleteItemModal = ({ refetchData }: Props) => {
         //   .filter(item => item.id !== deletedItemId)
         //   .map((item, i) => ({ ...item, order: i + 1 }))
         // setRepoKids(updated)
-
+        setIsDeleteItemModalOpen(false)
         utils.repository.get.invalidate()
-        Toast({
-          title: 'Deleted',
-          type: 'success'
-        })
+        Toast({ title: 'Item deleted', type: 'success' })
       },
       onMutate() {
         utils.repository.get.cancel()
@@ -121,7 +98,7 @@ const DeleteItemModal = ({ refetchData }: Props) => {
       <div className='border-gray fixed inset-0 left-[50%] top-[50%] z-50 m-4 flex h-fit -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-2xl border bg-background p-8'>
         <div>
           <h2 className='scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
-            Delete {deletionItem.title} ?
+            Remove {deletionItem.title} ?
           </h2>
         </div>
 

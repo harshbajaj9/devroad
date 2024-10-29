@@ -24,7 +24,7 @@ import {
   VideoCameraIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline'
-import { $Enums, RepositoryItemReferenceType } from '@prisma/client'
+import { $Enums, RepositoryItemReferenceType } from '@repo/database'
 import {
   Button,
   HoverCard,
@@ -54,8 +54,9 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import { Youtube, YoutubeIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useNotes, useRepository } from '@/store'
+import { ReferenceType, useNotes, useRepository } from '@/store'
 import { Jost, Poppins } from 'next/font/google'
+import { useSession } from 'next-auth/react'
 export const Reference = ({
   disableDnD,
   reference
@@ -77,26 +78,35 @@ export const Reference = ({
     transform: CSS.Translate.toString(transform)
     // cursor: isDragging || forceDragging ? 'grabbing' : 'grab',
   }
+  const { activeNotesTab } = useNotes()
   const forceDragging = true
 
+  const getRefUrl = url => {
+    if (!/^https?:\/\//i.test(url)) {
+      return `https://${url}`
+    }
+    return url
+  }
   return (
     <div
-      className='flex h-full max-w-80 items-center'
+      className='flex h-full max-w-80 items-center p-1'
       style={style}
       ref={setNodeRef}
     >
-      <div
-        style={{ cursor: isDragging || forceDragging ? 'grabbing' : 'grab' }}
-        ref={setActivatorNodeRef}
-        {...attributes}
-        {...listeners}
-      >
-        <EllipsisVerticalIcon className='size-5' />
-      </div>
+      {activeNotesTab === 'MyNotes' && (
+        <div
+          style={{ cursor: isDragging || forceDragging ? 'grabbing' : 'grab' }}
+          ref={setActivatorNodeRef}
+          {...attributes}
+          {...listeners}
+        >
+          <EllipsisVerticalIcon className='size-5' />
+        </div>
+      )}
       <div className=''>
         <div className='flex gap-2'>
-          <Link
-            href={reference?.link}
+          <a
+            href={getRefUrl(reference?.link)}
             target='_blank'
             rel='noopener noreferrer'
             className='flex items-center gap-2 hover:underline'
@@ -107,7 +117,7 @@ export const Reference = ({
               <DocumentIcon className='size-4' />
             )}
             {reference?.title}
-          </Link>
+          </a>
         </div>
       </div>
     </div>
@@ -153,7 +163,7 @@ export const ReferenceEdit = ({
       }
     })
   const { mutateAsync: deleteNoteReference } =
-    api.repositoryItem.deleteNoteReference.useMutation({
+    api.repositoryItem.deleteReference.useMutation({
       onError: error => {
         utils.repositoryItem.getReferences.invalidate()
         Toast({
@@ -408,9 +418,6 @@ export const ReferenceEdit = ({
   )
 }
 
-interface EditReferencesProps {
-  itemId: string
-}
 type refType = {
   id: string
   title: string
@@ -478,12 +485,31 @@ const font2 = Jost({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
 })
+interface EditReferencesProps {
+  itemId?: string
+}
 const EditReferences = ({ itemId }: EditReferencesProps) => {
   const { openItem, setOpenItem } = useRepository()
   const [disableDnD, setDisableDnD] = useState(false)
   if (!openItem) return
+  const { data: session, status, update } = useSession()
+
   const { data: referencesData, isLoading: isReferencesLoading } =
-    api.repositoryItem.getReferences.useQuery({
+    api.repositoryItem.getReferences.useQuery(
+      {
+        id: openItem.id as string,
+        referenceId: openItem.referenceId as string,
+        referenceType: openItem.referenceType as
+          | 'PROBLEM'
+          | 'CUSTOM_PROBLEM'
+          | 'SECTION'
+      },
+      {
+        enabled: !!session?.user.id
+      }
+    )
+  const { data: repoReferencesData, isLoading: isRepoReferencesLoading } =
+    api.repositoryItem.getRepositoryReferences.useQuery({
       id: openItem.id as string,
       referenceId: openItem.referenceId as string,
       referenceType: openItem.referenceType as
@@ -495,15 +521,30 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
     showReferences,
     toggleShowReferences,
     openReferences,
-    setOpenReferences
+    setOpenReferences,
+    activeNotesTab
   } = useNotes()
   const [editRefMode, setEditRefMode] = useState<boolean>(false)
   // const [references, setReferences] = useState<refType[]>([])
   useEffect(() => {
     console.log('refs changing', referencesData)
-    if (!isReferencesLoading && referencesData)
-      setOpenReferences(referencesData)
-  }, [referencesData])
+    if (
+      activeNotesTab === 'MyNotes' &&
+      !isReferencesLoading
+      // && referencesData
+    )
+      setOpenReferences(openReferences => {
+        return (referencesData ?? []) as ReferenceType[]
+      })
+    // if (
+    //   activeNotesTab === 'Notes' &&
+    //   !isRepoReferencesLoading
+    //   // && repoReferencesData
+    // )
+    //   setOpenReferences(openReferences => {
+    //     return (repoReferencesData ?? []) as ReferenceType[]
+    //   })
+  }, [referencesData, repoReferencesData, activeNotesTab])
 
   // useEffect(() => {
   //   return () => {
@@ -541,10 +582,11 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
     })
 
   // add reference to repo
-  const { mutateAsync: addNoteOrReference } =
-    api.repositoryItem.addNoteOrReference.useMutation({
+  const { mutateAsync: addReference } =
+    api.repositoryItem.addReference.useMutation({
       onError: error => {
         utils.repositoryItem.getReferences.invalidate()
+        utils.repositoryItem.getRepositoryReferences.invalidate()
         Toast({
           type: 'error',
           title: 'Error!',
@@ -554,24 +596,27 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       },
       onSuccess: () => {
         utils.repositoryItem.getReferences.invalidate()
+        utils.repositoryItem.getRepositoryReferences.invalidate()
         Toast({
-          title: '📃Reference Created😎',
+          title: '📃Reference Added😎',
           type: 'success'
           // message: 'success'
         })
       },
       onMutate() {
         utils.repositoryItem.getReferences.cancel()
+        utils.repositoryItem.getRepositoryReferences.cancel()
       }
     })
 
   const handleaddReference = (id: string) => {
-    addNoteOrReference({ repoItemId: openItem.id, id: id, type: 'REFERENCE' })
+    addReference({ repoItemId: openItem.id, id: id, type: 'REFERENCE' })
   }
-  const { mutateAsync: removeNoteOrReference } =
-    api.repositoryItem.removeNoteOrReference.useMutation({
+  const { mutateAsync: removeReference } =
+    api.repositoryItem.removeReference.useMutation({
       onError: error => {
-        utils.repository.get.invalidate()
+        utils.repositoryItem.getReferences.invalidate()
+        utils.repositoryItem.getRepositoryReferences.invalidate()
         Toast({
           type: 'error',
           title: 'Error!',
@@ -581,21 +626,23 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       },
       onSuccess: () => {
         utils.repositoryItem.getReferences.invalidate()
+        utils.repositoryItem.getRepositoryReferences.invalidate()
         Toast({
-          title: '📃Reference Created😎',
+          title: '📃Reference Removed😎',
           type: 'success'
           // message: 'success'
         })
       },
       onMutate() {
         utils.repositoryItem.getReferences.cancel()
+        utils.repositoryItem.getRepositoryReferences.cancel()
       }
     })
   const handleRemoveReference = (id: string) => {
-    removeNoteOrReference({
+    removeReference({
       repoItemId: openItem.id,
-      id: id,
-      type: 'REFERENCE'
+      id: id
+      // type: 'REFERENCE'
     })
   }
   const [activeRef, setActiveRef] = useState<{
@@ -649,9 +696,10 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
 
   // update reference order
   const { mutateAsync: updateNotesReferenceOrder } =
-    api.repositoryItem.updateNotesReferenceOrder.useMutation({
+    api.repositoryItem.updateReferenceOrder.useMutation({
       onError: error => {
-        utils.repositoryItem.getNotes.invalidate()
+        utils.repositoryItem.getReferences.invalidate()
+        utils.repositoryItem.getRepositoryReferences.invalidate()
         Toast({
           type: 'error',
           title: 'Error!',
@@ -661,7 +709,8 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         setDisableDnD(false)
       },
       onSuccess: () => {
-        utils.repositoryItem.getNotes.invalidate()
+        utils.repositoryItem.getReferences.invalidate()
+        utils.repositoryItem.getRepositoryReferences.invalidate()
         Toast({
           title: '📃Order updated😎',
           type: 'success'
@@ -670,7 +719,8 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         setDisableDnD(false)
       },
       onMutate() {
-        utils.repositoryItem.getNotes.cancel()
+        utils.repositoryItem.getReferences.cancel()
+        utils.repositoryItem.getRepositoryReferences.cancel()
         // setDisableDnD(false)
       }
     })
@@ -689,7 +739,9 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         const updated = openReferences
           .filter(item => item.id !== id)
           .map((item, i) => ({ ...item, order: i + 1 }))
-        setOpenReferences(updated)
+        setOpenReferences(openReferences => {
+          return updated
+        })
 
         utils.repository.get.invalidate()
         Toast({
@@ -735,7 +787,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       ...item,
       order: index + 1
     }))
-    setOpenReferences(openReferences => {
+    setOpenReferences((openReferences: ReferenceType[]) => {
       // const oldIndex = references?.findIndex(
       //   reference => reference.order === active.id
       // )
@@ -784,18 +836,16 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
   // if (!openReferences) {
   //   return
   // }
+  if (activeNotesTab === 'Description') {
+    return
+  }
   return (
-    <div className=''>
+    <div className='rounded-md border p-2 hover:shadow-md'>
       <div
-        className='mb-4 flex items-center justify-between'
+        className='flex items-center justify-between'
         onClick={() => toggleShowReferences()}
       >
-        <h3
-          className={cn(
-            'scroll-m-20 text-xl font-semibold tracking-tight',
-            font2.className
-          )}
-        >
+        <h3 className={cn('scroll-m-20 font-semibold tracking-tight')}>
           References
         </h3>
         {showReferences ? (
@@ -813,7 +863,19 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
               <Skeleton className='h-4 w-[200px]' />
             </div>
           )}
-          {showReferences &&
+          {/* {activeNotesTab === 'Notes' && showReferences && (
+            <div>
+              {openReferences?.map(refer => (
+                <Reference
+                  key={refer.id}
+                  reference={refer}
+                  disableDnD={disableDnD}
+                />
+              ))}
+            </div>
+          )} */}
+          {activeNotesTab === 'MyNotes' &&
+            showReferences &&
             !editRefMode &&
             openReferences &&
             openReferences.length > 0 && (
@@ -878,7 +940,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
               {activeRef ? <ReferenceEdit reference={activeRef} /> : null}
             </DragOverlay>
           </DndContextWithNoSSR> */}
-                    {openReferences.map(refer => (
+                    {openReferences?.map(refer => (
                       <ReferenceEdit
                         key={refer.id}
                         reference={refer}
@@ -963,17 +1025,20 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
             Done
           </Button>
         )}
-        {showReferences && !editRefMode && (
-          <Button
-            variant={'outline'}
-            onClick={() => {
-              // if (!showReferences) toggleShowReferences()
-              setEditRefMode(true)
-            }}
-          >
-            Edit
-          </Button>
-        )}
+        {activeNotesTab === 'MyNotes' &&
+          session &&
+          showReferences &&
+          !editRefMode && (
+            <Button
+              variant={'outline'}
+              onClick={() => {
+                // if (!showReferences) toggleShowReferences()
+                setEditRefMode(true)
+              }}
+            >
+              Edit
+            </Button>
+          )}
       </div>
     </div>
   )

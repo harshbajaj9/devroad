@@ -2,6 +2,7 @@
 import {
   RepoStructureNode,
   useEditRepository,
+  useFilterTags,
   useRepository,
   useRepoStructure
 } from '@/store'
@@ -21,7 +22,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline'
 
-import { $Enums, Repository, RepositoryItem } from '@prisma/client'
+import { $Enums, Repository, RepositoryItem } from '@repo/database'
 
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import { CSS } from '@dnd-kit/utilities'
@@ -76,7 +77,7 @@ import {
 import React, { useEffect, useMemo, useState } from 'react'
 import AddItemButtons from './add-item-button'
 import { api } from '@/trpc/react'
-import { cn } from '@/lib/utils'
+import { cn, getCountValues, getRepositoryTags } from '@/lib/utils'
 import Image from 'next/image'
 import {
   Bolt,
@@ -124,7 +125,11 @@ import MoveItemModal from './move-item-modal'
 import NotesAndReferences from './notes-and-references'
 import SectionDescriptionAndReferences from './section-desc-and-ref'
 import RepoDescriptionAndReferences from './repo-desc-and-ref'
-
+import { Jost } from 'next/font/google'
+const font2 = Jost({
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin']
+})
 interface EditRepositoryItemsProps {
   repository: Repository
 }
@@ -146,22 +151,36 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   // const handleSave = () => {
   //   setIsEditMode(false)
   // }
-  const { setRepositoryDetails } = useRepository()
+  const { setRepositoryDetails, setRepositoryTags } = useRepository()
+  const { repositoryTags } = useRepository()
+  const { openItem, setOpenItem } = useRepository()
+
+  const {
+    filterTags,
+    setFilterTags,
+    difficultyTag,
+    setDifficultyTag,
+    hideTags,
+    setHideTags
+  } = useFilterTags()
   // TODO: check this for touch
   const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor))
 
   const {
-    data: repoItems,
+    data: repoNode,
     isLoading,
     isSuccess
   } = api.repository.get.useQuery(repository.id)
-  // console.log('repoItems', repoItems)
-  const [repoKids, setRepoKids] = useState(repoItems?.children)
+  // console.log('repoNode', repoNode)
+  const [repoKids, setRepoKids] = useState(repoNode?.children)
   // console.log('repoKids', repoKids)
   useEffect(() => {
-    console.log('repoItems>>', repoItems, repoKids)
-    if (repoItems) setRepoKids(repoItems.children)
-  }, [repoItems])
+    // console.log('repoNode>>', repoNode, repoKids)
+    if (repoNode) {
+      setRepoKids(repoNode.children)
+      setRepositoryTags(getRepositoryTags(repoNode) ?? [])
+    }
+  }, [repoNode])
 
   useEffect(() => {
     setRepositoryDetails(repository)
@@ -183,6 +202,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
           message: error?.message || 'Something went wrong',
           duration: 2000
         })
+        setDisableDnD(false)
       },
       onSuccess: () => {
         utils.repository.get.invalidate()
@@ -191,6 +211,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
           type: 'success'
           // message: 'success'
         })
+        setDisableDnD(false)
       },
       onMutate() {
         utils.repository.get.cancel()
@@ -260,23 +281,26 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
 
   // const { setCurrentPath } = useRepoStructure()
   // useEffect(() => {
-  //   if (repoItems)
-  //     setCurrentPath([{ id: repoItems.id, title: repoItems.title }])
-  // }, [repoItems])
+  //   if (repoNode)
+  //     setCurrentPath([{ id: repoNode.id, title: repoNode.title }])
+  // }, [repoNode])
+  const [disableDnD, setDisableDnD] = useState(false)
 
   const repoKidsMemo = useMemo(() => {
     return repoKids?.map(repoKid => {
       return (
         <EditableNode
-          path={[{ id: repoItems.id, title: repoItems.title }]}
+          path={[{ id: repoNode.id, title: repoNode.title }]}
           // deleteItem={deleteItem}
           key={repoKid.id}
           nodeData={repoKid}
           updateOrder={updateOrder}
+          disableDnD={disableDnD}
+          setDisableDnD={setDisableDnD}
         />
       )
     })
-  }, [repoItems, repoKids, isSuccess])
+  }, [repoNode, repoKids, isSuccess])
 
   // const [openNotes, setOpenNotes] = useState(false)
   // const [openNotesId, setOpenNotesId] = useState<string | null | undefined>(
@@ -284,7 +308,6 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   // )
   // const { openNotes, setOpenNotes } = useEditRepository()
 
-  const { openItem, setOpenItem } = useRepository()
   // const openNotesAndResources = (id: string) => {
   //   setOpenNotes(true)
   //   setOpenItemId(id)
@@ -296,34 +319,47 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   }
 
   const { setRepoStructure, setCurrentPath } = useRepoStructure()
-  const getRepoStructure = (repoItems: any): RepoStructureNode => {
+  const getRepoStructure = (repoNode: any): RepoStructureNode => {
     const repoStructureSection: RepoStructureNode = {
-      id: repoItems.id,
-      title: repoItems.title
+      id: repoNode.id,
+      title: repoNode.title
     }
     repoStructureSection.childNodes = [] as RepoStructureNode[]
-    for (const repoItem of repoItems.children) {
+    for (const repoItem of repoNode.children) {
       if (repoItem.type === 'ITEM') continue
       repoStructureSection.childNodes.push(getRepoStructure(repoItem))
     }
     return repoStructureSection
   }
   useEffect(() => {
-    if (repoItems) {
-      const rs = getRepoStructure(repoItems)
+    if (repoNode) {
+      const rs = getRepoStructure(repoNode)
       console.log('rs', rs)
       setRepoStructure(rs)
     }
-  }, [repoItems])
+  }, [repoNode])
+  const { doneItems, revisitItems } = useRepository()
+  const [countValues, setCountValues] = useState<{
+    done: number
+    revisit: number
+    total: number
+  }>({ done: 0, revisit: 0, total: 0 })
+  useEffect(() => {
+    const { done, total, revisit } = getCountValues(
+      repoNode,
+      doneItems,
+      revisitItems
+    )
+    setCountValues({ done, revisit, total })
+  }, [revisitItems, doneItems])
 
   // --------------------------------
-  if (!repoItems) {
+  if (!repoNode) {
     return
   }
   const style = {
     color: isOver ? 'green' : undefined
   }
-
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event
     setActiveItem(repoKids?.find(repoKid => repoKid.order === active.id))
@@ -338,6 +374,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
     if (active && over && active.id === over.id) {
       return
     }
+    setDisableDnD(true)
     const oldIndex = repoKids.findIndex(repoKid => repoKid.order === active.id)
     const newIndex = repoKids.findIndex(repoKid => repoKid.order === over?.id)
     console.log(active.id, oldIndex, newIndex, over.id)
@@ -418,11 +455,110 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
 
   return (
     <>
+      <div
+        className={cn(
+          'relative h-2 overflow-hidden rounded-md',
+          (countValues.done > 0 || countValues.revisit > 0) && 'border shadow'
+        )}
+      >
+        <div
+          className='absolute top-0 flex h-full items-center justify-center bg-green-500'
+          style={{
+            width: `${(countValues.done / countValues.total) * 100}%`,
+            left: `0%`
+          }}
+        ></div>
+        <div
+          className='absolute top-0 flex h-full items-center justify-center bg-yellow-500'
+          style={{
+            width: `${(countValues.revisit / countValues.total) * 100}%`,
+            left: `${(countValues.done / countValues.total) * 100}%`
+          }}
+        ></div>
+      </div>
+      <div className='my-4 flex flex-wrap items-center gap-4 px-4'>
+        <Button
+          variant={'outline'}
+          className={cn(
+            'cursor-pointer rounded-full p-1 px-4 text-xs font-semibold'
+          )}
+          onClick={() => {
+            setHideTags(prev => !prev)
+          }}
+        >
+          {hideTags ? 'Show Tags' : 'Hide Tags'}
+        </Button>
+        {!hideTags && (
+          <div className='flex flex-wrap gap-2'>
+            <span
+              className={cn(
+                'cursor-pointer rounded-full p-1 px-2 text-xs font-semibold text-muted-foreground',
+                // ,
+                difficultyTag === 'EASY' && 'bg-foreground text-background'
+              )}
+              onClick={() => {
+                if (difficultyTag === 'EASY') setDifficultyTag(undefined)
+                else setDifficultyTag('EASY')
+              }}
+            >
+              EASY
+            </span>
+            <span
+              className={cn(
+                'cursor-pointer rounded-full p-1 px-2 text-xs font-semibold text-muted-foreground',
+                // ,
+                difficultyTag === 'MED' && 'bg-foreground text-background'
+              )}
+              onClick={() => {
+                if (difficultyTag === 'MED') setDifficultyTag(undefined)
+                else setDifficultyTag('MED')
+              }}
+            >
+              MEDIUM
+            </span>
+            <span
+              className={cn(
+                'cursor-pointer rounded-full p-1 px-2 text-xs font-semibold text-muted-foreground',
+                // ,
+                difficultyTag === 'HARD' && 'bg-foreground text-background'
+              )}
+              onClick={() => {
+                if (difficultyTag === 'HARD') setDifficultyTag(undefined)
+                else setDifficultyTag('HARD')
+              }}
+            >
+              HARD
+            </span>
+
+            {repositoryTags.map(tag => {
+              return (
+                <span
+                  className={cn(
+                    'cursor-pointer rounded-full p-1 px-2 text-xs font-semibold text-muted-foreground',
+                    // ,
+                    filterTags.includes(tag) && 'bg-foreground text-background'
+                  )}
+                  onClick={() => {
+                    console.log(filterTags)
+                    if (filterTags.includes(tag))
+                      setFilterTags(prev => prev.filter(ftag => ftag !== tag))
+                    else setFilterTags(prev => (prev ? [...prev, tag] : [tag]))
+                  }}
+                >
+                  {tag}
+                </span>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
       <div className='flex max-w-full pt-0'>
         <div
           className={cn(
             // 'min-w-[748px]',
-            'min-w-[50%]'
+            // 'min-w-[50%]'
+            'min-w-[40%]'
             // openItemId && 'min-w-[480px] 2xl:min-w-[640px]'
             // openItem && 'min-w-[640px]'
           )}
@@ -430,55 +566,18 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
           <div className='sticky left-0 top-0 z-10'>
             {/* <AddItemButtons
               setChildNodes={setRepoKids}
-              // path={[{ id: repoItems.id, title: repoItems.title }]}
+              // path={[{ id: repoNode.id, title: repoNode.title }]}
               // childNodes={repoKids}
               // parentType={'REPOSITORY'}
               // parentName={repository.title}
               // pparentType={'NONE'}
-              // parentId={repoItems.id}
+              // parentId={repoNode.id}
             /> */}
-            <div className='flex justify-start'>
-              {/* <Button
-                  variant={'bg'}
-                  className={cn(
-                    'flex flex-1 rounded-none'
-                  )}
-                  onClick={e => {
-                    e.stopPropagation()
-                    setCurrentPath([
-                      { id: repoItems.id, title: repoItems.title }
-                    ])
-                    setIsCreateItemModalOpen(true)
-                  }}
-                >
-                  <PlusIcon className='size-5' />
-                  Add
-                </Button> */}
-              {/* <Button
-                // disabled={isPending}
-                // variant={'tint'}
-                variant={'bg'}
-                className={cn(
-                  'group flex rounded-l-none'
-                  // 'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
-                )}
-                // onClick={() => handlecreateRepositoryItem('ITEM')}
-                onClick={e => {
-                  e.stopPropagation()
-                  setCurrentPath([{ id: repoItems.id, title: repoItems.title }])
-                  setIsCreateItemModalOpen(true)
-                }}
-              >
-                <PlusIcon className='size-5' />
-                <span className='hidden duration-200 group-hover:inline-block'>
-                  Add
-                </span>
-              </Button> */}
-            </div>
+
             {isCreateItemModalOpen && <AddItemModal />}
             {isDeleteItemModalOpen && (
               <DeleteItemModal
-              // path={[{ id: repoItems.id, title: repoItems.title }]}
+              // path={[{ id: repoNode.id, title: repoNode.title }]}
               // isOpen={isDeleteItemModalOpen}
               // onClose={() => {
               //   setIsDeleteItemModalOpen(false)
@@ -512,11 +611,14 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
                   {repoKids?.map(repoKid => {
                     return (
                       <EditableNode
-                        path={[{ id: repoItems.id, title: repoItems.title }]}
+                        isOwner={true}
+                        path={[{ id: repoNode.id, title: repoNode.title }]}
                         // deleteItem={deleteItem}
                         key={repoKid.id}
                         nodeData={repoKid}
                         updateOrder={updateOrder}
+                        disableDnD={disableDnD}
+                        setDisableDnD={setDisableDnD}
                       />
                     )
                   })}
@@ -526,21 +628,58 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
               <DragOverlay style={{ transformOrigin: '0 0 ' }}>
                 {activeItem ? (
                   <EditableNode
-                    path={[{ id: repoItems.id, title: repoItems.title }]}
+                    path={[{ id: repoNode.id, title: repoNode.title }]}
+                    isOwner={true}
                     // deleteItem={deleteItem}
                     updateOrder={updateOrder}
                     nodeData={activeItem}
                     // removeItem={removeItem}
                     forceDragging={true}
+                    disableDnD={disableDnD}
+                    setDisableDnD={setDisableDnD}
                   />
                 ) : null}
               </DragOverlay>
             </DndContextWithNoSSR>
           )}
+          <div className='my-2 mr-2 flex justify-start'>
+            <Button
+              variant={'bg'}
+              className={cn('flex flex-1 rounded-lg')}
+              onClick={e => {
+                e.stopPropagation()
+                setCurrentPath([{ id: repoNode.id, title: repoNode.title }])
+                setIsCreateItemModalOpen(true)
+              }}
+            >
+              <PlusIcon className='size-5' />
+              Add
+            </Button>
+            {/* <Button
+              // disabled={isPending}
+              // variant={'tint'}
+              variant={'bg'}
+              className={cn(
+                'group flex rounded-l-none'
+                // 'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
+              )}
+              // onClick={() => handlecreateRepositoryItem('ITEM')}
+              onClick={e => {
+                e.stopPropagation()
+                setCurrentPath([{ id: repoNode.id, title: repoNode.title }])
+                setIsCreateItemModalOpen(true)
+              }}
+            >
+              <PlusIcon className='size-5' />
+              <span className='hidden duration-200 group-hover:inline-block'>
+                Add
+              </span>
+            </Button> */}
+          </div>
         </div>
         {openItem?.type === 'ITEM' && (
           <>
-            <NotesAndReferences />
+            <NotesAndReferences isOwner={true} />
             {/* <div className='sticky top-0 h-screen flex-1 border-l'>
               <div className='absolute right-4 top-8 z-10'>
                 <XMarkIcon
@@ -561,12 +700,12 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
         )}
         {!openItem && (
           <>
-            <RepoDescriptionAndReferences />
+            <RepoDescriptionAndReferences isOwner={true} />
           </>
         )}
         {openItem?.type === 'SECTION' && (
           <>
-            <SectionDescriptionAndReferences />
+            <SectionDescriptionAndReferences isOwner={true} />
           </>
         )}
       </div>
@@ -617,7 +756,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
                   parentType={'REPOSITORY'}
                   parentName={repository.title}
                   pparentType={'NONE'}
-                  parentId={repoItems.id}
+                  parentId={repoNode.id}
                 />
               </div>
             </ScrollArea>

@@ -1,48 +1,33 @@
-import { prisma } from '@/lib/db'
-import {
-  CalendarDaysIcon,
-  QuestionMarkCircleIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline'
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Badge,
-  Button,
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-  Input,
-  Label,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Textarea
-} from '@repo/ui'
-import CollectionItems from './repo-items'
 import { auth } from '@/auth'
-import EditCollectionButton from '../edit-repo-button'
+import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
-import RepositoryHeader from './repo-header'
-import RepositoryItems from './repo-items'
 import EditRepositoryHeader from './edit/edit-repo-header'
 import EditRepositoryItems from './edit/edit-repo-items'
+import RepositoryHeader from './repo-header'
+import RepositoryItems from './repo-items'
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const repository = await prisma.repository.findFirst({
-    where: { id: params.slug }
+    where: {
+      id: params.slug
+      // OR: [
+      //   { visibility: $Enums.RepositoryVisibilityMode.SHARED },
+      //   { visibility: $Enums.RepositoryVisibilityMode.DISCOVERABLE }
+      // ]
+    }
   })
+  if (!repository) notFound()
+  const session = await auth()
+  const isOwner = session?.user.id === repository.creatorId
+  if (repository.visibility === 'PRIVATE' && !isOwner) notFound()
   if (!repository) notFound()
   // const user = await prisma.user.findFirst({
   //   where: { id: repositorycreatorId }
   // })
 
-  const session = await auth()
-  const isOwner = session?.user.id === repository.creatorId
   return (
     <main
-      className='bg-backgroundalt p-16'
+      className='bg-backgroundalt p-16 pt-8'
       // className='bg-transparent bg-[linear-gradient(180deg,#FFFFFF_0%,#F0EBE3_100%)] p-8 dark:bg-[linear-gradient(0deg,#31363c_0%,#222831_100%)]'
     >
       {isOwner ? (
@@ -51,39 +36,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
           <EditRepositoryItems repository={repository} />
         </>
       ) : (
-        // {/* <CollectionItems /> */}
-        // {/* <div className='h-96 w-full'>
-        //   <div
-        //     role='button'
-        //     tabindex='0'
-        //     className='button-dQdc svReaderFullscreenButton'
-        //     data-variant='default'
-        //     data-accent='default'
-        //     data-size='default'
-        //     href=''
-        //     title='Fullscreen'
-        //     fdprocessedid='vvvz2t'
-        //   >
-        //     <span className='icon-VKRw' data-size='' data-enlarge=''>
-        //       <svg>
-        //         <use xlink:href='#fullscreen'></use>
-        //         </svg>
-        //     </span>
-        //   </div>
-        //   <iframe
-        //     plugins='true'
-        //     allow='fullscreen; clipboard-write'
-        //     loading='eager'
-        //     tabindex='-1'
-        //     className='iframe-dQQP webView-MyQq fullscreen h-screen w-full'
-        //     src='https://neetcode.io/problems/duplicate-integer'
-        //   ></iframe>
-        // </div> */}
         <>
           <RepositoryHeader repository={repository} />
-          {/* <div className='border-b-2'></div> */}
+          <RepositoryItems repository={repository} />
+          {/* <div className='border-b-2'></div>
           <div className='flex gap-4 border-y-2 px-8'>
-            <RepositoryItems repository={repository} />
             <div className='sticky top-0 flex h-screen flex-1 flex-col border-l p-8 py-16'>
               <div className='absolute right-0 top-8'>
                 <XMarkIcon className='size-6' />
@@ -100,7 +57,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </main>

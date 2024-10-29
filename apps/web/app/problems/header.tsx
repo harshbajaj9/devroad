@@ -1,23 +1,9 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
 import SearchInput from './search-input'
 // import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@repo/ui'
-import { FancyMultiSelect } from './fancy-multi-select'
-import { TagSelectionPopover } from './tag-selection-popover'
-import PlatformSelect from './platform-select'
 import { useProblemSearchFilter } from '@/store'
-import MultiSelectDropdown from './platform-select2'
 import CategorySelect from './category-select'
+import PlatformSelect from './platform-select'
 
 function Header({
   activeTab = 'all',
@@ -166,6 +152,7 @@ function Header({
       </div> */}
       <div className='flex w-full items-start justify-end gap-6'>
         <SearchInput
+          placeholder={'Select inputs...'}
           onSearchChange={onSearchChange}
           searchQuery={searchQuery}
         />

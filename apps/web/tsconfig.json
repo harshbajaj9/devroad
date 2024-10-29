@@ -5,15 +5,28 @@
     "strictNullChecks": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
-    "target": "ES2018",
+    // https://github.com/steven-tey/novel/blob/main/examples/novel-tailwind/tsconfig.json
+    "moduleResolution": "bundler",
+    // "resolveJsonModule": true,
+    // "esModuleInterop": true,
+    // "preserveSymlinks": true,
+    // "allowJs": true,
+    // "skipLibCheck": true,
+    // "noEmit": true,
+    // "isolatedModules": true,
+    // "jsx": "preserve",
+    // "incremental": true,
+    // "target": "ES2018",
     "plugins": [{ "name": "next" }],
     // baseUrl and paths to configure the @ default import
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
-    // "declaration": false,
-    // "declarationMap": false
+    },
+    "types": ["node"],
+    // some compilation issue in middelware https://github.com/nextauthjs/next-auth/discussions/9950
+    "declaration": false,
+    "declarationMap": false
   },
   "include": [
     "next-env.d.ts",

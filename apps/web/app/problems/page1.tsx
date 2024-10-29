@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { prisma } from '@/lib/db'
-import { $Enums } from '@prisma/client'
+import { $Enums } from '@repo/database'
 import {
   Button,
   Table,

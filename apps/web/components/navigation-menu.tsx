@@ -101,27 +101,27 @@ const questionComponents: {
   }
 ]
 
-const learnSubMenuItems: {
+const solveSubMenuItems: {
   title: string
   icon: any
   href: string
   description: string
 }[] = [
-  {
-    title: 'Problem Sets',
-    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    // href: '/repositories?type=ps',
-    href: '/repositories',
-    description: 'Explore problem sets and get better at solving them.'
-  },
-  {
-    title: 'Collections',
-    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    // href: '/repositories?type=cs',
-    href: '/repositories',
-    description:
-      'Make the most out of collections, extensible sets of resources created by the community.'
-  },
+  // {
+  //   title: 'Problem Sets',
+  //   icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+  //   // href: '/repositories?type=ps',
+  //   href: '/problem-sets',
+  //   description: 'Explore problem sets and get better at solving them.'
+  // },
+  // {
+  //   title: 'Collections',
+  //   icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+  //   // href: '/repositories?type=cs',
+  //   href: '/repositories',
+  //   description:
+  //     'Make the most out of collections, extensible sets of resources created by the community.'
+  // },
   // {
   //   title: 'Road Maps',
   //   icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
@@ -134,16 +134,16 @@ const learnSubMenuItems: {
     title: 'DSA Problem Sets',
     icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
     // href: '/repositories?type=ps',
-    href: '/repositories',
+    href: '/problemsets?cat=algorithms&sort=popular',
     description: 'Find all problem sets on Data Structures and Algorithms.'
   },
-  {
-    title: 'Resources',
-    icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
-    href: '/resources',
-    description:
-      'Get exposed to blogs, youtube channels, courses, websites etc.'
-  },
+  // {
+  //   title: 'Resources',
+  //   icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
+  //   href: '/resources',
+  //   description:
+  //     'Get exposed to blogs, youtube channels, courses, websites etc.'
+  // },
   {
     title: 'Problems',
     icon: <ClipboardDocumentListIcon className='size-5 text-primary' />,
@@ -173,7 +173,6 @@ export function NavigationMenuDemo() {
       <NavigationMenu>
         <NavigationMenuList>
           {/* <div className={cn('mx-4 py-4 drop-shadow-md')}> */}
-
           <NavigationMenuItem className='mx-4 flex cursor-pointer gap-2 py-4 drop-shadow-md'>
             <Link
               href={`${process.env.NEXT_URL || '/'}`}
@@ -201,12 +200,9 @@ export function NavigationMenuDemo() {
               /> */}
                 <div
                   className={cn(
-                    'pt-[2px] align-bottom text-2xl font-bold text-foreground',
-                    // font.className,
-                    font2.className
+                    'align-bottom text-2xl font-bold text-foreground'
                   )}
                 >
-                  {/* dev<span className='font-light'>road</span>.io */}
                   devroad
                 </div>
               </NavigationMenuLink>
@@ -219,7 +215,7 @@ export function NavigationMenuDemo() {
                 className={cn(
                   navigationMenuTriggerStyle(),
                   'cursor-pointer text-sm font-semibold text-foreground/80',
-                  font2.className
+                  
                 )}
               >
                 Problem Sets
@@ -232,28 +228,28 @@ export function NavigationMenuDemo() {
                 className={cn(
                   navigationMenuTriggerStyle(),
                   'cursor-pointer text-sm font-semibold text-foreground/80',
-                  font2.className
+                  
                 )}
               >
                 Problems
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem> */}
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
                 navigationMenuTriggerStyle(),
                 'cursor-pointer text-sm font-semibold text-foreground/80',
-                font2.className
+                
               )}
             >
-              Learn
+              Solve
             </NavigationMenuTrigger>
             <NavigationMenuContent
               className={cn(navigationMenuContentStyle(), 'left-0')}
             >
               <ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]'>
-                {learnSubMenuItems.map(component => (
+                {solveSubMenuItems.map(component => (
                   <ListItem
                     icon={component.icon}
                     key={component.title}
@@ -264,7 +260,7 @@ export function NavigationMenuDemo() {
                   </ListItem>
                 ))}
               </ul>
-              {/* <Link
+              <Link
                 // className='w-full border-t'
                 href='/problem-sets'
                 legacyBehavior
@@ -274,21 +270,36 @@ export function NavigationMenuDemo() {
                   className={cn(
                     navigationMenuTriggerStyle(),
                     'w-full cursor-pointer border-t text-sm font-semibold text-foreground/80',
-                    font2.className
+                    
                   )}
                 >
                   Browse All Resources
                 </NavigationMenuLink>
-              </Link> */}
+              </Link>
             </NavigationMenuContent>
+          </NavigationMenuItem> */}
+          <NavigationMenuItem>
+            <Link
+              href='/problemsets?cat=algorithms&sort=popular'
+              legacyBehavior
+              passHref
+            >
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  'cursor-pointer text-sm font-semibold text-foreground/80'
+                )}
+              >
+                DSA Problem Sets
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
-
           {/* <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
                 navigationMenuTriggerStyle(),
                 'cursor-pointer text-sm font-semibold text-foreground/80',
-                font2.className
+                
               )}
             >
               Explore
@@ -326,13 +337,12 @@ export function NavigationMenuDemo() {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem> */}
-
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
                 navigationMenuTriggerStyle(),
                 'cursor-pointer text-sm font-semibold text-foreground/80',
-                font2.className
+                
               )}
             >
               Job hunt
@@ -350,7 +360,7 @@ export function NavigationMenuDemo() {
                       <div
                         className={cn(
                           'mb-2 mt-4 text-lg font-medium',
-                          font2.className
+                          
                         )}
                       >
                         Jobs archive
@@ -358,7 +368,7 @@ export function NavigationMenuDemo() {
                       <p
                         className={cn(
                           'text-sm leading-tight text-muted-foreground',
-                          font2.className
+                          
                         )}
                       >
                         Collected from various sources across internet, stay
@@ -394,14 +404,13 @@ export function NavigationMenuDemo() {
                 </ListItem>
               </ul>
             </NavigationMenuContent>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
+          </NavigationMenuItem> */}
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
                 navigationMenuTriggerStyle(),
                 'cursor-pointer text-sm font-semibold text-foreground/80',
-                font2.className
+                
               )}
             >
               Questions
@@ -417,7 +426,7 @@ export function NavigationMenuDemo() {
                     title={component.title}
                     href={component.href}
                   >
-                    {/* {component.description} */}
+                    {component.description}
                   </ListItem>
                 ))}
               </ul>
@@ -431,14 +440,14 @@ export function NavigationMenuDemo() {
                   className={cn(
                     navigationMenuTriggerStyle(),
                     'h-12 w-full cursor-pointer border-t text-sm font-semibold text-foreground/80 hover:text-primary',
-                    font2.className
+                    
                   )}
                 >
                   Browse All Questions
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuContent>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
           {/* <NavigationMenuItem>
           <Link href='/docs' legacyBehavior passHref>
             <NavigationMenuLink
@@ -455,11 +464,11 @@ export function NavigationMenuDemo() {
         </NavigationMenuList>
       </NavigationMenu>
       <div className='flex items-center gap-4'>
-        {/* <div>
+        <div>
           <Button className='w-24' onClick={() => handleParser()}>
             Parser
           </Button>
-        </div> */}
+        </div>
         <div>
           <ModeToggle />
         </div>
@@ -523,9 +532,8 @@ const ListItem = React.forwardRef<
           <div
             // className='text-sm font-medium leading-none'
             className={cn(
-              'flex gap-2 text-sm font-semibold text-foreground/70',
+              'flex gap-2 text-sm font-semibold text-foreground/70'
               // 'flex gap-2 text-sm font-semibold text-muted-foreground',
-              font2.className
             )}
           >
             <span>{icon}</span>

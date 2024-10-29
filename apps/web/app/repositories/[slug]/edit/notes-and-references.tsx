@@ -1,12 +1,24 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import EditNotes from './edit-notes'
 import EditReferences from './edit-references'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ScrollArea, Tabs, TabsList, TabsTrigger } from '@repo/ui'
+import EditItemTags from './edit-item-tags'
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  Button,
+  Input,
+  ScrollArea,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  Toast
+} from '@repo/ui'
 import { useNotes, useRepository } from '@/store'
 import { cn } from '@/lib/utils'
 import EditDescription from './edit-description'
 import { Jost, Poppins } from 'next/font/google'
+import { api } from '@/trpc/react'
+import { useSession } from 'next-auth/react'
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
@@ -15,12 +27,72 @@ const font2 = Jost({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
 })
-const NotesAndReferences = () => {
+const NotesAndReferences = ({ isOwner = false }: { isOwner?: boolean }) => {
   const { openItem, setOpenItem } = useRepository()
   const { activeNotesTab, setActiveNotesTab } = useNotes()
-  const onTabChange = value => {
-    setActiveNotesTab(value)
-  }
+
+  const [customItemTitle, setCustomItemTitle] = useState<string | null>('')
+  const [debouncedCustomItemTitle, setDebouncedCustomItemTitle] = useState<
+    string | null
+  >('')
+  useEffect(() => {
+    if (openItem && openItem.referenceType === 'CUSTOM_PROBLEM') {
+      setCustomItemTitle(openItem.customProblem.title)
+      setDebouncedCustomItemTitle(openItem.customProblem.title)
+    }
+  }, [openItem])
+
+  useEffect(() => {
+    if (customItemTitle != debouncedCustomItemTitle) {
+      const timerId = setTimeout(() => {
+        // setPage(1)
+        setDebouncedCustomItemTitle(customItemTitle)
+      }, 1000)
+      return () => clearTimeout(timerId)
+    }
+  }, [customItemTitle])
+  // const { data: searchProblemsData, isLoading: isSearchResultLoading } =
+  //   api.repositoryItem.updateTitle.useMutation({
+  //     // refetchOnWindowFocus: false,
+  //     onSuccess(createdItem: any) {
+  //       Toast({ title: 'Created', type: 'success' })
+
+  //       // TODO:refresh and invalidate the useQuery for get Repo Items
+  //     },
+  //     onError(error: { message: any }) {
+  //       Toast({
+  //         type: 'error',
+  //         title: 'Error!',
+  //         message: error?.message || 'Something went wrong',
+  //         duration: 5000
+  //       })
+  //     }
+  //   })
+  // useEffect(() => {
+  //   if (debouncedCustomItemTitle) {
+  //     setFilteredProblems(searchProblemsData?.problems || [])
+  //   }
+  // }, [debouncedCustomItemTitle, searchProblemsData])
+  // const { data: session, status, update } = useSession()
+
+  // const {
+  //   data: userData,
+  //   isLoading: isNotesLoading,
+  //   refetch: refetchNotes
+  // } = api.repositoryItem.getOrCreateUserData.useQuery(
+  //   {
+  //     referenceId: openItem.referenceId as string
+  //   },
+  //   {
+  //     enabled: !!session?.user.id && openItem !== undefined
+  //   }
+  // )
+  // useEffect(() => {
+  //   console.log('openItem,userData', openItem, userData, userData?.note)
+  //   refetchNotes()
+  //   // setEditorInitValue(userData?.note)
+  //   // editor?.commands.setContent(userData?.note)
+  // }, [openItem])
   if (!openItem) return
   return (
     <div
@@ -30,27 +102,49 @@ const NotesAndReferences = () => {
         className={cn(
           'overflow-hidden rounded-md border bg-background',
           'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
-          // 'bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]'
+          // 'bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] dark:bg-none'
         )}
       >
         {/* <div className='absolute right-4 top-8 z-10'>
         <XMarkIcon className='size-6' onClick={() => setOpenItem(undefined)} />
       </div> */}
-        <ScrollArea className='flex h-screen max-h-[1920px] flex-col py-0'>
+        <ScrollArea className='flex h-screen max-h-[1920px] flex-col py-0 pb-2'>
           <div
             className={cn(
               'sticky top-0 z-10 flex items-center justify-between border-b bg-background px-8 pb-4 pt-4'
               // 'bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]'
             )}
           >
-            <h2
+            {isOwner &&
+            (openItem.referenceType === 'CUSTOM_PROBLEM' ||
+              openItem.referenceType === 'CUSTOM') ? (
+              <Input
+                // className='scroll-m-20 text-2xl font-semibold tracking-tight'
+                className={cn(
+                  'scroll-m-20 rounded-none border-2 border-transparent bg-transparent text-xl font-semibold tracking-tight text-foreground focus-visible:border-b-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0'
+                )}
+                value={openItem.customProblem?.title}
+                // onChange={e => setTitle(e.target.value)}
+              />
+            ) : (
+              <h2
+                className={cn(
+                  'scroll-m-20 text-xl font-semibold tracking-tight'
+                )}
+              >
+                {openItem.problem?.title
+                  ? openItem.problem?.title
+                  : openItem.customProblem?.title}
+              </h2>
+            )}
+            {/* <h2
               className={cn(
                 'scroll-m-20 text-xl font-semibold tracking-tight',
-                font2.className
+                
               )}
             >
               {openItem.problem.title}
-            </h2>
+            </h2> */}
             <XMarkIcon
               className='size-6'
               onClick={() => setOpenItem(undefined)}
@@ -58,39 +152,49 @@ const NotesAndReferences = () => {
           </div>
 
           <div className='flex flex-col gap-4 px-8 pt-4'>
-            <EditDescription />
-
-            <div className='flex'>
+            {/* <EditItemTags /> */}
+            <div className='flex w-full'>
               <Tabs
                 defaultValue='MyNotes'
-                className='w-[400px]'
+                className='w-full'
                 value={activeNotesTab}
-                onValueChange={onTabChange}
+                onValueChange={value =>
+                  setActiveNotesTab(value as 'Description' | 'MyNotes')
+                }
               >
                 <TabsList className='grid w-full grid-cols-2'>
+                  <TabsTrigger
+                    value='Description'
+                    // className='border border-transparent data-[state=active]:border-input'
+                    className={cn(
+                      'outline outline-1 outline-transparent data-[state=active]:outline-input'
+                    )}
+                    // className='data-[state=active]:bg-foreground data-[state=active]:text-background'
+                  >
+                    Description
+                  </TabsTrigger>
                   <TabsTrigger
                     value='MyNotes'
                     // className='border border-transparent data-[state=active]:border-input'
                     className={cn(
-                      'outline outline-1 outline-transparent data-[state=active]:outline-input',
-                      font2.className
+                      'outline outline-1 outline-transparent data-[state=active]:outline-input'
                     )}
                     // className='data-[state=active]:bg-foreground data-[state=active]:text-background'
                   >
                     My Notes
                   </TabsTrigger>
-                  <TabsTrigger
+                  {/* <TabsTrigger
                     value='Notes'
                     // className='border border-transparent data-[state=active]:border-input'
                     className={cn(
                       'outline outline-1 outline-transparent data-[state=active]:outline-input',
-                      font2.className
+                      
                     )}
 
                     // className='data-[state=active]:bg-foreground data-[state=active]:text-background'
                   >
-                    Notes
-                  </TabsTrigger>
+                    Repository Notes
+                  </TabsTrigger> */}
                 </TabsList>
               </Tabs>
               {/* <div
@@ -119,9 +223,10 @@ const NotesAndReferences = () => {
               {/* <div className='flex-1 border-b'></div> */}
             </div>
             {/* <div className='min-h-20'>{activeItem?.id}</div> */}
+            <EditDescription />
+            <EditReferences />
+            <EditNotes />
 
-            <EditReferences itemId={openItem.id} />
-            <EditNotes itemId={openItem.id} />
             {/* <div className='mt-8 flex-1'>
                 <Textarea
                   className='h-full min-h-96 resize-none'
