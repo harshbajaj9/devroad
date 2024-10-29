@@ -63,7 +63,7 @@ const CompanySelectFilterOption = ({
           {DefaultCompanies.map(company => (
             <DropdownMenuItem
               key={company.id}
-              onClick={() => setSelectedCompany(company)}
+              onClick={() => setSelectedCompany(company.id)}
             >
               {company.value}
             </DropdownMenuItem>
