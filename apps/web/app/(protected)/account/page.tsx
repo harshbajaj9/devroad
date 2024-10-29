@@ -59,12 +59,12 @@ const page = async () => {
             /> */}
           <div className='flex gap-8 rounded-lg border bg-background p-8'>
             <div className='h-20 w-20 overflow-hidden rounded-full'>
-              {session.user?.image ? (
+              {session?.user?.image ? (
                 <Image
                   // className={styles.logo}
                   className='h-20 w-20'
-                  src={session.user?.image}
-                  alt={session.user?.name}
+                  src={session?.user?.image}
+                  alt={session?.user?.name}
                   width={100}
                   height={100}
                   priority
@@ -76,12 +76,12 @@ const page = async () => {
             <div className='flex flex-col gap-2'>
               <div>
                 <h3 className='scroll-m-20 text-2xl font-semibold tracking-tight'>
-                  {session.user?.name}
+                  {session?.user?.name}
                 </h3>
               </div>
               <div>
                 <h4 className='scroll-m-20 text-xl font-semibold tracking-tight text-muted-foreground'>
-                  {session.user?.email}
+                  {session?.user?.email}
                 </h4>
               </div>
             </div>
