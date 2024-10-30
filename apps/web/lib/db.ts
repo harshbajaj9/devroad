@@ -9,7 +9,7 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
 export const prisma = globalForPrisma.prisma || new PrismaClient()
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (process.env.VERCEL_ENV !== 'production') globalForPrisma.prisma = prisma
 
 // https://github.com/prisma/accelerate-speed-test/blob/main/lib/prisma.ts
 
@@ -19,4 +19,4 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 // export const prisma = globalForPrisma.prisma || new PrismaClient();
 
-// if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// if (process.env.VERCEL_ENV !== "production") globalForPrisma.prisma = prisma;

@@ -420,6 +420,7 @@ const EditNotes = () => {
         updateItemNote({
           referenceId: openItem?.referenceId,
           referenceType: openItem?.referenceType as
+            | 'SECTION'
             | 'PROBLEM'
             | 'CUSTOM_PROBLEM',
           content: json
