@@ -1,4 +1,4 @@
-import { Repository, RepositoryItem } from '@repo/database'
+import { CustomItem, Problem, Repository, RepositoryItem } from '@repo/database'
 import { type ClassValue, clsx } from 'clsx'
 import { ReadonlyURLSearchParams } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
@@ -6,8 +6,21 @@ import { twMerge } from 'tailwind-merge'
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-type NodeType = (RepositoryItem | Repository) & {
+export type NodeType = (RepositoryItem | Repository) & {
   children?: NodeType[] | undefined
+  depth?: number
+  problem?: Problem
+  customProblem?: CustomItem
+}
+
+export type ItemNodeType = RepositoryItem & {
+  children?: ItemNodeType[] | undefined
+  depth?: number
+  problem?: Problem
+  customProblem?: CustomItem
+  // Below 2 attributes are not part of actual data, but are sent during the api call to get all items
+  lastStatus?: number
+  tags?: string[]
 }
 
 export const getCountValues = (

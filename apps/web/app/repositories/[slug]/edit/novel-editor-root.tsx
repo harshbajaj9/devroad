@@ -7,7 +7,7 @@ import { TextButtons } from '@/lib/components/text-buttons'
 import { defaultExtensions } from '@/lib/extensions'
 import { useNotes, useRepository } from '@/store'
 import { api } from '@/trpc/react'
-import { Separator } from '@repo/ui'
+import { Separator, Toast } from '@repo/ui'
 import { useSession } from 'next-auth/react'
 import {
   EditorBubble,
@@ -59,10 +59,10 @@ const NovelEditorRoot = ({
   //       enabled: !!session?.user.id
   //     }
   //   )
-  const { editor } = useEditor()
-  useEffect(() => {
-    editor?.commands.setContent(userData?.note)
-  }, [initContent])
+  // const { editor } = useEditor()
+  // useEffect(() => {
+  //   editor?.commands.setContent(userData?.note)
+  // }, [initContent])
   // useEffect(() => {
   //   console.log('userData', userData, userData?.note)
   //   // setEditorInitValue(userData?.note)
@@ -112,8 +112,11 @@ const NovelEditorRoot = ({
       const json = editor.getJSON()
       console.log(json, openItem)
       updateItemNote({
-        referenceId: openItem.referenceId,
-        referenceType: openItem.referenceType,
+        referenceId: openItem.referenceId as string,
+        referenceType: openItem.referenceType as
+          | 'SECTION'
+          | 'PROBLEM'
+          | 'CUSTOM_PROBLEM',
         content: json
       })
       setEditorSavedStatus(true)

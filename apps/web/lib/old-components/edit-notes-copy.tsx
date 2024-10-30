@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 import { cn } from '@/lib/utils'
 import { api } from '@/trpc/react'
@@ -44,8 +45,8 @@ import {
 } from '@repo/ui'
 import { ChevronDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import EditNote from './edit-note'
-import { DndContextWithNoSSR } from './edit-repo-items'
+// import EditNote from './edit-note'
+import { DndContextWithNoSSR } from '../../app/repositories/[slug]/edit/edit-repo-items'
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -119,13 +120,10 @@ import {
 // ]
 import { defaultExtensions } from '@/lib/extensions'
 
-import {
-  slashCommand,
-  suggestionItems
-} from '../../../../lib/components/slash-command'
-import { LinkSelector } from '../../../../lib/components/link-selector'
-import { NodeSelector } from '../../../../lib/components/node-selector'
-import { TextButtons } from '../../../../lib/components/text-buttons'
+import { slashCommand, suggestionItems } from '../components/slash-command'
+import { LinkSelector } from '../components/link-selector'
+import { NodeSelector } from '../components/node-selector'
+import { TextButtons } from '../components/text-buttons'
 import { handleCommandNavigation, ImageResizer } from 'novel/extensions'
 import { handleImageDrop, handleImagePaste } from 'novel/plugins'
 import { uploadFn } from '@/lib/components/image-upload'
@@ -272,31 +270,31 @@ const ActiveNote = ({
         utils.repositoryItem.getNotes.cancel()
       }
     })
-  const { mutateAsync: deleteNoteReference } =
-    api.repositoryItem.deleteNoteReference.useMutation({
-      onError: error => {
-        utils.repositoryItem.getNotes.invalidate()
-        Toast({
-          type: 'error',
-          title: 'Error!',
-          message: error?.message || 'Something went wrong',
-          duration: 2000
-        })
-        setSaveDisabled(false)
-      },
-      onSuccess: () => {
-        utils.repositoryItem.getNotes.invalidate()
-        // Toast({
-        //   title: '📃Note Deleted',
-        //   type: 'success'
-        // })
-        setSaveDisabled(true)
-        setActiveNote(undefined)
-      },
-      onMutate() {
-        utils.repositoryItem.getNotes.cancel()
-      }
-    })
+  // const { mutateAsync: deleteNoteReference } =
+  //   api.repositoryItem.deleteNoteReference.useMutation({
+  //     onError: error => {
+  //       utils.repositoryItem.getNotes.invalidate()
+  //       Toast({
+  //         type: 'error',
+  //         title: 'Error!',
+  //         message: error?.message || 'Something went wrong',
+  //         duration: 2000
+  //       })
+  //       setSaveDisabled(false)
+  //     },
+  //     onSuccess: () => {
+  //       utils.repositoryItem.getNotes.invalidate()
+  //       // Toast({
+  //       //   title: '📃Note Deleted',
+  //       //   type: 'success'
+  //       // })
+  //       setSaveDisabled(true)
+  //       setActiveNote(undefined)
+  //     },
+  //     onMutate() {
+  //       utils.repositoryItem.getNotes.cancel()
+  //     }
+  //   })
 
   useEffect(() => {
     if (activeNote) {
@@ -317,31 +315,33 @@ const ActiveNote = ({
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON()
-      updateItemNote({
-        id: activeNote.id,
-        title: title,
-        content: json
-      })
+      // updateItemNote({
+      //   id: activeNote.id,
+      //   title: title,
+      //   content: json
+      // })
       setEditorSavedStatus(true)
     },
     100
   )
   return (
     <>
-      {activeNotesTab === 'Notes' && activeNote && (
-        <div className='flex-1'>
-          <div className='relative my-1 flex items-center justify-between gap-4 px-1'>
-            <div className='flex-1'>
-              <h1
-                className={cn(
-                  'scroll-m-20 py-1 text-xl font-extrabold tracking-tight lg:text-xl'
-                )}
-              >
-                {title}
-              </h1>
+      {
+        // activeNotesTab === 'Notes' &&
+        activeNote && (
+          <div className='flex-1'>
+            <div className='relative my-1 flex items-center justify-between gap-4 px-1'>
+              <div className='flex-1'>
+                <h1
+                  className={cn(
+                    'scroll-m-20 py-1 text-xl font-extrabold tracking-tight lg:text-xl'
+                  )}
+                >
+                  {title}
+                </h1>
+              </div>
             </div>
-          </div>
-          {/* 
+            {/* 
           <Textarea
             className='mb-4 h-full min-h-screen resize-none border-none p-4'
             disabled={true}
@@ -349,16 +349,17 @@ const ActiveNote = ({
             value={content ?? undefined}
             onChange={e => setContent(e.target.value)}
           /> */}
-          {activeNote && (
-            <div
-              className={`prose-headings:font-title font-default prose max-w-full p-4 dark:prose-invert focus:outline-none prose-headings:m-0 prose-p:m-0 prose-ul:m-0 prose-li:m-0 prose-img:m-0`}
-              dangerouslySetInnerHTML={{
-                __html: generateHTML(activeNote?.content, defaultExtensions)
-              }}
-            ></div>
-          )}
-        </div>
-      )}
+            {activeNote && (
+              <div
+                className={`prose-headings:font-title font-default prose max-w-full p-4 dark:prose-invert focus:outline-none prose-headings:m-0 prose-p:m-0 prose-ul:m-0 prose-li:m-0 prose-img:m-0`}
+                dangerouslySetInnerHTML={{
+                  __html: generateHTML(activeNote?.content, defaultExtensions)
+                }}
+              ></div>
+            )}
+          </div>
+        )
+      }
       {activeNotesTab === 'MyNotes' && activeNote && (
         <div className='flex-1'>
           <div className='relative my-1 flex items-center justify-between gap-4 px-1'>
@@ -422,9 +423,9 @@ const ActiveNote = ({
                     <Button
                       size={'sm'}
                       variant={'destructive'}
-                      onClick={() => {
-                        deleteNoteReference({ id: activeNote.id })
-                      }}
+                      // onClick={() => {
+                      //   deleteNoteReference({ id: activeNote.id })
+                      // }}
                     >
                       {/* <PlusIcon className='size-4' /> */}
                       <TrashIcon className='size-4' />
@@ -595,8 +596,9 @@ const ActiveNote = ({
               onUpdate={({ editor }) => {
                 // const json = editor.getJSON()
                 // setEditorContent(json)
-                debouncedUpdates(editor)
                 // setSaveStatus("Unsaved");
+
+                // debouncedUpdates(editor)
                 setEditorSavedStatus(false)
               }}
               slotAfter={<ImageResizer />}
@@ -791,11 +793,12 @@ const EditNotes = ({ itemId }: EditNotesProps) => {
       setNotes([])
       // setActiveNote(undefined)
 
-      if (notesData && notesData.length > 0) {
+      if (
+        notesData
+        //  && notesData.length > 0
+      ) {
         console.log('hawk1', notesData, activeNote)
-
         setNotes(notesData as NoteType[])
-        // if (!activeNote)
         const idx = notesData.findIndex(obj => obj.id === activeNote?.id)
         if (idx !== -1) setActiveNote(notesData[idx] as NoteType)
         else setActiveNote(notesData[0] as NoteType)
@@ -981,7 +984,7 @@ const EditNotes = ({ itemId }: EditNotesProps) => {
     // create an id to item map from the initial array
     const idChildMap = new Map<string, any>(items.map(item => [item.id, item]))
     const [reorderedItem] = items.splice(oldIndex, 1)
-    items.splice(newIndex, 0, reorderedItem)
+    if (reorderedItem) items.splice(newIndex, 0, reorderedItem)
     // Update the local state with reordered items
     const reorderedReferences = items.map((item, index) => ({
       ...item,
@@ -1208,4 +1211,4 @@ const EditNotes = ({ itemId }: EditNotesProps) => {
   )
 }
 
-export default EditNotes
+// export default EditNotes

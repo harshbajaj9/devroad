@@ -44,7 +44,6 @@ import {
 } from '@repo/ui'
 import { ChevronDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import EditNote from './edit-note'
 import { DndContextWithNoSSR } from './edit-repo-items'
 import {
   arrayMove,
@@ -169,12 +168,21 @@ const EditorBox = () => {
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON()
-      updateItemNote({
-        referenceId: openItem?.referenceId,
-        referenceType: openItem?.referenceType,
-        content: json
-      })
-      setEditorSavedStatus(true)
+      if (
+        openItem?.referenceId &&
+        openItem?.referenceType &&
+        openItem?.referenceType !== null
+      ) {
+        updateItemNote({
+          referenceId: openItem?.referenceId,
+          referenceType: openItem?.referenceType as
+            | 'SECTION'
+            | 'PROBLEM'
+            | 'CUSTOM_PROBLEM',
+          content: json
+        })
+        setEditorSavedStatus(true)
+      }
     },
     100
   )
@@ -288,16 +296,11 @@ const EditNotes = () => {
       enabled: !!session?.user.id
     }
   )
-  const { editor } = useEditor()
   const [showNote, setShowNote] = useState(false)
   // useEffect(() => {
   //   setShowNote(false)
   // }, [])
   useEffect(() => {
-    if (userData && !isNotesLoading) {
-      editor?.commands.setContent(userData?.notes)
-      console.log('what do you mean', editor?.getJSON())
-    }
     // flushSync(() => {
     //   setEditorInitValue(null)
     // })
@@ -409,12 +412,20 @@ const EditNotes = () => {
     async (editor: EditorInstance) => {
       const json = editor.getJSON()
       console.log(json, openItem)
-      updateItemNote({
-        referenceId: openItem.referenceId,
-        referenceType: openItem.referenceType,
-        content: json
-      })
-      setEditorSavedStatus(true)
+      if (
+        openItem?.referenceId &&
+        openItem?.referenceType &&
+        openItem?.referenceType !== null
+      ) {
+        updateItemNote({
+          referenceId: openItem?.referenceId,
+          referenceType: openItem?.referenceType as
+            | 'PROBLEM'
+            | 'CUSTOM_PROBLEM',
+          content: json
+        })
+        setEditorSavedStatus(true)
+      }
     },
     500
   )

@@ -81,7 +81,7 @@ export const Reference = ({
   const { activeNotesTab } = useNotes()
   const forceDragging = true
 
-  const getRefUrl = url => {
+  const getRefUrl = (url: string) => {
     if (!/^https?:\/\//i.test(url)) {
       return `https://${url}`
     }
@@ -610,7 +610,11 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
     })
 
   const handleaddReference = (id: string) => {
-    addReference({ repoItemId: openItem.id, id: id, type: 'REFERENCE' })
+    addReference({
+      repoItemId: openItem.id,
+      id: id
+      // , type: 'REFERENCE'
+    })
   }
   const { mutateAsync: removeReference } =
     api.repositoryItem.removeReference.useMutation({
@@ -677,7 +681,8 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
     })
     // console.log('changedPriorities', changedPriorities)
     // await updateOrder(changedPriorities)
-    await deleteNode({ node_id: id, changedPriorities })
+    // await deleteNode({ node_id: id, changedPriorities })
+    await deleteNode({ node_id: id })
   }
 
   // const {
@@ -695,7 +700,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
   const utils = api.useUtils()
 
   // update reference order
-  const { mutateAsync: updateNotesReferenceOrder } =
+  const { mutateAsync: updateReferenceOrder } =
     api.repositoryItem.updateReferenceOrder.useMutation({
       onError: error => {
         utils.repositoryItem.getReferences.invalidate()
@@ -735,7 +740,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
           duration: 2000
         })
       },
-      onSuccess: () => {
+      onSuccess: (id: string) => {
         const updated = openReferences
           .filter(item => item.id !== id)
           .map((item, i) => ({ ...item, order: i + 1 }))
@@ -781,7 +786,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
     // create an id to item map from the initial array
     const idChildMap = new Map<string, any>(items.map(item => [item.id, item]))
     const [reorderedItem] = items.splice(oldIndex, 1)
-    items.splice(newIndex, 0, reorderedItem)
+    if (reorderedItem) items.splice(newIndex, 0, reorderedItem)
     // Update the local state with reordered items
     const reorderedReferences = items.map((item, index) => ({
       ...item,
@@ -808,7 +813,7 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
       const reference = idChildMap.get(item.id)
       return reference?.order !== item.order
     })
-    await updateNotesReferenceOrder(changedOrders)
+    await updateReferenceOrder(changedOrders)
 
     setActiveRef(undefined)
   }

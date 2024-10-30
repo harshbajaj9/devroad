@@ -91,35 +91,35 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
     setIsEditMode(false)
   }
   const router = useRouter()
-  const { mutateAsync: createNewSession } =
-    api.repository.createNewSession.useMutation({
-      // refetchOnWindowFocus: false,
-      onSuccess(createdSession: { id: String }) {
-        router.push(`/sessions/${createdSession.id}`)
+  // const { mutateAsync: createNewSession } =
+  //   api.repository.createNewSession.useMutation({
+  //     // refetchOnWindowFocus: false,
+  //     onSuccess(createdSession: { id: String }) {
+  //       router.push(`/sessions/${createdSession.id}`)
 
-        Toast({ title: 'Visibility Updated', type: 'success' })
-      },
-      onError(error: { message: any }) {
-        utils.repository.get.invalidate()
-        Toast({
-          type: 'error',
-          title: 'Error!',
-          message: error?.message || 'Something went wrong',
-          duration: 5000
-        })
-      }
-    })
+  //       Toast({ title: 'Visibility Updated', type: 'success' })
+  //     },
+  //     onError(error: { message: any }) {
+  //       utils.repository.get.invalidate()
+  //       Toast({
+  //         type: 'error',
+  //         title: 'Error!',
+  //         message: error?.message || 'Something went wrong',
+  //         duration: 5000
+  //       })
+  //     }
+  //   })
   const handleStartSession = () => {
-    createNewSession({
-      id: repository.id
-    })
+    // createNewSession({
+    //   id: repository.id
+    // })
   }
   const [visibility, setVisibility] = useState(repository.visibility)
   const utils = api.useUtils()
   const { mutateAsync: updateVisibility } =
     api.repository.updateVisibility.useMutation({
       // refetchOnWindowFocus: false,
-      onSuccess(createdCollection: { id: String }) {
+      onSuccess() {
         utils.repository.get.invalidate()
         Toast({ title: 'Visibility Updated', type: 'success' })
       },
@@ -350,10 +350,10 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
             //   </HoverCardContent>
             // </HoverCard>
             <a
-              href={repository.creatorWebsiteLink}
+              href={repository.creatorWebsiteLink ?? '#'}
               target='_blank'
               rel='noopener noreferrer'
-              variant='link'
+              // variant='link'
               className='pl-0 font-semibold text-muted-foreground'
             >
               @{repository.creatorName}

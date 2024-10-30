@@ -22,7 +22,7 @@ import {
 } from '@repo/ui'
 import CollectionItems from './repo-items'
 import { auth } from '@/auth'
-import EditCollectionButton from '../edit-repo-button'
+// import EditCollectionButton from '../edit-repo-button'
 import { notFound } from 'next/navigation'
 import RepositoryHeader from './repo-header'
 import RepositoryItems from './repo-items'

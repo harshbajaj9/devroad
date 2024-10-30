@@ -1,4 +1,5 @@
 // import { Repository, RepositoryItem } from '@repo/database'
+import { ItemNodeType, NodeType } from '@/lib/utils'
 import { Repository, RepositoryItem } from '@repo/database'
 import { JSONContent } from 'novel'
 import { create } from 'zustand'
@@ -63,22 +64,30 @@ export type ReferenceType = {
   link: string
   order: number
   added: boolean
+  subType: 'ARTICLE' | 'VIDEO'
 }
 export const useEditRepository = create<{
   isCreateItemModalOpen: boolean
   setIsCreateItemModalOpen: (open: boolean) => void
   isMoveItemModalOpen: boolean
   setIsMoveItemModalOpen: (open1: boolean) => void
-  deletionItem: { id: string; title: string } | undefined
-  setDeletionItem: (item: { id: string; title: string } | undefined) => void
+  deletionItem: { id: string; title: string | null | undefined } | undefined
+  setDeletionItem: (
+    item: { id: string; title: string | null | undefined } | undefined
+  ) => void
   movingItem:
-    | { id: string; title: string; type: 'SECTION' | 'ITEM'; parentId: string }
+    | {
+        id: string
+        title: string | null | undefined
+        type: 'SECTION' | 'ITEM'
+        parentId: string
+      }
     | undefined
   setMovingItem: (
     item:
       | {
           id: string
-          title: string
+          title: string | null | undefined
           type: 'SECTION' | 'ITEM'
           parentId: string
         }
@@ -90,8 +99,8 @@ export const useEditRepository = create<{
   setIsDeleteItemModalOpen: (open: boolean) => void
   isEditMode: boolean
   setIsEditMode: (editMode: boolean) => void
-  activeItem: RepositoryItem | undefined
-  setActiveItem: (activeItem: RepositoryItem | undefined) => void
+  activeItem: ItemNodeType | undefined
+  setActiveItem: (activeItem: ItemNodeType | undefined) => void
 }>()(
   immer(set => ({
     isCreateItemModalOpen: false,
@@ -105,20 +114,17 @@ export const useEditRepository = create<{
     isMoveItemModalOpen: false,
     setIsMoveItemModalOpen: (open1: boolean) => {
       set({ isMoveItemModalOpen: open1 })
-      console.log(
-        'state>>>>>>>>>>>>>',
-        useEditRepository.getState().isMoveItemModalOpen
-      )
     },
     deletionItem: undefined,
-    setDeletionItem: (item: { id: string; title: string } | undefined) =>
-      set({ deletionItem: item }),
+    setDeletionItem: (
+      item: { id: string; title: string | null | undefined } | undefined
+    ) => set({ deletionItem: item }),
     movingItem: undefined,
     setMovingItem: (
       item:
         | {
             id: string
-            title: string
+            title: string | null | undefined
             type: 'SECTION' | 'ITEM'
             parentId: string
           }
@@ -134,15 +140,15 @@ export const useEditRepository = create<{
     openNotes: [],
 
     activeItem: undefined,
-    setActiveItem: (activeItem: RepositoryItem | undefined) =>
+    setActiveItem: (activeItem: ItemNodeType | undefined) =>
       set({ activeItem: activeItem })
   }))
 )
 
 export type OpenItemType = RepositoryItem & {
-  children: RepositoryItem
-  lastStatus: number
-  tags: string[]
+  children?: RepositoryItem
+  // lastStatus?: number
+  // tags?: string[]
 }
 
 export const useRepository = create<{
@@ -161,8 +167,8 @@ export const useRepository = create<{
   setRepositoryTags: (tags: string[]) => void
   repositoryDetails: Repository | undefined
   setRepositoryDetails: (details: Repository | undefined) => void
-  openItem: OpenItemType | undefined
-  setOpenItem: (openItem: OpenItemType | undefined) => void
+  openItem: ItemNodeType | undefined
+  setOpenItem: (openItem: ItemNodeType | undefined) => void
   // openNotes: NoteType[]
   // setOpenNotes: (openNotes: NoteType[]) => void
   // openReferences: ReferenceType[]
@@ -180,7 +186,7 @@ export const useRepository = create<{
     // setOpenReferences: (openReferences: ReferenceType[]) =>
     //   set({ openReferences: openReferences }),
     openItem: undefined,
-    setOpenItem: (openItem: OpenItemType | undefined) =>
+    setOpenItem: (openItem: ItemNodeType | undefined) =>
       set({ openItem: openItem }),
     // itemStatusMap: {} as Record<string, number>,
     // setItemStatusMap: (id: string, status: number) =>

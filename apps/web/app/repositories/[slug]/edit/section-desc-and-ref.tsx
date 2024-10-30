@@ -39,23 +39,23 @@ const SectionDescriptionAndReferences = ({
       return () => clearTimeout(timerId)
     }
   }, [sectionTitle])
-  const { data: searchProblemsData, isLoading: isSearchResultLoading } =
-    api.repositoryItem.updateTitle.useMutation({
-      // refetchOnWindowFocus: false,
-      onSuccess(createdItem: any) {
-        Toast({ title: 'Created', type: 'success' })
+  // const { data: searchProblemsData, isLoading: isSearchResultLoading } =
+  //   api.repositoryItem.updateTitle.useMutation({
+  //     // refetchOnWindowFocus: false,
+  //     onSuccess(createdItem: any) {
+  //       Toast({ title: 'Created', type: 'success' })
 
-        // TODO:refresh and invalidate the useQuery for get Repo Items
-      },
-      onError(error: { message: any }) {
-        Toast({
-          type: 'error',
-          title: 'Error!',
-          message: error?.message || 'Something went wrong',
-          duration: 5000
-        })
-      }
-    })
+  //       // TODO:refresh and invalidate the useQuery for get Repo Items
+  //     },
+  //     onError(error: { message: any }) {
+  //       Toast({
+  //         type: 'error',
+  //         title: 'Error!',
+  //         message: error?.message || 'Something went wrong',
+  //         duration: 5000
+  //       })
+  //     }
+  //   })
 
   return (
     <div
@@ -80,7 +80,7 @@ const SectionDescriptionAndReferences = ({
                 className={cn(
                   'scroll-m-20 rounded-none border-2 border-transparent bg-transparent text-xl font-semibold tracking-tight text-foreground focus-visible:border-b-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 lg:text-xl'
                 )}
-                value={openItem.title}
+                value={openItem?.title ?? ''}
                 // onChange={e => setTitle(e.target.value)}
               />
             ) : (
@@ -89,7 +89,7 @@ const SectionDescriptionAndReferences = ({
                   'scroll-m-20 text-3xl font-semibold tracking-tight'
                 )}
               >
-                {openItem.title}
+                {openItem?.title}
               </h2>
             )}
             {/* <h2

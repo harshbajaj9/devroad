@@ -1,5 +1,5 @@
 'use client'
-import { cn } from '@/lib/utils'
+import { cn, ItemNodeType } from '@/lib/utils'
 import { useNotes, useRepository } from '@/store'
 import {
   CheckCircleIcon,
@@ -31,7 +31,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 interface ItemNodeProps {
-  itemData: RepositoryItem & { children: RepositoryItem }
+  itemData: ItemNodeType
   // path: { id: string; title: string }[]
   children: React.ReactNode
 }

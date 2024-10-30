@@ -38,22 +38,22 @@ const RepoDescriptionAndReferences = ({
       return () => clearTimeout(timerId)
     }
   }, [repoTitle])
-  api.repository.updateTitle.useMutation({
-    // refetchOnWindowFocus: false,
-    onSuccess(createdItem: any) {
-      Toast({ title: 'Created', type: 'success' })
+  // api.repository.updateTitle.useMutation({
+  //   // refetchOnWindowFocus: false,
+  //   onSuccess(createdItem: any) {
+  //     Toast({ title: 'Created', type: 'success' })
 
-      // TODO:refresh and invalidate the useQuery for get Repo Items
-    },
-    onError(error: { message: any }) {
-      Toast({
-        type: 'error',
-        title: 'Error!',
-        message: error?.message || 'Something went wrong',
-        duration: 5000
-      })
-    }
-  })
+  //     // TODO:refresh and invalidate the useQuery for get Repo Items
+  //   },
+  //   onError(error: { message: any }) {
+  //     Toast({
+  //       type: 'error',
+  //       title: 'Error!',
+  //       message: error?.message || 'Something went wrong',
+  //       duration: 5000
+  //     })
+  //   }
+  // })
   return (
     <div
       className={cn('sticky top-0 mt-2 h-screen max-h-[1920px] flex-[5] pl-2')}
@@ -104,7 +104,7 @@ const RepoDescriptionAndReferences = ({
           </div>
           <div className='flex flex-col gap-4 px-8 pt-4'>
             {/* <EditDescription /> */}
-            {isOwner ? (
+            {/* {isOwner ? (
               <div className='flex-1 border-0 p-1'>
                 <Textarea
                   className='h-full resize-none border-none'
@@ -113,7 +113,7 @@ const RepoDescriptionAndReferences = ({
               </div>
             ) : (
               <p>{repositoryDetails?.description}</p>
-            )}
+            )} */}
           </div>
         </ScrollArea>
       </div>

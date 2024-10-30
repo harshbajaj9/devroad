@@ -5,6 +5,7 @@ import {
   protectedProcedure,
   publicProcedure
 } from '@/server/api/trpc'
+import { $Enums } from '@repo/database'
 
 export const dSAProblemSetRouter = createTRPCRouter({
   hello: publicProcedure
@@ -24,12 +25,12 @@ export const dSAProblemSetRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.problemSet.create({
+      return ctx.db.repository.create({
         data: {
           title: input.title,
           description: input.description,
           creatorId: ctx.session.user.id,
-
+          type: $Enums.RepositoryType.PROBLEM_SET,
           creatorName: '',
           // creatorName: ctx.session.user.name,
           // createdBy: { connect: { id: ctx.session.user.id } },

@@ -45,6 +45,7 @@ import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import PSCardFooter from './ps-card-footer'
+import { Repository } from '@repo/database'
 
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -62,7 +63,7 @@ const PSCard = ({
 }: {
   // title?: string | undefined
   // creatorName?: string | undefined
-  repo?: any
+  repo?: Repository
   id?: string | undefined
 }) => {
   // const router = useRouter()
@@ -219,8 +220,8 @@ const PSCard = ({
             </Link>
           </div>
           <div className='truncate text-sm text-muted-foreground'>
-            {repo?.description ??
-              'Comprehensive course covering essential DSA topics for FAANG interviews.'}
+            {/* {repo?.description ??
+              'Comprehensive course covering essential DSA topics for FAANG interviews.'} */}
           </div>
         </CardContent>
         {/* <PSCardFooter repo={repo} /> */}

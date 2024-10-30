@@ -29,6 +29,7 @@ import { getPlatformIcon } from './editable-node'
 import { RepoStructureNode, useEditRepository, useRepoStructure } from '@/store'
 import SectionPicker from './section-picker'
 import MoveSectionPicker from './section-picker-move'
+import { ProblemData } from '@/typing'
 export const allowedProblemSetTypes: any[] = ['PROBLEM', 'RESOURCE', 'CUSTOM']
 export const createRepositoryItemProblemSchema = z.object({
   id: z.string().min(2).optional()

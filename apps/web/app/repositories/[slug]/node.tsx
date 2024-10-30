@@ -1,5 +1,5 @@
 'use client'
-import { cn } from '@/lib/utils'
+import { cn, ItemNodeType } from '@/lib/utils'
 import { $Enums, RepositoryItem } from '@repo/database'
 import {
   Tooltip,
@@ -11,10 +11,15 @@ import Image from 'next/image'
 import { ItemNode } from './item-node'
 import { SectionNode } from './section-node'
 
-export const InnerSectionNode = ({ sectionData }) => {
+export const InnerSectionNode = ({
+  sectionData
+}: {
+  sectionData: ItemNodeType
+}) => {
   return (
     <div className='flex flex-col gap-1 p-4 pb-8 pt-0'>
-      {sectionData.children?.length > 0 &&
+      {sectionData.children &&
+        sectionData.children.length > 0 &&
         sectionData.children.map(childNode => {
           return (
             <Node
@@ -29,7 +34,7 @@ export const InnerSectionNode = ({ sectionData }) => {
 }
 
 interface InnerItemNodeProps {
-  itemData: RepositoryItem & { children: RepositoryItem }
+  itemData: ItemNodeType
 }
 export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
   const getPlatformIcon = (platform: $Enums.Platform) => {
@@ -61,7 +66,7 @@ export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
                     )}
                   >
                     <span className=''>
-                      {getPlatformIcon(itemData.problem.platform ?? 'LC')}
+                      {getPlatformIcon(itemData.problem?.platform ?? 'LC')}
                     </span>
                     {itemData.problem?.title ?? itemData.id}
                   </a>

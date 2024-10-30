@@ -1,6 +1,18 @@
 import { cn } from '@/lib/utils'
 import { useRepository } from '@/store'
-import { Button } from '@repo/ui'
+import {
+  ArrowRightStartOnRectangleIcon,
+  EllipsisVerticalIcon,
+  TrashIcon
+} from '@heroicons/react/24/outline'
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel
+} from '@repo/ui'
 import React, { useState } from 'react'
 
 const EditNote = () => {
@@ -55,10 +67,10 @@ const EditNote = () => {
               <ArrowRightStartOnRectangleIcon className='mr-2 h-4 w-4' />
               Move
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => deleteItem(itemData.id)}>
+            {/* <DropdownMenuItem onClick={() => deleteItem(itemData.id)}>
               <TrashIcon className='mr-2 h-4 w-4' />
               Delete
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       )}
@@ -81,9 +93,9 @@ const EditNote = () => {
               // key={problem.id}
               // onClick={handleCompanyDetailPageTransition}
             >
-              <div className='border-0 p-1'>
+              {/* <div className='border-0 p-1'>
                 <p className=''>{itemData.id}</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -77,7 +77,14 @@ export const getItems = async ({
     depth: 1 + maxDepth
   }
 }
-export const changePriorities = async ({ priorityOrder }) => {
+export const changePriorities = async ({
+  priorityOrder
+}: {
+  priorityOrder: {
+    id: string
+    order: number
+  }[]
+}) => {
   await Promise.all(
     priorityOrder.map(async item => {
       // console.log(`Updating Item ${item.id} to ${item.order}`)
@@ -95,7 +102,14 @@ export const changePriorities = async ({ priorityOrder }) => {
   console.log('updated')
 }
 
-export const changeReferenceOrder = async ({ referenceOrder }) => {
+export const changeReferenceOrder = async ({
+  referenceOrder
+}: {
+  referenceOrder: {
+    id: string
+    order: number
+  }[]
+}) => {
   await Promise.all(
     referenceOrder.map(async item => {
       await db.userProblemReferences.update({

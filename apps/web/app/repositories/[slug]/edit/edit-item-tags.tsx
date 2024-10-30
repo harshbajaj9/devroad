@@ -14,7 +14,7 @@ import { useRepository } from '../../../../store'
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { api } from '@/trpc/react'
 import { Jost } from 'next/font/google'
-import { cn } from '@/lib/utils'
+import { cn, ItemNodeType } from '@/lib/utils'
 import { RepositoryItem } from '@repo/database'
 const font2 = Jost({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -26,13 +26,9 @@ const EditItemTags = ({
   tags,
   setTags
 }: {
-  itemData: RepositoryItem & {
-    children: RepositoryItem
-    lastStatus: number
-    tags: string[]
-  }
+  itemData: ItemNodeType
   tags: string[]
-  setTags: any
+  setTags: (tags: string[]) => void
   setQueryUserData: (flag: boolean) => void
 }) => {
   const utils = api.useUtils()
@@ -58,7 +54,10 @@ const EditItemTags = ({
         setQueryUserData(true)
         utils.repositoryItem.getOrCreateUserData.invalidate({
           referenceId: itemData?.referenceId ?? undefined,
-          referenceType: itemData?.referenceType ?? undefined
+          referenceType: (itemData?.referenceType ?? undefined) as
+            | 'PROBLEM'
+            | 'CUSTOM_PROBLEM'
+            | undefined
         })
         // router.push(`/repositories/${createdCollection.id}`)
       },
@@ -80,7 +79,9 @@ const EditItemTags = ({
     }
     const oldTags = tags ?? []
     const newRepoTags = [...new Set([...repositoryTags, newTag])]
-    setTags(prev => (prev ? [...prev, newTag] : [newTag]))
+    const newTags = tags ? [...tags, newTag] : [newTag]
+    setTags(newTags)
+    // setTags(prev => (prev ? [...prev, newTag] : [newTag]))
     setRepositoryTags(newRepoTags)
     updateTags({
       referenceId: itemData.referenceId as string,
@@ -107,7 +108,9 @@ const EditItemTags = ({
         return
       }
       const oldTags = tags ?? []
-      setTags(prev => (prev ? [...prev, newTag] : [newTag]))
+      const newTags = tags ? [...tags, newTag] : [newTag]
+      setTags(newTags)
+      // setTags(prev => (prev ? [...prev, newTag] : [newTag]))
       const newRepoTags = [...new Set([...repositoryTags, newTag])]
       setRepositoryTags(newRepoTags)
       updateTags({

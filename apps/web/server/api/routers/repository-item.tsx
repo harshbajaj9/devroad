@@ -11,12 +11,11 @@ import {
   Problem,
   Repository,
   RepositoryItem,
-  UserProblemReferencesAndNotes
+  UserProblemReferences
 } from '@repo/database'
 import { TRPCError } from '@trpc/server'
 import cuid from 'cuid'
 import {
-  changeNoteReferenceOrder,
   changePriorities,
   changeReferenceOrder,
   recursiveDeleteNode
@@ -82,9 +81,9 @@ export const repositoryItemRouter = createTRPCRouter({
         const section = await ctx.db.repositoryItem.findUnique({
           where: {
             id: input.parentId,
-            type: input.parentType,
+            type: input.parentType
             // Just in case
-            creatorId: ctx.session.user.id
+            // creatorId: ctx.session.user.id
           }
         })
 
@@ -343,9 +342,9 @@ export const repositoryItemRouter = createTRPCRouter({
         const section = await ctx.db.repositoryItem.findUnique({
           where: {
             id: input.newparent_id,
-            type: 'SECTION',
+            type: 'SECTION'
             // Just in case
-            creatorId: ctx.session.user.id
+            // creatorId: ctx.session.user.id
           }
         })
 
@@ -393,9 +392,9 @@ export const repositoryItemRouter = createTRPCRouter({
         const section = await ctx.db.repositoryItem.findUnique({
           where: {
             id: node.parentId,
-            type: 'SECTION',
+            type: 'SECTION'
             // Just in case
-            creatorId: ctx.session.user.id
+            // creatorId: ctx.session.user.id
           }
         })
         if (
@@ -471,7 +470,7 @@ export const repositoryItemRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      let resource: Problem | Custom | RepositoryItem | undefined | null
+      let resource: Problem | CustomItem | RepositoryItem | undefined | null
 
       const repoItem = await ctx.db.repositoryItem.findUnique({
         where: {
@@ -527,9 +526,9 @@ export const repositoryItemRouter = createTRPCRouter({
 
       return userItemData?.note
 
-      // let newNotes: (UserProblemReferencesAndNotes & { added: boolean })[] = []
+      // let newNotes: (userProblemReferences & { added: boolean })[] = []
       // for (const note of notes) {
-      //   if (note.UserDataItemMapping.length > 0) {
+      //   if (note.UserReferenceItemMapping.length > 0) {
       //     newNotes.push({ ...note, added: true })
       //   } else {
       //     newNotes.push({ ...note, added: false })
@@ -543,97 +542,98 @@ export const repositoryItemRouter = createTRPCRouter({
       // //   totalRecords
       // // }
     }),
-  getRepositoryNotes: publicProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        referenceId: z.string(),
-        referenceType: z.enum(['PROBLEM', 'CUSTOM_PROBLEM']) //TODO: add , 'SECTION' if needed
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      let resource: Problem | CustomItem | RepositoryItem | undefined | null
+  // getRepositoryNotes: publicProcedure
+  //   .input(
+  //     z.object({
+  //       id: z.string(),
+  //       referenceId: z.string(),
+  //       referenceType: z.enum(['PROBLEM', 'CUSTOM_PROBLEM']) //TODO: add , 'SECTION' if needed
+  //     })
+  //   )
+  //   .query(async ({ ctx, input }) => {
+  //     let resource: Problem | CustomItem | RepositoryItem | undefined | null
 
-      const repoItem = await ctx.db.repositoryItem.findUnique({
-        where: {
-          id: input.id
-          // creatorId: ctx.session.user.id
-        }
-      })
-      const repository = await ctx.db.repository.findUnique({
-        where: {
-          id: repoItem.repositoryId
-        }
-      })
-      if (!repository) {
-        throw new TRPCError({
-          message: 'Item not found',
-          code: 'BAD_REQUEST'
-        })
-      }
-      // if (input.referenceType === 'SECTION') {
-      //   resource = repoItem
-      //   if (!resource)
-      //     throw new TRPCError({
-      //       message: 'Section not found',
-      //       code: 'BAD_REQUEST'
-      //     })
+  //     const repoItem = await ctx.db.repositoryItem.findUnique({
+  //       where: {
+  //         id: input.id
+  //         // creatorId: ctx.session.user.id
+  //       }
+  //     })
+  //     if (!repoItem) return
+  //     const repository = await ctx.db.repository.findUnique({
+  //       where: {
+  //         id: repoItem.repositoryId
+  //       }
+  //     })
+  //     if (!repository) {
+  //       throw new TRPCError({
+  //         message: 'Item not found',
+  //         code: 'BAD_REQUEST'
+  //       })
+  //     }
+  //     // if (input.referenceType === 'SECTION') {
+  //     //   resource = repoItem
+  //     //   if (!resource)
+  //     //     throw new TRPCError({
+  //     //       message: 'Section not found',
+  //     //       code: 'BAD_REQUEST'
+  //     //     })
 
-      //   return resource.resources
-      // }
+  //     //   return resource.resources
+  //     // }
 
-      if (input.referenceType === 'PROBLEM') {
-        resource = await ctx.db.problem.findUnique({
-          where: {
-            id: input.referenceId
-          }
-        })
-      } else if (input.referenceType === 'CUSTOM_PROBLEM') {
-        resource = await ctx.db.customItem.findUnique({
-          where: {
-            id: input.referenceId,
-            type: 'PROBLEM'
-          }
-        })
-      }
-      if (!resource) {
-        throw new TRPCError({
-          message: 'Item not found',
-          code: 'BAD_REQUEST'
-        })
-      }
-      const notes = await ctx.db.userProblemReferencesAndNotes.findMany({
-        where: {
-          referenceId: input.referenceId,
-          // userId: ctx.session.user.id,
-          userId: repository.creatorId,
-          type: $Enums.UserReferencesAndNotesType.NOTE
-        },
-        include: {
-          UserDataItemMapping: {
-            where: {
-              repositoryItemId: input.id
-            }
-          }
-        },
-        orderBy: {
-          order: 'asc'
-        }
-      })
+  //     if (input.referenceType === 'PROBLEM') {
+  //       resource = await ctx.db.problem.findUnique({
+  //         where: {
+  //           id: input.referenceId
+  //         }
+  //       })
+  //     } else if (input.referenceType === 'CUSTOM_PROBLEM') {
+  //       resource = await ctx.db.customItem.findUnique({
+  //         where: {
+  //           id: input.referenceId,
+  //           type: 'PROBLEM'
+  //         }
+  //       })
+  //     }
+  //     if (!resource) {
+  //       throw new TRPCError({
+  //         message: 'Item not found',
+  //         code: 'BAD_REQUEST'
+  //       })
+  //     }
+  //     const notes = await ctx.db.userProblemReferences.findMany({
+  //       where: {
+  //         referenceId: input.referenceId,
+  //         // userId: ctx.session.user.id,
+  //         userId: repository.creatorId
+  //         // type: $Enums.UserReferencesAndNotesType.NOTE
+  //       },
+  //       include: {
+  //         UserReferenceItemMapping: {
+  //           where: {
+  //             repositoryItemId: input.id
+  //           }
+  //         }
+  //       },
+  //       orderBy: {
+  //         order: 'asc'
+  //       }
+  //     })
 
-      let newNotes: (UserProblemReferencesAndNotes & { added: boolean })[] = []
-      for (const note of notes) {
-        if (note.UserDataItemMapping.length > 0)
-          newNotes.push({ ...note, added: true })
-      }
-      return newNotes
-      // return {
-      //   totalPages,
-      //   currentPage: page,
-      //   problems: searchedProblems,
-      //   totalRecords
-      // }
-    }),
+  //     let newNotes: (userProblemReferences & { added: boolean })[] = []
+  //     for (const note of notes) {
+  //       if (note.UserReferenceItemMapping.length > 0)
+  //         newNotes.push({ ...note, added: true })
+  //     }
+  //     return newNotes
+  //     // return {
+  //     //   totalPages,
+  //     //   currentPage: page,
+  //     //   problems: searchedProblems,
+  //     //   totalRecords
+  //     // }
+  //   }),
   getReferences: protectedProcedure
     .input(
       z.object({
@@ -708,12 +708,12 @@ export const repositoryItemRouter = createTRPCRouter({
         }
       })
 
-      let newRefs: (UserProblemReferencesAndNotes & { added: boolean })[] = []
+      let newRefs: (UserProblemReferences & { added: boolean })[] = []
       for (const ref of refs) {
         let refInCurrentRepoFound = ref.UserReferenceItemMapping.length > 0
         // https://stackoverflow.com/questions/63702057/what-is-the-logic-behind-the-typescript-error-the-operand-of-a-delete-operato
-        // the ref has UserDataItemMapping as a mandatory key in its object, therefore while deleting we use "as any"
-        delete (ref as any).UserDataItemMapping
+        // the ref has UserReferenceItemMapping as a mandatory key in its object, therefore while deleting we use "as any"
+        delete (ref as any).UserReferenceItemMapping
         if (refInCurrentRepoFound) {
           newRefs.push({ ...ref, added: true })
         } else {
@@ -748,6 +748,7 @@ export const repositoryItemRouter = createTRPCRouter({
           // creatorId: ctx.session.user.id
         }
       })
+      if (!repoItem) return
       const repository = await ctx.db.repository.findUnique({
         where: {
           id: repoItem.repositoryId
@@ -811,79 +812,79 @@ export const repositoryItemRouter = createTRPCRouter({
         }
       })
 
-      let newRefs: (UserProblemReferencesAndNotes & { added: boolean })[] = []
+      let newRefs: (UserProblemReferences & { added: boolean })[] = []
       for (const ref of refs) {
         let refInCurrentRepoFound = ref.UserReferenceItemMapping.length > 0
         // https://stackoverflow.com/questions/63702057/what-is-the-logic-behind-the-typescript-error-the-operand-of-a-delete-operato
-        // the ref has UserDataItemMapping as a mandatory key in its object, therefore while deleting we use "as any"
-        delete (ref as any).UserDataItemMapping
+        // the ref has UserReferenceItemMapping as a mandatory key in its object, therefore while deleting we use "as any"
+        delete (ref as any).UserReferenceItemMapping
         if (refInCurrentRepoFound) newRefs.push({ ...ref, added: true })
       }
       console.log('>>>>>>><<<<<<<<<<', newRefs)
       return newRefs
     }),
 
-  createItemNotes: protectedProcedure
-    .input(
-      z.object({
-        itemId: z.string(),
-        itemType: z.enum(['CUSTOM_PROBLEM', 'PROBLEM']), //add more if needed
-        // title: z.string(),
-        // content: z.string(), // TODO: change to json if needed
-        order: z.number()
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      console.log('you', input.itemId)
+  // createItemNotes: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       itemId: z.string(),
+  //       itemType: z.enum(['CUSTOM_PROBLEM', 'PROBLEM']), //add more if needed
+  //       // title: z.string(),
+  //       // content: z.string(), // TODO: change to json if needed
+  //       order: z.number()
+  //     })
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     console.log('you', input.itemId)
 
-      if (input.itemType === 'PROBLEM') {
-        const repoItem = await ctx.db.problem.findUnique({
-          where: { id: input.itemId }
-        })
+  //     if (input.itemType === 'PROBLEM') {
+  //       const repoItem = await ctx.db.problem.findUnique({
+  //         where: { id: input.itemId }
+  //       })
 
-        if (!repoItem)
-          throw new TRPCError({
-            message: 'Item missing',
-            code: 'BAD_REQUEST'
-          })
-        const note = await ctx.db.userProblemReferencesAndNotes.create({
-          data: {
-            title: 'New Note',
-            content: '', // TODO: set to empty or null in accordance with json
-            referenceType: input.itemType,
-            referenceId: input.itemId,
-            type: $Enums.UserReferencesAndNotesType.NOTE,
-            userId: ctx.session.user.id,
-            order: input.order
-          }
-        })
-        return note
-      }
-      if (input.itemType === 'CUSTOM_PROBLEM') {
-        const repoItem = await ctx.db.customProblem.findUnique({
-          where: { id: input.itemId }
-        })
-        if (!repoItem)
-          throw new TRPCError({
-            message: 'Item missing',
-            code: 'BAD_REQUEST'
-          })
-        const note = await ctx.db.userProblemReferencesAndNotes.create({
-          data: {
-            title: 'New Note',
-            content: '', // TODO: set to empty or null in accordance with json
-            referenceType: input.itemType,
-            referenceId: input.itemId,
-            type: $Enums.UserReferencesAndNotesType.NOTE,
-            userId: ctx.session.user.id,
-            order: input.order
-          }
-        })
-        return note
-      }
+  //       if (!repoItem)
+  //         throw new TRPCError({
+  //           message: 'Item missing',
+  //           code: 'BAD_REQUEST'
+  //         })
+  //       const note = await ctx.db.userProblemReferences.create({
+  //         data: {
+  //           title: 'New Note',
+  //           content: '', // TODO: set to empty or null in accordance with json
+  //           referenceType: input.itemType,
+  //           referenceId: input.itemId,
+  //           // type: $Enums.UserReferencesAndNotesType.NOTE,
+  //           userId: ctx.session.user.id,
+  //           order: input.order
+  //         }
+  //       })
+  //       return note
+  //     }
+  //     if (input.itemType === 'CUSTOM_PROBLEM') {
+  //       const repoItem = await ctx.db.customProblem.findUnique({
+  //         where: { id: input.itemId }
+  //       })
+  //       if (!repoItem)
+  //         throw new TRPCError({
+  //           message: 'Item missing',
+  //           code: 'BAD_REQUEST'
+  //         })
+  //       const note = await ctx.db.userProblemReferences.create({
+  //         data: {
+  //           title: 'New Note',
+  //           content: '', // TODO: set to empty or null in accordance with json
+  //           referenceType: input.itemType,
+  //           referenceId: input.itemId,
+  //           type: $Enums.UserReferencesAndNotesType.NOTE,
+  //           userId: ctx.session.user.id,
+  //           order: input.order
+  //         }
+  //       })
+  //       return note
+  //     }
 
-      // return collection
-    }),
+  //     // return collection
+  //   }),
 
   // separate createSectionReferences for 'SECTION' item type
   createItemReferences: protectedProcedure
@@ -995,6 +996,10 @@ export const repositoryItemRouter = createTRPCRouter({
         },
         create: {
           referenceId: input.referenceId ?? undefined,
+          // ...((input.referenceType === $Enums.RepositoryItemReferenceType.PROBLEM ||
+          //   input.referenceType === $Enums.RepositoryItemReferenceType.CUSTOM_PROBLEM) && {
+          //   referenceType: input.referenceType
+          // }),
           referenceType: input.referenceType,
           userId: ctx.session.user.id,
           note: input.content
@@ -1147,11 +1152,14 @@ export const repositoryItemRouter = createTRPCRouter({
     }),
   updateReferenceOrder: protectedProcedure
     .input(
-      z.object({
-        repoItemId: z.string(),
-        type: z.enum(['PROBLEM', 'CUSTOM_PROBLEM']),
-        id: z.string()
-      })
+      z.array(
+        z.object({
+          id: z.string(),
+          order: z.number()
+          // repoItemId: z.string(),
+          // type: z.enum(['PROBLEM', 'CUSTOM_PROBLEM'])
+        })
+      )
     )
     .mutation(async ({ ctx, input: updatedNoteReferenceOrder }) => {
       await changeReferenceOrder({

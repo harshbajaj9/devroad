@@ -65,7 +65,7 @@ const RepositoryHeader = ({ repository }: RepositoryHeaderProps) => {
 
       <div className='mb-4 max-w-prose'>
         <p className='leading-7 [&:not(:first-child)]:mt-6'>
-          {repository.description}
+          {/* {repository.description} */}
           Ullamco incididunt irure sunt labore tempor adipisicing id consectetur
           ex. Quis ad esse ex nisi. Adipisicing esse ad mollit voluptate qui
           consectetur in incididunt dolore ad deserunt laborum dolor eiusmod.

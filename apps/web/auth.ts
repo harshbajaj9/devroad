@@ -30,6 +30,7 @@ declare module 'next-auth/jwt' {
 
 const nextAuthResult = NextAuth({
   ...authConfig,
+  // @ts-ignore
   adapter: PrismaAdapter(prisma),
   providers: [
     ...authConfig.providers,

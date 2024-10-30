@@ -1,5 +1,6 @@
 'use client'
 import {
+  OpenItemType,
   useEditRepository,
   useFilterTags,
   useNotes,
@@ -70,7 +71,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import AddItemButtons from './add-item-button'
 import { api } from '@/trpc/react'
-import { cn, getCountValues } from '@/lib/utils'
+import { cn, getCountValues, ItemNodeType, NodeType } from '@/lib/utils'
 import Image from 'next/image'
 import {
   Bolt,
@@ -281,7 +282,7 @@ MultiSegmentProgress.displayName = 'MultiSegmentProgress'
 
 interface SectionNodeProps {
   path: { id: string; title: string }[]
-  sectionData: NodeType
+  sectionData: ItemNodeType
   updateOrder: () => void
   isOwner: boolean
   setDisableDnD: React.Dispatch<React.SetStateAction<boolean>>
@@ -323,7 +324,9 @@ const SectionNode = ({
   } = useEditRepository()
   // console.log('curpath', curPath)
   // const [isEditMode, setIsEditMode] = useState(false)
-  const [childNodes, setChildNodes] = useState(sectionData?.children)
+  const [childNodes, setChildNodes] = useState<ItemNodeType[]>(
+    sectionData?.children as ItemNodeType[]
+  )
 
   const { doneItems, revisitItems } = useRepository()
 
@@ -342,7 +345,7 @@ const SectionNode = ({
   }, [revisitItems, doneItems])
 
   useEffect(() => {
-    setChildNodes(sectionData?.children)
+    setChildNodes(sectionData?.children as ItemNodeType[])
   }, [sectionData])
   // const [activeItem, setActiveItem] = useState<RepositoryItem | undefined>()
   const { isOver, setNodeRef } = useDroppable({
@@ -360,7 +363,7 @@ const SectionNode = ({
   }
   const onDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
-    if (active && over && active.id === over.id) {
+    if (!active || !over || active.id === over.id) {
       return
     }
     setDisableDnD(true)
@@ -377,7 +380,7 @@ const SectionNode = ({
     const idChildMap = new Map<string, any>(items.map(item => [item.id, item]))
 
     const [reorderedItem] = items.splice(oldIndex, 1)
-    items.splice(newIndex, 0, reorderedItem)
+    if (reorderedItem) items.splice(newIndex, 0, reorderedItem)
 
     // Update the local state with reordered items
     const reorderItems = items.map((item, index) => ({
@@ -404,7 +407,8 @@ const SectionNode = ({
       )
       return arrayMove(childNodes, oldIndex, newIndex)
     })
-    await updateOrder(changedPriorities)
+    // await updateOrder(changedPriorities)
+    await updateOrder()
     setActiveItem(undefined)
 
     // const { active, over } = event
@@ -430,7 +434,7 @@ const SectionNode = ({
     setActiveItem
   } = useEditRepository()
   const { setOpenItem, openItem } = useRepository()
-  const { isEditMode, setIsEditMode } = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
 
   return (
     <div
@@ -447,7 +451,7 @@ const SectionNode = ({
         // }
         setOpenItem(undefined)
         setTimeout(() => {
-          setOpenItem(sectionData)
+          setOpenItem(sectionData as ItemNodeType)
         }, 0)
         setExpanded(true)
       }}
@@ -521,11 +525,10 @@ const SectionNode = ({
                 <PlusIcon className='mr-2 h-4 w-4' />
                 Add
               </DropdownMenuItem>
-              {sectionData.depth < 2 && (
+              {sectionData.depth && sectionData.depth < 2 && (
                 <DropdownMenuItem
                   onClick={e => {
                     e.stopPropagation()
-
                     setCurrentPath(curPath)
                     setMovingItem({
                       id: sectionData.id,
@@ -737,7 +740,7 @@ const SectionNode = ({
     </div>
   )
 }
-export const getPlatformIcon = (platform: $Enums.Platform) => {
+export const getPlatformIcon = (platform: $Enums.Platform | undefined) => {
   if (platform === $Enums.Platform.LC)
     return (
       <Image
@@ -749,13 +752,10 @@ export const getPlatformIcon = (platform: $Enums.Platform) => {
         alt='lc'
       ></Image>
     )
+  return
 }
 interface ItemNodeProps {
-  itemData: RepositoryItem & {
-    // children: RepositoryItem[]
-    lastStatus: number
-    tags: string[]
-  }
+  itemData: ItemNodeType
   setQueryUserData: (flag: boolean) => void
   path: { id: string; title: string }[]
   isOwner: boolean
@@ -912,7 +912,7 @@ const ItemNode = ({
                   id: itemData.id,
                   title: itemData.problem
                     ? itemData.problem?.title
-                    : itemData.customProblem.title
+                    : itemData.customProblem?.title
                       ? itemData.customProblem.title
                       : itemData.title,
                   parentId: itemData.parentId,
@@ -932,7 +932,7 @@ const ItemNode = ({
                   id: itemData.id,
                   title: itemData.problem
                     ? itemData.problem?.title
-                    : itemData.customProblem.title
+                    : itemData.customProblem?.title
                       ? itemData.customProblem.title
                       : itemData.title
                 })
@@ -967,8 +967,10 @@ const ItemNode = ({
                     <CheckCircleIcon
                       onClick={e => {
                         e.stopPropagation()
-                        const curStatus = status
-                        setStatus(prev => (prev + 1) % 3)
+                        const newStatus = (status + 1) % 3
+                        setStatus(newStatus)
+                        // setStatus(prev => (prev + 1) % 3)
+
                         // to prevent ui changes on previous status updates in case of fast updates by user
                         resetStatusUpdate()
                         updateLastStatus({
@@ -976,7 +978,7 @@ const ItemNode = ({
                           referenceType: itemData.referenceType as
                             | 'PROBLEM'
                             | 'CUSTOM_PROBLEM',
-                          status: (curStatus + 1) % 3
+                          status: newStatus
                         })
                       }}
                       // onDoubleClick={e => {
@@ -1027,7 +1029,8 @@ const ItemNode = ({
                           {getPlatformIcon(
                             itemData.problem
                               ? (itemData.problem.platform ?? 'LC')
-                              : (itemData.customProblem.platform ?? 'LC')
+                              : undefined
+                            // : (itemData.customProblem.platform ?? 'LC')
                           )}
                         </span>
                         {itemData.problem && itemData.problem?.title}
@@ -1057,7 +1060,7 @@ const ItemNode = ({
                     <p className={cn()}>
                       {itemData.problem
                         ? itemData.problem?.title
-                        : itemData.customProblem.title
+                        : itemData.customProblem?.title
                           ? itemData.customProblem.title
                           : itemData.id}
                     </p>
@@ -1149,7 +1152,7 @@ const ItemNode = ({
 }
 interface EditableNodeProps {
   // nodeData: { details: RepositoryItem; children: EditableNodeProps }
-  nodeData: any
+  nodeData: ItemNodeType
   forceDragging?: boolean
   updateOrder: any
   // deleteItem: (id: string) => void
@@ -1187,23 +1190,24 @@ export const EditableNode = ({
     api.repositoryItem.getOrCreateUserData.useQuery(
       {
         referenceId: nodeData.referenceId as string,
-        referenceType: nodeData.referenceType as string
+        referenceType: nodeData.referenceType as 'PROBLEM' | 'CUSTOM_PROBLEM'
       },
       {
         enabled: queryUserData
       }
     )
   const [tags, setTags] = useState(nodeData?.tags ?? [])
-  const [status, setStatus] = useState(nodeData?.lastStatus)
+  const [status, setStatus] = useState(nodeData?.lastStatus ?? 0)
   const { doneItems, setDoneItems, revisitItems, setRevisitItems } =
     useRepository()
   useEffect(() => {
     if (userData) {
-      if (status !== userData.lastStatus) setStatus(userData.lastStatus)
+      if (status !== userData.lastStatus) setStatus(userData.lastStatus ?? 0)
+
       if (userData.lastStatus === 1) {
         setDoneItems(prev => {
-          if (!prev.includes(nodeData.referenceId)) {
-            return [...prev, nodeData.referenceId]
+          if (!prev.includes(nodeData.referenceId as string)) {
+            return [...prev, nodeData.referenceId as string]
           }
           return prev
         })
@@ -1212,8 +1216,8 @@ export const EditableNode = ({
         })
       } else if (userData.lastStatus === 2) {
         setRevisitItems(prev => {
-          if (!prev.includes(nodeData.referenceId)) {
-            return [...prev, nodeData.referenceId]
+          if (!prev.includes(nodeData.referenceId as string)) {
+            return [...prev, nodeData.referenceId as string]
           }
           return prev
         })
@@ -1268,19 +1272,19 @@ export const EditableNode = ({
     if (
       nodeData.referenceType === 'PROBLEM' &&
       difficultyTag &&
-      difficultyTag !== nodeData.problem.difficulty
+      difficultyTag !== nodeData.problem?.difficulty
     )
       return
     if (
       nodeData.referenceType === 'CUSTOM_PROBLEM' &&
       difficultyTag &&
-      difficultyTag !== nodeData.customProblem.difficulty
+      difficultyTag !== nodeData.customProblem?.difficulty
     )
       return
 
     if (
       filterTags.length &&
-      !nodeData.tags.some(itemTag => filterTags.includes(itemTag))
+      !nodeData.tags?.some(itemTag => filterTags.includes(itemTag))
     )
       return
   }

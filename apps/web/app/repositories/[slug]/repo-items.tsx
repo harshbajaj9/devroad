@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { $Enums, Repository } from '@repo/database'
 
-import { cn } from '@/lib/utils'
+import { cn, ItemNodeType } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,7 +69,7 @@ const RepositoryItems = async ({
   if (!repositoryNode) {
     return
   }
-  const repoKids = repositoryNode.children
+  const repoKids = repositoryNode.children as ItemNodeType[]
   // const repoKidsMemo = useMemo(() => {
   //   return repoKids?.map(repoKid => {
   //     return (
@@ -114,9 +114,9 @@ const RepositoryItems = async ({
                 return (
                   <Node
                     isOwner={isOwner}
-                    path={[
-                      { id: repositoryNode.id, title: repositoryNode.title }
-                    ]}
+                    // path={[
+                    //   { id: repositoryNode.id, title: repositoryNode.title }
+                    // ]}
                     key={repoKid.id}
                     nodeData={repoKid}
                   />

@@ -37,8 +37,8 @@ const NotesAndReferences = ({ isOwner = false }: { isOwner?: boolean }) => {
   >('')
   useEffect(() => {
     if (openItem && openItem.referenceType === 'CUSTOM_PROBLEM') {
-      setCustomItemTitle(openItem.customProblem.title)
-      setDebouncedCustomItemTitle(openItem.customProblem.title)
+      setCustomItemTitle(openItem.customProblem?.title ?? null)
+      setDebouncedCustomItemTitle(openItem.customProblem?.title ?? null)
     }
   }, [openItem])
 

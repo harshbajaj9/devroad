@@ -1,13 +1,15 @@
-import { PrismaClient } from "@repo/database";
+import { PrismaClient } from '@repo/database'
 // the above import is not working
 // import { PrismaClient } from "@prisma/client";
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  var prisma: PrismaClient | undefined
 }
-export const prisma = globalThis.prisma || new PrismaClient();
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
-if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
+export const prisma = globalForPrisma.prisma || new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 // https://github.com/prisma/accelerate-speed-test/blob/main/lib/prisma.ts
 

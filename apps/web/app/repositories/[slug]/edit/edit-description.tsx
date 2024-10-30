@@ -52,11 +52,11 @@ const EditDescription = () => {
     async (editor: EditorInstance) => {
       const json = editor.getJSON()
       // TODO: create this function
-      updateItemDescription({
-        id: activeNote.id,
-        title: title,
-        content: json
-      })
+      // updateItemDescription({
+      //   id: activeNote.id,
+      //   title: title,
+      //   content: json
+      // })
       // setEditorContent(json)
       setEditorSavedStatus(true)
     },

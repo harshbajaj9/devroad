@@ -35,7 +35,7 @@ import {
   useSearchParams
 } from 'next/navigation'
 import SearchFilterComponent from './search-filter-component'
-import { getRepositories } from '@/server/api/routers/utils/repositories-utils'
+// import { getRepositories } from '@/server/api/routers/utils/repositories-utils'
 import { db } from '@/server/db'
 
 const Tag = ({ title, count }: { title: string; count: string }) => {
@@ -68,20 +68,19 @@ const Repositories = async ({
 }: {
   searchParams: { role: string; company: string; cat: string }
 }) => {
-  const repositories = await getRepositories({
-    searchQuery: '',
-    categoryFilter: searchParams.cat,
-    companyFilter: searchParams.company
-  })
+  // const repositories = await getRepositories({
+  //   searchQuery: '',
+  //   categoryFilter: searchParams.cat,
+  //   companyFilter: searchParams.company
+  // })
   // const repositories = await prisma.repository.findMany()
-  console.log('repositories>', repositories)
   return (
     <main className='h-[1600px] bg-backgroundalt'>
       <div className='bg-background p-16'>
         {/* <div className='p-16'></div> */}
         <h1
           className={cn(
-            'mb-4 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
+            'mb-4 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'
           )}
         >
           Repositories {searchParams['role'] && `for ${searchParams['role']}`}
@@ -117,13 +116,13 @@ const Repositories = async ({
       </div> */}
 
       <div className='flex flex-wrap justify-center gap-8 px-24 py-8'>
-        {repositories.map(repo => (
+        {/* {repositories.map(repo => (
           <RepositoryCard
             title={repo.title}
             creatorName={repo.creatorName}
             id={repo.id}
           />
-        ))}
+        ))} */}
         <RepositoryCard />
         <RepositoryCard />
         <RepositoryCard />

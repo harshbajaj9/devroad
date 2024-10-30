@@ -77,7 +77,13 @@ import {
 import React, { useEffect, useMemo, useState } from 'react'
 import AddItemButtons from './add-item-button'
 import { api } from '@/trpc/react'
-import { cn, getCountValues, getRepositoryTags } from '@/lib/utils'
+import {
+  cn,
+  getCountValues,
+  getRepositoryTags,
+  ItemNodeType,
+  NodeType
+} from '@/lib/utils'
 import Image from 'next/image'
 import {
   Bolt,
@@ -172,7 +178,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
     isSuccess
   } = api.repository.get.useQuery(repository.id)
   // console.log('repoNode', repoNode)
-  const [repoKids, setRepoKids] = useState(repoNode?.children)
+  const [repoKids, setRepoKids] = useState<ItemNodeType[]>(repoNode?.children)
   // console.log('repoKids', repoKids)
   useEffect(() => {
     // console.log('repoNode>>', repoNode, repoKids)
@@ -362,8 +368,12 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   }
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event
-    setActiveItem(repoKids?.find(repoKid => repoKid.order === active.id))
-    console.log('dragStart', active, activeItem)
+    setActiveItem(
+      repoKids?.find(repoKid => repoKid.order === active.id) as
+        | RepositoryItem
+        | undefined
+    )
+    // console.log('dragStart', active, activeItem)
   }
   const onDragCancel = (event: DragCancelEvent) => {
     setActiveItem(undefined)
@@ -371,13 +381,13 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
 
   const onDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
-    if (active && over && active.id === over.id) {
+    if (!active || !over || active.id === over.id) {
       return
     }
     setDisableDnD(true)
     const oldIndex = repoKids.findIndex(repoKid => repoKid.order === active.id)
     const newIndex = repoKids.findIndex(repoKid => repoKid.order === over?.id)
-    console.log(active.id, oldIndex, newIndex, over.id)
+    // console.log(active.id, oldIndex, newIndex, over.id)
     // create a duplicate array
     const items = Array.from(repoKids)
     // console.log('repoKids_b', repoKids)
@@ -387,7 +397,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
     // console.log('items>>', items)
 
     const [reorderedItem] = items.splice(oldIndex, 1)
-    items.splice(newIndex, 0, reorderedItem)
+    if (reorderedItem) items.splice(newIndex, 0, reorderedItem)
 
     // console.log('items>>', items)
 

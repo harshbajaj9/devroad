@@ -149,7 +149,7 @@ enum Platform {
 
 enum ProblemCategory {
   OBJECT_ORIENTED
-  OPERATING_SYSTEM
+  OS
   DATABASE_MANAGEMENT
   NETWORKING
   DSA
@@ -298,6 +298,7 @@ enum RepositoryItemReferenceType {
   INTERVIEW_QUESTION
   INTERVIEW_PROBLEM
   CUSTOM
+  SECTION
 }
 
 enum RepositoryItemParentType {
