@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin'
+
 const nextConfig = {
   reactStrictMode: false,
   // experimental: {
