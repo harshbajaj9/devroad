@@ -6,7 +6,7 @@ const nextConfig = {
   // },
   // productionBrowserSourceMaps: false,
   // transpilePackages: ["ui", "database", "botpress"],
-  transpilePackages: ["ui", "database"],
+  transpilePackages: ['ui', 'database'],
   // i18n: {
   //   locales: ["en"],
   //   defaultLocale: "en",
@@ -14,13 +14,21 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "*.googleusercontent.com",
-        port: "",
-        pathname: "**",
-      },
-    ],
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+        port: '',
+        pathname: '**'
+      }
+    ]
   },
-};
+  // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-monorepo
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()]
+    }
 
-export default nextConfig;
+    return config
+  }
+}
+
+export default nextConfig
