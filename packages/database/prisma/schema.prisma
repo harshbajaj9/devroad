@@ -1,0 +1,414 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_NON_POOLED_URL")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // @@map("accounts")
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // @@map("sessions")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id               String    @id @default(cuid())
+  username         String?   @unique
+  name             String?
+  email            String?   @unique
+  emailVerified    DateTime?
+  newEmail         String?   @unique
+  newEmailVerified DateTime?
+  googleMail       String?
+  googleImage      String?
+  githubMail       String?
+  githubImage      String?
+  password         String?
+  image            String?
+  role             UserRole  @default(USER)
+  websiteLink      String?
+  accounts         Account[]
+  sessions         Session[]
+  posts            Post[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+  // @@map("verificationtokens")
+
+  @@unique([identifier, token])
+}
+
+model EmailVerificationToken {
+  identifier String   @id @default(cuid())
+  token      String   @unique
+  expires    DateTime
+  email      String
+  // @@map("verificationtokens")
+
+  @@unique([email, token])
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  @@index([name])
+}
+
+enum DOMAINS {
+  SOFTWARE_DEVELOPMENT
+  PRODUCT_MANAGEMENT
+  DATA_ANALYST
+  PRODUCT_DESIGNER
+}
+
+enum ResourceCategoryTags {
+  DSA
+  GUESSTIMATES
+  SQL
+  PANDAS
+  JAVASCRIPT
+}
+
+enum ProblemSetTypes {
+  DSA
+  CUSTOM
+}
+
+// enum TopicTags {
+//   STRING
+//   ARRAY
+//   ALGORITHM
+//   DATA_STRUCTURE
+//   DYNAMIC_PROGRAMMING
+//   GREEDY
+//   UNION_FIND
+//   LINKED_LIST
+//   IMPLEMENTATION
+// }
+
+// TODO: Should be removed?
+enum CompanyTags {
+  FAANG
+  GOOGLE
+}
+
+enum Platform {
+  DR
+  LC
+  GFG
+  GFE
+}
+
+enum ProblemCategory {
+  OBJECT_ORIENTED
+  OS
+  DATABASE_MANAGEMENT
+  NETWORKING
+  DSA
+  SQL
+  PANDAS
+  SHELL_SCRIPT
+  DATA_ANALYSIS
+  JAVASCRIPT_MORE
+  ROR_MORE
+  PYTHON_MORE
+  SYSTEM_DESIGN
+  FE_SYSTEMDESIGN
+  GUESSTIMATES
+  PRODUCT_DESIGN
+  PRODUCT_IMPROVEMENT
+  METRICS
+  ROOT_CAUSE_ANALYSIS
+}
+
+enum ProblemTags {
+  STRING
+  ARRAY
+  ALGORITHM
+  DATA_STRUCTURE
+  DYNAMIC_PROGRAMMING
+  GREEDY
+  UNION_FIND
+  LINKED_LIST
+  IMPLEMENTATION
+
+  JOIN
+
+  VANILLA
+  REACT
+  VUE
+  SVELTE
+}
+
+// // This is currently just being used for storing the actual urls for dsa problems from leetcode, can be used for more platforms as well. This is to allow search by title or link
+// model PlatformProblem {
+//   id          String             @id @default(uuid())
+//   title       String
+//   description String?
+//   url         String
+//   platform    Platform
+//   updatedAt   DateTime           @updatedAt
+//   difficulty  ProblemDifficulty?
+// }
+
+// This is devroad's original copy of the  platform problem
+model Problem {
+  id           String             @id @default(uuid())
+  url          String
+  title        String
+  description  Json?
+  platform     Platform           @default(DR)
+  difficulty   ProblemDifficulty?
+  // contains other kv pair data
+  platformData Json?
+  category     ProblemCategory
+  tags         ProblemTags[]
+}
+
+model SimilarProblem {
+  problem1Id String
+  problem2Id String
+
+  @@id([problem1Id, problem2Id])
+}
+
+enum CustomItemType {
+  PROBLEM
+  ITEM
+}
+
+model CustomItem {
+  id    String @id @default(uuid())
+  url   String
+  title String
+  // contains {id, link , title and tags in future maybe}
+
+  //NOTE : could be markdown
+  description Json?
+
+  type CustomItemType
+
+  difficulty ProblemDifficulty?
+  category   ProblemCategory
+}
+
+enum RepositoryType {
+  PROBLEM_SET
+  ROADMAP
+  COLLECTION
+}
+
+enum RepositoryVisibilityMode {
+  PRIVATE
+  SHARED
+  DISCOVERABLE
+}
+
+enum RepositoryClaimStatus {
+  CLAIMED
+  UNCLAIMED
+}
+
+enum RepositoryVerifiedStatus {
+  VERIFIED
+  UNVERIFIED
+}
+
+model Repository {
+  id                 String                   @id @default(uuid())
+  title              String
+  description        Json?
+  type               RepositoryType
+  visibility         RepositoryVisibilityMode @default(PRIVATE)
+  creatorId          String
+  creatorName        String
+  creatorWebsiteLink String?
+  claimStatus        RepositoryClaimStatus    @default(CLAIMED)
+  verifiedStatus     RepositoryVerifiedStatus @default(UNVERIFIED)
+  lastChildOrder     Int                      @default(0)
+
+  roleTags    String[]
+  companyTags String[]
+  categories  String[]
+  topicTags   String[]
+
+  lastUpdated  DateTime @default(now())
+  itemCount    Int      @default(0)
+  sectionCount Int      @default(0)
+  likeCount    Int      @default(0)
+  commentCount Int      @default(0)
+}
+
+enum RepositoryItemType {
+  SECTION
+  ITEM
+}
+
+enum RepositoryItemReferenceType {
+  PROBLEM
+  CUSTOM_PROBLEM
+  INTERVIEW_QUESTION
+  INTERVIEW_PROBLEM
+  CUSTOM
+  SECTION
+}
+
+enum RepositoryItemParentType {
+  REPOSITORY
+  SECTION
+}
+
+enum ProblemDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum RepositoryItemStatus {
+  CREATED
+  PUBLISH
+  DRAFT
+}
+
+model RepositoryItem {
+  id             String                       @id @default(cuid())
+  type           RepositoryItemType
+  status         RepositoryItemStatus         @default(CREATED)
+  // id of the parent (problem set/section) it belongs
+  parentId       String
+  parentType     RepositoryItemParentType
+  // creatorId      String
+  repositoryId   String                       @default("_")
+  // order in the section/set
+  order          Int
+  lastChildOrder Int                          @default(0)
+  // Reference to the Problem, if type is item and references Problem or custom problem
+  referenceId    String?
+  referenceType  RepositoryItemReferenceType?
+
+  // title, description and resources only needed for section type
+  title     String?
+  resources Json?
+
+  // topicTags  String[]
+  // difficulty ProblemDifficulty?
+  UserReferenceItemMapping UserReferenceItemMapping[]
+}
+
+enum LikeReferenceTypes {
+  BLOG
+  TUTORIAL
+  STORYLINE
+  COMMENT
+  COLLECTION
+}
+
+model Like {
+  id            Int                @id @default(autoincrement())
+  referenceType LikeReferenceTypes
+  referenceId   String
+}
+
+model Comment {
+  id            Int                @id @default(autoincrement())
+  // TODO: storing markdown in db
+  content       String
+  referenceType LikeReferenceTypes
+  referenceId   String
+}
+
+// Notes of every user are added to the RepositoryItemReferenceType
+model UserReferenceItemMapping {
+  repositoryItemId        String
+  RepositoryItem          RepositoryItem        @relation(fields: [repositoryItemId], references: [id], onDelete: Cascade)
+  userProblemReferencesId String
+  UserProblemReferences   UserProblemReferences @relation(fields: [userProblemReferencesId], references: [id], onDelete: Cascade)
+
+  // TODO: do i need a relation? what about cascade delete
+
+  @@id(name: "refInRepoId", [userProblemReferencesId, repositoryItemId])
+}
+
+enum ReferenceSubType {
+  ARTICLE
+  VIDEO
+}
+
+model UserProblemReferences {
+  id                       String                       @id @default(uuid())
+  order                    Int
+  userId                   String
+  title                    String
+  // for reference 
+  link                     String?
+  subType                  ReferenceSubType?            @default(ARTICLE)
+  // Reference to the resource in case of item, leave for section
+  referenceId              String?
+  referenceType            RepositoryItemReferenceType?
+  UserReferenceItemMapping UserReferenceItemMapping[]
+}
+
+model UserItemData {
+  id            String                      @id @default(uuid())
+  userId        String
+  referenceId   String
+  referenceType RepositoryItemReferenceType
+  // for RepositoryItemReferenceType PROBLEM and CUSTOM_PROBLEM
+  lastStatus    Int?                        @default(0)
+  tags          String[]
+  note          Json?
+
+  // TODO: could add tags here?
+  // TODO: could add timesSolved later
+  // timesSolved Int? @default(0)
+  // 0 for incomplete, 1 for complete , 2 for revisit
+  @@unique([userId, referenceId])
+}

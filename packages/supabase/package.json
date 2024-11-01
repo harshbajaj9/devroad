@@ -1,0 +1,14 @@
+{
+  "name": "@repo/supabase",
+  "scripts": {
+    "supa:start": "supabase start",
+    "supa:stop": "supabase stop",
+    "supa:dev": "supabase functions serve --env-file ./supabase/.env.local",
+    "supa:prod:secrets-set": "supabase secrets set --project-ref vuulzdhlxovlugpakzij --env-file ./supabase/.env",
+    "supa:development:secrets-set": "supabase secrets set --project-ref qfjypzgsjoqyxmmeybzq --env-file ./supabase/.env",
+    "supa:preview:secrets-set": "supabase secrets set --project-ref owvueqtkggahsipznwlr --env-file ./supabase/.env",
+    "supa:prod:deploy": "supabase functions deploy --project-ref vuulzdhlxovlugpakzij",
+    "supa:development:deploy": "supabase functions deploy --project-ref qfjypzgsjoqyxmmeybzq",
+    "supa:preview:deploy": "supabase functions deploy --project-ref owvueqtkggahsipznwlr"
+  }
+}

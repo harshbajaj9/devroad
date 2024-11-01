@@ -2,12 +2,13 @@
   "name": "devroad",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
+    "build": "dotenv -- turbo build",
+    "dev": "dotenv -- turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "dotenv-cli": "^7.4.2",
     "prettier": "^3.2.5",
     "turbo": "^2.0.6",
     "typescript": "^5.4.5"
