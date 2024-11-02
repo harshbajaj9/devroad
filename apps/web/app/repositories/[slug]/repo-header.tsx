@@ -128,7 +128,7 @@ const RepositoryHeader = ({ repository }: RepositoryHeaderProps) => {
         <div>
           <Button variant='ghost' size='sm'>
             <HeartIcon className='mr-1 size-6' />
-            {repo?.likeCount}
+            {repository?.likeCount}
           </Button>
           <Button variant='ghost' size='sm'>
             <ChatBubbleBottomCenterTextIcon className='size-6' />
