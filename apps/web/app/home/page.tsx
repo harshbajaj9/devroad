@@ -23,8 +23,8 @@ const HomePage = () => {
 
   const { data: repositories, isLoading } =
     api.repository.getUserRepositories.useQuery()
-  const { data: savedRepositories, isLoading: isSavedReposLoading } =
-    api.repository.getUserSavedRepositories.useQuery()
+  const { data: likedProblemSets, isLoading: isSavedReposLoading } =
+    api.repository.getUserLikedProblemSets.useQuery()
 
   return (
     <main className='w-full gap-8'>
@@ -65,8 +65,8 @@ const HomePage = () => {
           <div className='flex flex-wrap justify-start gap-4'>
             {repositories &&
               repositories
-                .filter(repo => repo.type === 'PROBLEM_SET')
-                .map(repo => <PSCard key={repo.id} repo={repo} />)}
+                .filter(ps => ps.type === 'PROBLEM_SET')
+                .map(ps => <PSCard key={ps.id} ps={ps} />)}
 
             {/* <ProblemSetCard />
             <ProblemSetCard />
@@ -78,15 +78,15 @@ const HomePage = () => {
           <div className='mb-8 flex items-center gap-4 text-3xl'>
             <div className='flex items-center justify-start gap-4'>
               <h2 className='scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0'>
-                Saved Problem Sets
+                Liked Problem Sets
               </h2>
             </div>
           </div>
           <div className='flex flex-wrap justify-start gap-4'>
-            {savedRepositories &&
-              savedRepositories
-                .filter(repo => repo.type === 'PROBLEM_SET')
-                .map(repo => <PSCard key={repo.id} repo={repo} />)}
+            {likedProblemSets &&
+              likedProblemSets
+                .filter(ps => ps.type === 'PROBLEM_SET')
+                .map(ps => <PSCard key={ps.id} ps={ps} />)}
           </div>
         </div>
         {/* <div>

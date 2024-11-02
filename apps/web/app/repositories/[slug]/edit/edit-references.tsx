@@ -657,33 +657,6 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
     order: number
   }>()
   const removeRef = () => {}
-  // deletion function
-  const deleteItem = async (id: string) => {
-    console.log('deleting')
-
-    const items = Array.from(openReferences)
-    const idChildMap = new Map<string, any>(items.map(item => [item.id, item]))
-
-    const updated = openReferences
-      .filter(item => item.id !== id)
-      .map((item, i) => ({ ...item, order: i + 1 }))
-
-    // Update the priorities of the items
-    const prioritizedItems = updated.map((item, index) => ({
-      id: item.id,
-      order: item.order
-    }))
-
-    // Compare prioritized items to repoKids with id and create a new array of repoKids with the ones that have changed priority
-    const changedPriorities = prioritizedItems.filter(item => {
-      const repoKid = idChildMap.get(item.id)
-      return repoKid?.order !== item.order
-    })
-    // console.log('changedPriorities', changedPriorities)
-    // await updateOrder(changedPriorities)
-    // await deleteNode({ node_id: id, changedPriorities })
-    await deleteNode({ node_id: id })
-  }
 
   // const {
   //   data: referenceItems,
@@ -727,35 +700,6 @@ const EditReferences = ({ itemId }: EditReferencesProps) => {
         utils.repositoryItem.getReferences.cancel()
         utils.repositoryItem.getRepositoryReferences.cancel()
         // setDisableDnD(false)
-      }
-    })
-  const { mutateAsync: deleteNode, isPending: isDeletePending } =
-    api.repositoryItem.deleteNode.useMutation({
-      onError: error => {
-        utils.repository.get.invalidate()
-        Toast({
-          type: 'error',
-          title: 'Error!',
-          message: error?.message || 'Something went wrong',
-          duration: 2000
-        })
-      },
-      onSuccess: (id: string) => {
-        const updated = openReferences
-          .filter(item => item.id !== id)
-          .map((item, i) => ({ ...item, order: i + 1 }))
-        setOpenReferences(openReferences => {
-          return updated
-        })
-
-        utils.repository.get.invalidate()
-        Toast({
-          title: 'Segments priorities updated',
-          type: 'success'
-        })
-      },
-      onMutate() {
-        utils.repository.get.cancel()
       }
     })
 

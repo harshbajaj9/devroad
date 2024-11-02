@@ -17,7 +17,10 @@ import {
   PlayIcon,
   QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline'
-import { PlayIcon as PlayIconSolid } from '@heroicons/react/24/solid'
+import {
+  PlayIcon as PlayIconSolid,
+  HeartIcon as HeartIconSolid
+} from '@heroicons/react/24/solid'
 import { $Enums, Repository } from '@repo/database'
 import {
   Avatar,
@@ -73,7 +76,7 @@ import {
 } from 'lucide-react'
 import { Bricolage_Grotesque, Jost } from 'next/font/google'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // const font2 = Bricolage_Grotesque({
 //   weight: ['300', '400', '500', '600', '700', '800'],
 //   subsets: ['latin']
@@ -90,6 +93,12 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
   const handleSave = () => {
     setIsEditMode(false)
   }
+  const {
+    data: countValues,
+    isLoading,
+    isSuccess
+  } = api.repository.getCountValues.useQuery(repository.id)
+
   const router = useRouter()
   // const { mutateAsync: createNewSession } =
   //   api.repository.createNewSession.useMutation({
@@ -120,11 +129,11 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
     api.repository.updateVisibility.useMutation({
       // refetchOnWindowFocus: false,
       onSuccess() {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repository.id)
         Toast({ title: 'Visibility Updated', type: 'success' })
       },
       onError(error: { message: any }) {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repository.id)
         Toast({
           type: 'error',
           title: 'Error!',
@@ -133,6 +142,53 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
         })
       }
     })
+
+  const { data: currentLikedStatus } = api.repository.getLikedStatus.useQuery(
+    repository.id
+  )
+  const [likedStatus, setLikedStatus] = useState(currentLikedStatus)
+  useEffect(() => {
+    // if condition to not update when unnecessary
+    if (likedStatus !== currentLikedStatus) setLikedStatus(currentLikedStatus)
+  }, [currentLikedStatus])
+  const { mutateAsync: liked } = api.repository.liked.useMutation({
+    // refetchOnWindowFocus: false,
+    onSuccess() {
+      utils.repository.getLikedStatus.invalidate(repository.id)
+    },
+    onError(error: { message: any }) {
+      utils.repository.get.invalidate(repository.id)
+      Toast({
+        type: 'error',
+        title: 'Error!',
+        message: error?.message || 'Something went wrong',
+        duration: 5000
+      })
+    }
+  })
+  const { mutateAsync: unliked } = api.repository.unliked.useMutation({
+    // refetchOnWindowFocus: false,
+    onSuccess() {
+      utils.repository.getLikedStatus.invalidate(repository.id)
+    },
+    onError(error: { message: any }) {
+      utils.repository.get.invalidate(repository.id)
+      Toast({
+        type: 'error',
+        title: 'Error!',
+        message: error?.message || 'Something went wrong',
+        duration: 5000
+      })
+    }
+  })
+  const handleLikeUpdate = () => {
+    if (likedStatus) {
+      unliked(repository.id)
+    } else {
+      liked(repository.id)
+    }
+    setLikedStatus(prev => !prev)
+  }
 
   // const onVisibilityTabChange = value => {
   //   setVisibility(value)
@@ -349,15 +405,15 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
             //     </div>
             //   </HoverCardContent>
             // </HoverCard>
-            <a
-              href={repository.creatorWebsiteLink ?? '#'}
-              target='_blank'
-              rel='noopener noreferrer'
+            <p
+              // href={repository.creatorWebsiteLink ?? '#'}
+              // target='_blank'
+              // rel='noopener noreferrer'
               // variant='link'
               className='pl-0 font-semibold text-muted-foreground'
             >
               @{repository.creatorName}
-            </a>
+            </p>
           )}
         </div>
       </div>
@@ -407,7 +463,10 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
           <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
             <ClipboardDocumentListIcon className='size-5' />
             <p className='text-xs'>
-              <span className='font-semibold'>120</span> items
+              <span className='font-semibold'>
+                {countValues?.repositoryItemCount}
+              </span>{' '}
+              items
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
@@ -416,19 +475,62 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
           <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
             <FolderIcon className='size-5' />
             <p className='text-xs'>
-              <span className='font-semibold'>7</span> sections
+              <span className='font-semibold'>
+                {countValues?.repositorySectionCount}
+              </span>{' '}
+              sections
             </p>
             {/* <p className="text-[10px]">items</p> */}
           </div>
           {/* <Separator orientation='vertical' /> */}
 
-          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
-            <CheckBadgeIcon className='size-5' />
-            <p className='text-xs'>
-              <span className='font-semibold'>Verified</span>
-            </p>
-            {/* <p className="text-[10px]">items</p> */}
-          </div>
+          {repository.verifiedStatus === 'VERIFIED' && (
+            <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+              <CheckBadgeIcon className='size-5' />
+              <p className='text-xs'>
+                <span className='font-semibold'>Verified</span>
+              </p>
+            </div>
+          )}
+        </div>
+        <div className='flex w-full justify-around gap-3 text-muted-foreground'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={handleLikeUpdate}
+                  variant='ghost'
+                  size='sm'
+                  className='group'
+                >
+                  {likedStatus && (
+                    <HeartIconSolid className='mr-1 size-6 group-hover:text-pink-500' />
+                  )}
+                  {!likedStatus && (
+                    <HeartIcon className='mr-1 size-6 group-hover:text-pink-500' />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Like</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Button variant='ghost' size='sm' disabled={true}>
+            <ChatBubbleBottomCenterTextIcon className='mr-1 size-6' />
+          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='sm' className='group'>
+                  <BookmarkIcon className='size-6 group-hover:text-foreground' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Save</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         {/* <Separator orientation='horizontal' /> */}
 

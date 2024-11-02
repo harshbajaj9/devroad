@@ -78,6 +78,23 @@ export const repositoryRouter = createTRPCRouter({
       // console.log(repository, userId, 'hit>')
       return getItems({ node: repository, userId })
     }),
+  getCountValues: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input: repositoryId }) => {
+      const repositoryItemCount = await ctx.db.repositoryItem.count({
+        where: {
+          repositoryId: repositoryId,
+          type: $Enums.RepositoryItemType.ITEM
+        }
+      })
+      const repositorySectionCount = await ctx.db.repositoryItem.count({
+        where: {
+          repositoryId: repositoryId,
+          type: $Enums.RepositoryItemType.SECTION
+        }
+      })
+      return { repositoryItemCount, repositorySectionCount }
+    }),
 
   getUserRepositories: protectedProcedure.query(async ({ ctx }) => {
     // const post = await ctx.db.post.findFirst({
@@ -96,28 +113,27 @@ export const repositoryRouter = createTRPCRouter({
     return repositories
   }),
 
-  getUserSavedRepositories: protectedProcedure.query(async ({ ctx }) => {
-    // const post = await ctx.db.post.findFirst({
-    //   orderBy: { createdAt: 'desc' },
-    //   where: { createdBy: { id: ctx.session.user.id } }
-    // })
+  getUserLikedProblemSets: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id
 
     // TODO:
 
-    // get all repo ids from saved table
-
-    // get all repositories with id in the above list of ids
-
-    const repositories = await ctx.db.repository.findMany({
-      where: { creatorId: userId }
+    // get all problemSets ids from likes table
+    const problemSetIds = await ctx.db.like.findMany({
+      where: {
+        userId: ctx.session.user.id,
+        referenceType: $Enums.LikeReferenceTypes.REPOSITORY
+      },
+      select: { referenceId: true }
+    })
+    const psIds = problemSetIds.map(problemSet => problemSet.referenceId)
+    const problemSets = await ctx.db.repository.findMany({
+      where: {
+        id: { in: psIds }
+      }
     })
 
-    // const repositoryItems = await ctx.db.repositoryItem.findMany({
-    //   where: { parentId: repository.id }
-    // })
-    // console.log(repository, userId, 'hit>')
-    return repositories
+    return problemSets
   }),
 
   updateVisibility: publicProcedure
@@ -148,6 +164,76 @@ export const repositoryRouter = createTRPCRouter({
       // const userId = ctx.session?.user.id
       // // console.log(repository, userId, 'hit>')
       // return getItems({ node: repository, userId })
+    }),
+
+  getLikedStatus: protectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input: repositoryId }) => {
+      const like = await ctx.db.like.findUnique({
+        where: {
+          likeId: {
+            userId: ctx.session?.user.id,
+            referenceId: repositoryId
+          }
+        }
+      })
+      if (like) return true
+      return false
+    }),
+
+  liked: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input: repositoryId }) => {
+      const likeAddQuery = ctx.db.like.create({
+        data: {
+          userId: ctx.session?.user.id,
+          referenceId: repositoryId,
+          referenceType: $Enums.LikeReferenceTypes.REPOSITORY
+        }
+      })
+      const updateRepoLikeCountQuery = ctx.db.repository.update({
+        where: {
+          id: repositoryId
+        },
+        data: {
+          likeCount: {
+            increment: 1
+          }
+        }
+      })
+      const [likeAdd, updateRepoLikeCount] = await ctx.db.$transaction([
+        likeAddQuery,
+        updateRepoLikeCountQuery
+      ])
+      return
+    }),
+
+  unliked: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input: repositoryId }) => {
+      const likeRemoveQuery = ctx.db.like.delete({
+        where: {
+          likeId: {
+            referenceId: repositoryId,
+            userId: ctx.session.user.id
+          }
+        }
+      })
+      const updateRepoLikeCountQuery = ctx.db.repository.update({
+        where: {
+          id: repositoryId
+        },
+        data: {
+          likeCount: {
+            decrement: 1
+          }
+        }
+      })
+      const [likeRemove, updateRepoLikeCount] = await ctx.db.$transaction([
+        likeRemoveQuery,
+        updateRepoLikeCountQuery
+      ])
+      return
     }),
 
   getSecretMessage: protectedProcedure.query(() => {

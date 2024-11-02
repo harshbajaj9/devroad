@@ -49,7 +49,8 @@ const DeleteItemModal = ({ refetchData }: Props) => {
   const { mutateAsync: deleteNode, isPending: isDeletePending } =
     api.repositoryItem.deleteNode.useMutation({
       onError: error => {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repoStructure.id)
+        utils.repository.getCountValues.invalidate(repoStructure.id)
         Toast({
           type: 'error',
           title: 'Error!',
@@ -63,7 +64,7 @@ const DeleteItemModal = ({ refetchData }: Props) => {
         //   .map((item, i) => ({ ...item, order: i + 1 }))
         // setRepoKids(updated)
         setIsDeleteItemModalOpen(false)
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repoStructure.id)
         Toast({ title: 'Item deleted', type: 'success' })
       },
       onMutate() {

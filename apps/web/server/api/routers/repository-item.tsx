@@ -67,13 +67,13 @@ export const repositoryItemRouter = createTRPCRouter({
         await ctx.db.repository.update({
           where: { id: repository.id },
           data: {
-            lastChildOrder: repository.lastChildOrder + 1,
-            ...(input.type === 'SECTION' && {
-              sectionCount: { increment: 1 }
-            }),
-            ...(input.type === 'ITEM' && {
-              itemCount: { increment: 1 }
-            })
+            lastChildOrder: repository.lastChildOrder + 1
+            // ...(input.type === 'SECTION' && {
+            //   sectionCount: { increment: 1 }
+            // }),
+            // ...(input.type === 'ITEM' && {
+            //   itemCount: { increment: 1 }
+            // })
           }
         })
         order = repository.lastChildOrder + 1
