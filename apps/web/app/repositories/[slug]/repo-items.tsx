@@ -33,6 +33,7 @@ import { auth } from '@/auth'
 import { Node } from './node'
 import { RepoStructureNode } from '@/store'
 import MultiNotesAndReferences from './multi-notes-and-references'
+import RepoItemsDataInteractive from './repo-items-data-interactive'
 
 interface EditableNodeProps {
   sectionData: any
@@ -103,6 +104,7 @@ const RepositoryItems = async ({
 
   return (
     <>
+      <RepoItemsDataInteractive />
       <div className='flex max-w-full pt-0'>
         <div className={cn('min-w-[50%]')}>
           <div className='sticky left-0 top-0 z-10'>

@@ -78,11 +78,11 @@ export const createUrl = (
   pathname: string,
   params: URLSearchParams | ReadonlyURLSearchParams
 ) => {
-  console.log('createurl', pathname, params.toString())
+  // console.log('createurl', pathname, params.toString())
 
   const paramsString = params.toString()
   const queryString = `${paramsString.length ? '?' : ''}${paramsString}`
-  console.log('createurl', paramsString, queryString)
+  // console.log('createurl', paramsString, queryString)
   return `${pathname}${queryString}`
 }
 import { DefaultCompanies, PSCategoryFilter, PSRoleFilter } from 'lib/lib'

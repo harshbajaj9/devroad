@@ -281,8 +281,8 @@ model Repository {
   topicTags   String[]
 
   lastUpdated  DateTime @default(now())
-  itemCount    Int      @default(0)
-  sectionCount Int      @default(0)
+  // itemCount    Int      @default(0)
+  // sectionCount Int      @default(0)
   likeCount    Int      @default(0)
   commentCount Int      @default(0)
 }
@@ -348,13 +348,15 @@ enum LikeReferenceTypes {
   TUTORIAL
   STORYLINE
   COMMENT
-  COLLECTION
+  REPOSITORY
 }
 
 model Like {
-  id            Int                @id @default(autoincrement())
+  userId        String
   referenceType LikeReferenceTypes
   referenceId   String
+
+  @@id(name: "likeId", [userId, referenceId])
 }
 
 model Comment {

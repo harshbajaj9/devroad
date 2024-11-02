@@ -40,8 +40,8 @@ export const dSAProblemSetRouter = createTRPCRouter({
           companyTags: [],
           topicTags: [],
 
-          itemCount: 0,
-          sectionCount: 0,
+          // itemCount: 0,
+          // sectionCount: 0,
           likeCount: 0,
           commentCount: 0
         }

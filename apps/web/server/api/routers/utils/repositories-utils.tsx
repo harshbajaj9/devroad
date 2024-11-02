@@ -1,5 +1,5 @@
 import { db } from '@/server/db'
-import { Repository, RepositoryItem } from '@repo/database'
+import { $Enums, Repository, RepositoryItem } from '@repo/database'
 import { Overwrite, Simplify } from '@trpc/server/unstable-core-do-not-import'
 import { TestContext } from 'node:test'
 
@@ -82,9 +82,49 @@ export const getProblemSets = async ({
     take: pageSize
   })
 
-  // TODO: like comment save
+  // item counts
+  const newRepos: (Repository & { itemCount: number; sectionCount: number })[] =
+    []
+  for (const repo of repositories) {
+    const repositoryItemCount = await db.repositoryItem.count({
+      where: {
+        repositoryId: repo.id,
+        type: $Enums.RepositoryItemType.ITEM
+      }
+    })
+    const repositorySectionCount = await db.repositoryItem.count({
+      where: {
+        repositoryId: repo.id,
+        type: $Enums.RepositoryItemType.SECTION
+      }
+    })
+    newRepos.push({
+      ...repo,
+      itemCount: repositoryItemCount,
+      sectionCount: repositorySectionCount
+    })
+  }
+
+  // TODO: like comment save counts
+
   // if (userId) {
   // }
   const totalPages = Math.ceil(repositoriesCount / pageSize)
-  return { repositories, totalPages }
+  return { problemSets: newRepos, totalPages }
+}
+
+export const getCountValues = async (repositoryId: string) => {
+  const repositoryItemCount = await db.repositoryItem.count({
+    where: {
+      repositoryId: repositoryId,
+      type: $Enums.RepositoryItemType.ITEM
+    }
+  })
+  const repositorySectionCount = await db.repositoryItem.count({
+    where: {
+      repositoryId: repositoryId,
+      type: $Enums.RepositoryItemType.SECTION
+    }
+  })
+  return { repositoryItemCount, repositorySectionCount }
 }

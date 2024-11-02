@@ -201,7 +201,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   const { mutateAsync: updateOrder } =
     api.repositoryItem.updateOrder.useMutation({
       onError: error => {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repository.id)
         Toast({
           type: 'error',
           title: 'Error!',
@@ -211,7 +211,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
         setDisableDnD(false)
       },
       onSuccess: () => {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repository.id)
         Toast({
           title: '📃Order updated😎',
           type: 'success'
@@ -258,7 +258,6 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
   const { mutateAsync: deleteNode, isPending: isDeletePending } =
     api.repositoryItem.deleteNode.useMutation({
       onError: error => {
-        utils.repository.get.invalidate()
         Toast({
           type: 'error',
           title: 'Error!',
@@ -272,7 +271,8 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
         //   .map((item, i) => ({ ...item, order: i + 1 }))
         // setRepoKids(updated)
 
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repository.id)
+        utils.repository.getCountValues.invalidate(repository.id)
         Toast({
           title: 'Deleted',
           type: 'success'

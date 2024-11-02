@@ -51,7 +51,8 @@ const MoveItemModal = ({ refetchData }: Props) => {
       onSuccess(createdCollection: { id: String }) {
         Toast({ title: 'Item created', type: 'success' })
         // utils.repository.get.invalidate('lucky-you-cm11ct0ur0000egusctw514he')
-        utils.repository.get.invalidate()
+        utils.repository.getCountValues.invalidate(repoStructure.id)
+        utils.repository.get.invalidate(repoStructure.id)
 
         // router.push(`/repositories/${createdCollection.id}`)
       },
@@ -86,7 +87,7 @@ const MoveItemModal = ({ refetchData }: Props) => {
   const { mutateAsync: moveNode, isPending: isMovingPending } =
     api.repositoryItem.moveNode.useMutation({
       onError: error => {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repoStructure.id)
         Toast({
           type: 'error',
           title: 'Error!',
@@ -95,7 +96,7 @@ const MoveItemModal = ({ refetchData }: Props) => {
         })
       },
       onSuccess: (movedItemId: string) => {
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repoStructure.id)
         Toast({
           title: 'Item moved',
           type: 'success'

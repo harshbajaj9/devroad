@@ -45,7 +45,7 @@ const ProblemSets = async ({
   }
 }) => {
   const session = await auth()
-  const { repositories, totalPages } = await getProblemSets({
+  const { problemSets, totalPages } = await getProblemSets({
     text: searchParams['text'],
     page: Number(searchParams['page']),
     sort: searchParams['sort'] ?? 'popular',
@@ -55,7 +55,7 @@ const ProblemSets = async ({
     // roleFilter: searchParams.role
   })
   // const repositories = await prisma.repository.findMany()
-  console.log('repositories>', repositories)
+  // console.log('repositories>', problemSets)
   return (
     <main className='bg-backgroundalt'>
       <div className='bg-background p-16'>
@@ -106,12 +106,12 @@ const ProblemSets = async ({
       </div> */}
       <div className='min-h-[600px]'>
         <div className='flex flex-wrap justify-center gap-8 px-24 py-8'>
-          {repositories.map(repo => (
+          {problemSets.map(ps => (
             <PSCard
-              repo={repo}
+              ps={ps}
               // title={repo.title}
               // creatorName={repo.creatorName}
-              id={repo.id}
+              id={ps.id}
             />
           ))}
         </div>

@@ -30,15 +30,10 @@ import {
   BookOpenIcon,
   MapIcon
 } from '@heroicons/react/24/outline'
-import { Poppins } from 'next/font/google'
 import { api } from '@/trpc/react'
 import { Toast } from '@repo/ui/components/ui/sonnertoast'
 import { useRouter } from 'next/navigation'
-// import { api } from "@/trpc/server";
-const font = Poppins({
-  weight: ['300', '400', '500', '600', '700', '800'],
-  subsets: ['latin']
-})
+
 export const createRepositorySchema = z.object({
   title: z.string().min(2),
   description: z.string().min(2),
@@ -203,7 +198,7 @@ const CreateProblemSetModal = ({
                     <FormItem>
                       <FormControl>
                         <Input
-                          className={cn('w-80 bg-background', font.className)}
+                          className={cn('w-80 bg-background')}
                           placeholder='Problem Set Title'
                           {...field}
                         />
@@ -220,7 +215,7 @@ const CreateProblemSetModal = ({
                   <FormItem>
                     <FormControl>
                       <Input
-                        className={cn('w-80 bg-background', font.className)}
+                        className={cn('w-80 bg-background')}
                         placeholder='Description'
                         {...field}
                       />
@@ -275,8 +270,11 @@ const CreateProblemSetModal = ({
                                 )}
                               >
                                 <RadioGroupItem
+                                  disabled={
+                                    s.id !== 'PROBLEM_SET' ? true : false
+                                  }
                                   value={s.id}
-                                  className='h-full w-full opacity-0'
+                                  className='h-full w-full opacity-0 disabled:opacity-0'
                                 />
                               </FormControl>
                             </FormItem>

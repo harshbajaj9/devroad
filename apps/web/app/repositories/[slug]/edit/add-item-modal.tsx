@@ -149,8 +149,9 @@ const AddItemModal = ({
       // refetchOnWindowFocus: false,
       onSuccess(createdCollection: { id: String }) {
         Toast({ title: 'Item created', type: 'success' })
+        utils.repository.getCountValues.invalidate(repoStructure.id)
         // utils.repository.get.invalidate('lucky-you-cm11ct0ur0000egusctw514he')
-        utils.repository.get.invalidate()
+        utils.repository.get.invalidate(repoStructure.id)
         setIsCreateItemModalOpen(false)
 
         // router.push(`/repositories/${createdCollection.id}`)
