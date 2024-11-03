@@ -4,6 +4,8 @@ import { Button } from '@repo/ui'
 import LoginForm from './login-form'
 import { cn } from '@/lib/utils'
 import { Poppins } from 'next/font/google'
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import { useLoginModalState } from '@/store'
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin']
@@ -117,12 +119,21 @@ const LoginModal = ({ isOpen, onClose }: Props) => {
   // const handleCreateFlow = async (values: OutboundWorkflowFormSchema) => {
   //   handleSave(values)
   // }
+  const { setIsLoginModalOpen } = useLoginModalState()
 
   return (
     <>
       <div className='fixed inset-0 z-40 h-screen w-screen bg-black opacity-50'></div>
       {/* <div className='border-gray fixed inset-0 left-[50%] top-[50%] z-50 m-4 flex h-fit w-max -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-lg border bg-white p-8'> */}
       <div className='fixed inset-0 left-[50%] top-[50%] z-50 m-4 h-fit w-max -translate-x-1/2 -translate-y-1/2 sm:w-[350px]'>
+        <div className='absolute right-2 top-2'>
+          <XMarkIcon
+            className='size-5 cursor-pointer'
+            onClick={() => {
+              setIsLoginModalOpen(false)
+            }}
+          />
+        </div>
         {/* <div className='flex flex-col'>
           <p className='text-lg font-medium text-gray-900'>
             New Outbound Workflow

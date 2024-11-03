@@ -1,4 +1,3 @@
-'use client'
 import { cn, ItemNodeType } from '@/lib/utils'
 import { $Enums, RepositoryItem } from '@repo/database'
 import {
@@ -139,13 +138,25 @@ export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
           </Tooltip>
         </TooltipProvider>
       </div>
+      <div className='max-w-84 flex flex-wrap items-center'>
+        {itemData.tags &&
+          itemData.tags.map(tag => (
+            <div
+              className={cn(
+                'group mx-1 flex items-center rounded-full border border-muted-foreground px-1 text-[10px] font-semibold uppercase text-muted-foreground'
+              )}
+            >
+              {tag}
+            </div>
+          ))}
+      </div>
     </div>
   )
 }
 
 interface NodeProps {
   // nodeData: { details: RepositoryItem; children: EditableNodeProps }
-  nodeData: any
+  nodeData: ItemNodeType
   // path: { id: string; title: string }[]
   isOwner?: boolean
 }

@@ -71,7 +71,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import AddItemButtons from './add-item-button'
 import { api } from '@/trpc/react'
-import { cn, getCountValues, ItemNodeType, NodeType } from '@/lib/utils'
+import { cn, getStatusCountValues, ItemNodeType, NodeType } from '@/lib/utils'
 import Image from 'next/image'
 import {
   Bolt,
@@ -336,7 +336,7 @@ const SectionNode = ({
     total: number
   }>({ done: 0, revisit: 0, total: 0 })
   useEffect(() => {
-    const { done, total, revisit } = getCountValues(
+    const { done, total, revisit } = getStatusCountValues(
       sectionData,
       doneItems,
       revisitItems
@@ -1237,36 +1237,36 @@ export const EditableNode = ({
       setTags(userData.tags)
     }
   }, [userData])
-  useEffect(() => {
-    // if (nodeData.type === 'ITEM') {
-    //   if (nodeData.lastStatus === 1) {
-    //     setDoneItems(prev => {
-    //       if (!prev.includes(nodeData.referenceId)) {
-    //         return [...prev, nodeData.referenceId]
-    //       }
-    //       return prev
-    //     })
-    //     setRevisitItems(prev => {
-    //       return prev.filter(item => item !== nodeData.referenceId)
-    //     })
-    //   } else if (nodeData.lastStatus === 2) {
-    //     setRevisitItems(prev => {
-    //       if (!prev.includes(nodeData.referenceId)) {
-    //         return [...prev, nodeData.referenceId]
-    //       }
-    //       return prev
-    //     })
-    //     setDoneItems(prev => {
-    //       return prev.filter(item => item !== nodeData.referenceId)
-    //     })
-    //   }
-    // setItemStatuses(prev =>
-    //   prev
-    //     ? [...prev, { id: nodeData.id, status: nodeData?.lastStatus }]
-    //     : [{ id: nodeData.id, status: nodeData?.lastStatus }]
-    // )
-    // }
-  }, [status])
+  // useEffect(() => {
+  // if (nodeData.type === 'ITEM') {
+  //   if (nodeData.lastStatus === 1) {
+  //     setDoneItems(prev => {
+  //       if (!prev.includes(nodeData.referenceId)) {
+  //         return [...prev, nodeData.referenceId]
+  //       }
+  //       return prev
+  //     })
+  //     setRevisitItems(prev => {
+  //       return prev.filter(item => item !== nodeData.referenceId)
+  //     })
+  //   } else if (nodeData.lastStatus === 2) {
+  //     setRevisitItems(prev => {
+  //       if (!prev.includes(nodeData.referenceId)) {
+  //         return [...prev, nodeData.referenceId]
+  //       }
+  //       return prev
+  //     })
+  //     setDoneItems(prev => {
+  //       return prev.filter(item => item !== nodeData.referenceId)
+  //     })
+  //   }
+  // setItemStatuses(prev =>
+  //   prev
+  //     ? [...prev, { id: nodeData.id, status: nodeData?.lastStatus }]
+  //     : [{ id: nodeData.id, status: nodeData?.lastStatus }]
+  // )
+  // }
+  // }, [status])
   const { filterTags, difficultyTag } = useFilterTags()
   if (nodeData.type === 'ITEM') {
     if (

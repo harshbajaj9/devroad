@@ -184,7 +184,7 @@ const EditorBox = () => {
         setEditorSavedStatus(true)
       }
     },
-    100
+    1000
   )
   return (
     <EditorRoot>
@@ -196,8 +196,8 @@ const EditorBox = () => {
         // initialContent={editorInitValue ?? undefined}
         extensions={extensions}
         onUpdate={({ editor }) => {
-          debouncedUpdates(editor)
           setEditorSavedStatus(false)
+          debouncedUpdates(editor)
         }}
         slotAfter={<ImageResizer />}
         editorProps={{
@@ -408,31 +408,31 @@ const EditNotes = () => {
     })
 
   // TODO debounced save
-  const debouncedUpdates = useDebouncedCallback(
-    async (editor: EditorInstance) => {
-      const json = editor.getJSON()
-      console.log(json, openItem)
-      if (
-        openItem?.referenceId &&
-        openItem?.referenceType &&
-        openItem?.referenceType !== null
-      ) {
-        updateItemNote({
-          referenceId: openItem?.referenceId,
-          referenceType: openItem?.referenceType as
-            | 'SECTION'
-            | 'PROBLEM'
-            | 'CUSTOM_PROBLEM',
-          content: json
-        })
-        setEditorSavedStatus(true)
-      }
-    },
-    500
-  )
-  const getInitialValue = () => {
-    return editorInitValue
-  }
+  // const debouncedUpdates = useDebouncedCallback(
+  //   async (editor: EditorInstance) => {
+  //     const json = editor.getJSON()
+  //     console.log(json, openItem)
+  //     if (
+  //       openItem?.referenceId &&
+  //       openItem?.referenceType &&
+  //       openItem?.referenceType !== null
+  //     ) {
+  //       updateItemNote({
+  //         referenceId: openItem?.referenceId,
+  //         referenceType: openItem?.referenceType as
+  //           | 'SECTION'
+  //           | 'PROBLEM'
+  //           | 'CUSTOM_PROBLEM',
+  //         content: json
+  //       })
+  //       setEditorSavedStatus(true)
+  //     }
+  //   },
+  //   1000
+  // )
+  // const getInitialValue = () => {
+  //   return editorInitValue
+  // }
   // if (!userData) {
   //   console.log('test user data', userData)
   //   return
@@ -471,7 +471,10 @@ const EditNotes = () => {
           </div>
         )} */}
         {/* {!isNotesLoading && <NovelEditorRoot initialContent={userData?.note} />} */}
-        {userData && <EditorBox />}
+        {session && !userData && (
+          <Skeleton className='h-[125px] w-full rounded-xl' />
+        )}
+        {session && userData && <EditorBox />}
       </div>
     </div>
   )

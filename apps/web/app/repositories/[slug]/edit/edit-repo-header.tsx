@@ -519,7 +519,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
           <Button variant='ghost' size='sm' disabled={true}>
             <ChatBubbleBottomCenterTextIcon className='mr-1 size-6' />
           </Button>
-          <TooltipProvider>
+          {/* <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant='ghost' size='sm' className='group'>
@@ -530,7 +530,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
                 <p>Save</p>
               </TooltipContent>
             </Tooltip>
-          </TooltipProvider>
+          </TooltipProvider> */}
         </div>
         {/* <Separator orientation='horizontal' /> */}
 

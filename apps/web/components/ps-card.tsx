@@ -296,9 +296,9 @@ const PSCard = ({
                 <ChatBubbleBottomCenterTextIcon className='size-6' />
               </Button>
             </div>
-            <Button variant='ghost' size='sm'>
+            {/* <Button variant='ghost' size='sm'>
               <BookmarkIcon className='size-6' />
-            </Button>
+            </Button> */}
           </CardFooter>
         )}
       </Card>
