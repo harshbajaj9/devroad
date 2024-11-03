@@ -4592,7 +4592,7 @@ const leetcodeProblems = [
   {
     Title: '53. Maximum Subarray',
     Link: 'https://leetcode.com/problems/maximum-subarray/',
-    Difficulty: 'Easy',
+    Difficulty: 'Medium',
     Category: 'DSA'
   },
   {
