@@ -74,6 +74,7 @@ import {
   User,
   UserPlus
 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { Bricolage_Grotesque, Jost } from 'next/font/google'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -89,6 +90,7 @@ interface EditCollectionHeaderProps {
   repository: Repository
 }
 const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
+  const { data: session } = useSession()
   const { isEditMode, setIsEditMode } = useEditRepository()
   const handleSave = () => {
     setIsEditMode(false)
@@ -448,7 +450,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
                 Shared
               </TabsTrigger>
               <TabsTrigger
-                disabled={true}
+                disabled={session?.user.role === 'USER'}
                 value='DISCOVERABLE'
                 className={cn('w-full rounded-full')}
               >
