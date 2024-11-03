@@ -1088,7 +1088,15 @@ const ItemNode = ({
                       <TooltipTrigger asChild>
                         <div className='px-1'>
                           <p className='flex justify-start'>
-                            <span className='text-[10px] font-semibold text-background text-green-600 dark:text-green-400'>
+                            <span
+                              className={cn(
+                                'px-1 text-[10px] font-semibold text-background text-green-600 dark:text-green-400',
+                                itemData.problem?.difficulty === 'MEDIUM' &&
+                                  'text-yellow-600 dark:text-yellow-400',
+                                itemData.problem?.difficulty === 'HARD' &&
+                                  'text-red-600 dark:text-red-400'
+                              )}
+                            >
                               {itemData.problem?.difficulty ?? 'EASY'}
                             </span>
                           </p>
