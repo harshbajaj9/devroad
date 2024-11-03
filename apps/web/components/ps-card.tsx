@@ -112,7 +112,12 @@ const PSCard = ({
       })
     }
   })
+  const { setIsLoginModalOpen } = useLoginModalState()
   const handleLikeUpdate = () => {
+    if (!session) {
+      setIsLoginModalOpen(true)
+      return
+    }
     if (likedStatus) {
       unliked(ps.id)
     } else {
@@ -284,13 +289,12 @@ const PSCard = ({
           <CardFooter className='flex justify-between gap-4 border-t p-4 py-2 text-muted-foreground'>
             <div>
               <Button onClick={handleLikeUpdate} variant='ghost' size='sm'>
-                {likedStatus && (
+                {session && likedStatus && (
                   <HeartIconSolid className='mr-1 size-6 group-hover:text-pink-500' />
                 )}
                 {!likedStatus && (
                   <HeartIcon className='mr-1 size-6 group-hover:text-pink-500' />
                 )}
-                {/* {ps?.likeCount} */}
               </Button>
               <Button disabled={true} variant='ghost' size='sm'>
                 <ChatBubbleBottomCenterTextIcon className='size-6' />
