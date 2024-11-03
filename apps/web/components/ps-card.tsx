@@ -51,6 +51,7 @@ import Link from 'next/link'
 import PSCardFooter from './ps-card-footer'
 import { Repository } from '@repo/database'
 import { api } from '@/trpc/react'
+import { useLoginModalState } from '@/store'
 
 const font = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
