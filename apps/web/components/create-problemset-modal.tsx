@@ -92,7 +92,10 @@ const CreateProblemSetModal = ({
   const { mutateAsync: createRepository } = api.repository.create.useMutation({
     // refetchOnWindowFocus: false,
     onSuccess(createdCollection: { id: String }) {
-      Toast({ title: 'Auto Greet Updated', type: 'success' })
+      Toast({
+        title: 'Collection created successfully',
+        type: 'success'
+      })
       // Toaster({ title: 'Collection Created', type: 'success' })
       // const prevData = utils.autoGreet.getAllAutoGreetMessages.getData(
       //   autoGreet.segment_id
@@ -143,9 +146,7 @@ const CreateProblemSetModal = ({
     }
     try {
       const collection = await createRepository(data)
-      Toast({
-        title: 'Collection created successfully'
-      })
+
       onClose()
       // setStartingTriggerType(values.starting_trigger);
       // const url = `/outbound-workflows/flow/${flowId}`;

@@ -30,7 +30,7 @@ export const parser = async () => {
     }
 
     let diff: 'EASY' | 'MEDIUM' | 'HARD' = 'EASY'
-    switch (obj.Category) {
+    switch (obj.Difficulty) {
       case 'Easy':
         diff = 'EASY'
         break
