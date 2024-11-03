@@ -104,7 +104,7 @@ const RepositoryItems = async ({
 
   return (
     <>
-      <RepoItemsDataInteractive />
+      <RepoItemsDataInteractive repoNode={repositoryNode} />
       <div className='flex max-w-full pt-0'>
         <div className={cn('min-w-[50%]')}>
           <div className='sticky left-0 top-0 z-10'>

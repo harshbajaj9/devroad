@@ -464,11 +464,13 @@ export function NavigationMenuDemo() {
         </NavigationMenuList>
       </NavigationMenu>
       <div className='flex items-center gap-4'>
-        <div>
-          <Button className='w-24' onClick={() => handleParser()}>
-            Parser
-          </Button>
-        </div>
+        {session && session.user.role === 'ADMIN' && (
+          <div>
+            <Button className='w-24' onClick={() => handleParser()}>
+              Parser
+            </Button>
+          </div>
+        )}
         <div>
           <ModeToggle />
         </div>

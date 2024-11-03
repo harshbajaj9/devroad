@@ -79,8 +79,8 @@ import AddItemButtons from './add-item-button'
 import { api } from '@/trpc/react'
 import {
   cn,
-  getCountValues,
   getRepositoryTags,
+  getStatusCountValues,
   ItemNodeType,
   NodeType
 } from '@/lib/utils'
@@ -351,7 +351,7 @@ const EditRepositoryItems = ({ repository }: EditRepositoryItemsProps) => {
     total: number
   }>({ done: 0, revisit: 0, total: 0 })
   useEffect(() => {
-    const { done, total, revisit } = getCountValues(
+    const { done, total, revisit } = getStatusCountValues(
       repoNode,
       doneItems,
       revisitItems

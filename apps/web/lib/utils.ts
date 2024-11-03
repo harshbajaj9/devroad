@@ -23,7 +23,7 @@ export type ItemNodeType = RepositoryItem & {
   tags?: string[]
 }
 
-export const getCountValues = (
+export const getStatusCountValues = (
   node: NodeType,
   doneItems: string[],
   revisitItems: string[]
@@ -43,7 +43,7 @@ export const getCountValues = (
           done: childDone,
           revisit: childRevisit,
           total: childTotal
-        } = getCountValues(child, doneItems, revisitItems)
+        } = getStatusCountValues(child, doneItems, revisitItems)
         done += childDone
         revisit += childRevisit
         total += childTotal

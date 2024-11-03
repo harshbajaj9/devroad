@@ -73,9 +73,9 @@ export default function ProfileDropdown() {
           <DropdownMenuLabel>{name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href='/profile' className='flex w-full items-center'>
+            <Link href='/account' className='flex w-full items-center'>
               <User className='mr-2 h-4 w-4' />
-              Profile
+              Account
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowLogoutDialog(true)}>

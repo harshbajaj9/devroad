@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { getCountValues } from '@/server/api/routers/utils/repositories-utils'
 import {
   BookmarkIcon,
   CalendarDaysIcon,
@@ -8,6 +9,7 @@ import {
   FolderIcon,
   HeartIcon
 } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import { Repository } from '@repo/database'
 import {
   Avatar,
@@ -17,13 +19,20 @@ import {
   Button,
   HoverCard,
   HoverCardContent,
-  HoverCardTrigger
+  HoverCardTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
 } from '@repo/ui'
+import RepoHeaderInteractive from './repo-header-interactive'
 
 interface RepositoryHeaderProps {
   repository: Repository
 }
-const RepositoryHeader = ({ repository }: RepositoryHeaderProps) => {
+const RepositoryHeader = async ({ repository }: RepositoryHeaderProps) => {
+  const countValues = await getCountValues(repository.id)
+
   return (
     <div className='flex gap-4 pb-2'>
       <div
@@ -106,26 +115,34 @@ const RepositoryHeader = ({ repository }: RepositoryHeaderProps) => {
           <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
             <ClipboardDocumentListIcon className='size-5' />
             <p className='text-xs'>
-              <span className='font-semibold'>120</span> items
+              <span className='font-semibold'>
+                {countValues?.repositoryItemCount}
+              </span>{' '}
+              items
             </p>
           </div>
 
           <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
             <FolderIcon className='size-5' />
             <p className='text-xs'>
-              <span className='font-semibold'>7</span> sections
+              <span className='font-semibold'>
+                {countValues?.repositorySectionCount}
+              </span>{' '}
+              sections
             </p>
           </div>
 
-          <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
-            <CheckBadgeIcon className='size-5' />
-            <p className='text-xs'>
-              <span className='font-semibold'>Verified</span>
-            </p>
-          </div>
+          {repository.verifiedStatus === 'VERIFIED' && (
+            <div className='flex w-14 flex-col items-center justify-center gap-2 text-muted-foreground'>
+              <CheckBadgeIcon className='size-5' />
+              <p className='text-xs'>
+                <span className='font-semibold'>Verified</span>
+              </p>
+            </div>
+          )}
         </div>
-
-        <div>
+        <RepoHeaderInteractive repository={repository} />
+        {/* <div>
           <Button variant='ghost' size='sm'>
             <HeartIcon className='mr-1 size-6' />
             {repository?.likeCount}
@@ -136,7 +153,7 @@ const RepositoryHeader = ({ repository }: RepositoryHeaderProps) => {
           <Button variant='ghost' size='sm'>
             <BookmarkIcon className='size-6' />
           </Button>
-        </div>
+        </div> */}
         {/* <div className='flex cursor-pointer justify-around py-1 text-muted-foreground'>
           <div className='flex items-center gap-1 text-pink-500'>
             <HeartIcon className='size-5' />

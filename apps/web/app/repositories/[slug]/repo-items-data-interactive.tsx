@@ -1,13 +1,12 @@
 'use client'
-import { cn, getCountValues } from '@/lib/utils'
+import { cn, getStatusCountValues, NodeType } from '@/lib/utils'
 import { useFilterTags, useRepository } from '@/store'
 import { Button } from '@repo/ui'
 import React, { useEffect, useState } from 'react'
 
-const RepoItemsDataInteractive = () => {
+const RepoItemsDataInteractive = ({ repoNode }: { repoNode: NodeType }) => {
   const { setRepositoryDetails, setRepositoryTags } = useRepository()
   const { repositoryTags } = useRepository()
-
   const {
     filterTags,
     setFilterTags,
@@ -23,16 +22,18 @@ const RepoItemsDataInteractive = () => {
     total: number
   }>({ done: 0, revisit: 0, total: 0 })
   useEffect(() => {
-    // const { done, total, revisit } = getCountValues(
-    //   repoNode,
-    //   doneItems,
-    //   revisitItems
-    // )
-    const done = 1
-    const total = 2
-    const revisit = 1
+    const { done, total, revisit } = getStatusCountValues(
+      repoNode,
+      doneItems,
+      revisitItems
+    )
+    console.log('hey there', done, total, revisit, doneItems, revisitItems)
+    // const done = 1
+    // const total = 2
+    // const revisit = 1
     setCountValues({ done, revisit, total })
   }, [revisitItems, doneItems])
+
   return (
     <>
       <div
