@@ -5,7 +5,7 @@ import leetcodeProblems from './parsedProblems'
 import { prisma } from '@/lib/db'
 
 export const parser = async () => {
-  for (var i = 0; i < 100 && i < leetcodeProblems.length; i++) {
+  for (var i = 0; i < leetcodeProblems.length; i++) {
     // for (
     //   var i = leetcodeProblems.length - 1;
     //   i > leetcodeProblems.length - 20;

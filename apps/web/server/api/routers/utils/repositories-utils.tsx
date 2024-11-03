@@ -21,10 +21,12 @@ export const getProblemSets = async ({
   // roleFilter?: string | undefined // TODO: z.enum??
   // repositoryType: z.enum(['PROBLEM_SET', 'REPOSITORY']).optional() //TODO: add , 'SECTION' if needed
 }) => {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>', page, text, sort, categoryFilter)
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>>', page, text, sort, categoryFilter)
   if (!page) page = 1
   const repositoryType = 'PROBLEM_SET'
-  let whereBody: any = {}
+  let whereBody: any = {
+    visibility: $Enums.RepositoryVisibilityMode.DISCOVERABLE
+  }
 
   if (text) {
     whereBody = {
