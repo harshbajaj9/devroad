@@ -81,7 +81,7 @@ export const SectionNode = ({ sectionData, children }: SectionNodeProps) => {
   // const { isEditMode, setIsEditMode } = useState(false)
 
   return (
-    <>
+    <div className='flex w-full flex-col bg-background'>
       <div
         className={cn(
           'relative ml-0 mr-auto h-2 w-1/2 max-w-md overflow-hidden rounded-md',
@@ -121,7 +121,7 @@ export const SectionNode = ({ sectionData, children }: SectionNodeProps) => {
 
       <div
         className={cn(
-          'flex-1 cursor-pointer overflow-hidden bg-background'
+          'flex-1 cursor-pointer overflow-hidden'
           // isEditMode && 'scale-[1.01] border border-primary shadow-md'
           // isEditMode && 'border border-primary shadow-md'
         )}
@@ -228,6 +228,6 @@ export const SectionNode = ({ sectionData, children }: SectionNodeProps) => {
         {expanded && <>{children}</>}
         {/* <div>hi{expanded}</div> */}
       </div>
-    </>
+    </div>
   )
 }
