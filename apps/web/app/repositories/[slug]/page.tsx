@@ -9,7 +9,7 @@ import type { Metadata, ResolvingMetadata } from 'next'
 import { getRepoTitle } from '@/server/api/routers/utils/repositories-utils'
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
@@ -18,7 +18,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
-  const id = (await params).id
+  const id = (await params).slug
 
   // fetch data
   const { title: repoTitle } = await getRepoTitle(id)
