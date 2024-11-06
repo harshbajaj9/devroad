@@ -93,7 +93,7 @@ const CreateProblemSetModal = ({
     // refetchOnWindowFocus: false,
     onSuccess(createdCollection: { id: String }) {
       Toast({
-        title: 'Collection created successfully',
+        title: 'Repository created successfully',
         type: 'success'
       })
       // Toaster({ title: 'Collection Created', type: 'success' })
