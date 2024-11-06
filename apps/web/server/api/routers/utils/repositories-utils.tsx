@@ -131,9 +131,9 @@ export const getCountValues = async (repositoryId: string) => {
   return { repositoryItemCount, repositorySectionCount }
 }
 
-export const getRepoTitle = async (repositoryId: string) => {
+export const getRepoTitle = async (id: string) => {
   const repository = await db.repository.findUnique({
-    where: { id: repositoryId }
+    where: { id: id }
   })
   if (!repository) {
     return { title: 'NotFound' }
