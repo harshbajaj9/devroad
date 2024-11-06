@@ -5,6 +5,34 @@ import EditRepositoryHeader from './edit/edit-repo-header'
 import EditRepositoryItems from './edit/edit-repo-items'
 import RepositoryHeader from './repo-header'
 import RepositoryItems from './repo-items'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { getRepoTitle } from '@/server/api/routers/utils/repositories-utils'
+
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const id = (await params).id
+
+  // fetch data
+  const { title: repoTitle } = await getRepoTitle(id)
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: repoTitle
+    // openGraph: {
+    //   images: ['/some-specific-page-image.jpg', ...previousImages]
+    // }
+  }
+}
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const repository = await prisma.repository.findFirst({
