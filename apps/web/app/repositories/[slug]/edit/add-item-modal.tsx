@@ -65,7 +65,7 @@ import {
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { ProblemData } from '@/typing'
-import { cn } from '@/lib/utils'
+import { cn, getPlatformIconSrc } from '@/lib/utils'
 import { getPlatformIcon } from './editable-node'
 import {
   ArrowPathIcon,
@@ -560,7 +560,13 @@ const AddItemModal = ({
                                             className='p-auto flex min-h-full items-center justify-start border-0'
                                             onClick={e => e.stopPropagation()}
                                           >
-                                            {getPlatformIcon('LC')}
+                                            <Image
+                                              className='drop-shadow-2xl'
+                                              src={getPlatformIconSrc('LC')}
+                                              width={20}
+                                              height={20}
+                                              alt='lc'
+                                            ></Image>
                                             <p
                                               className={cn(
                                                 'text-xs font-semibold text-muted-foreground'
@@ -724,9 +730,15 @@ const AddItemModal = ({
                                             )}
                                           >
                                             <span className=''>
-                                              {getPlatformIcon(
-                                                selectedProblem.platform ?? 'LC'
-                                              )}
+                                              <Image
+                                                className='drop-shadow-2xl'
+                                                src={getPlatformIconSrc(
+                                                  selectedProblem.platform
+                                                )}
+                                                width={20}
+                                                height={20}
+                                                alt='lc'
+                                              ></Image>
                                             </span>
                                             {selectedProblem.title}
                                           </a>

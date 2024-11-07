@@ -41,7 +41,7 @@ export const parser = async () => {
         diff = 'HARD'
         break
     }
-    let platform: 'IB' | 'GFE' | 'LC' | 'GFG' | null
+    let platform: 'IB' | 'GFE' | 'LC' | 'GFG' | 'CF' | 'CN' | null = null
     if (obj.Link.includes('leetcode.com')) {
       platform = 'LC'
     } else if (obj.Link.includes('interviewbit.com')) {
@@ -52,6 +52,8 @@ export const parser = async () => {
       platform = 'GFE'
     } else if (obj.Link.includes('naukri.com')) {
       platform = 'CN'
+    } else if (obj.Link.includes('codeforces.com')) {
+      platform = 'CF'
     }
 
     await prisma.problem.create({
@@ -67,7 +69,7 @@ export const parser = async () => {
     //   data: {
     //     url: obj.Link,
     //     title: obj.Title,
-    //     platform: $Enums.Platform.LC
+    //     platform: 'LC'
     //   }
     // })
     console.log('done')

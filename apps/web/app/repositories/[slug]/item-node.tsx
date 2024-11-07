@@ -127,8 +127,8 @@ export const ItemNode = ({ itemData, children }: ItemNodeProps) => {
       return
   }
 
-  const getPlatformIcon = (platform: $Enums.Platform) => {
-    if (platform === $Enums.Platform.LC)
+  const getPlatformIcon = (platform: string | null) => {
+    if (platform === 'LC')
       return (
         <Image
           className='drop-shadow-2xl'

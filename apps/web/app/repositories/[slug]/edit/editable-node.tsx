@@ -71,7 +71,13 @@ import {
 import React, { useEffect, useState } from 'react'
 import AddItemButtons from './add-item-button'
 import { api } from '@/trpc/react'
-import { cn, getStatusCountValues, ItemNodeType, NodeType } from '@/lib/utils'
+import {
+  cn,
+  getPlatformIconSrc,
+  getStatusCountValues,
+  ItemNodeType,
+  NodeType
+} from '@/lib/utils'
 import Image from 'next/image'
 import {
   Bolt,
@@ -740,7 +746,7 @@ const SectionNode = ({
     </div>
   )
 }
-export const getPlatformIcon = (platform: $Enums.Platform | undefined) => {
+export const getPlatformIcon = (platform: string | null | undefined) => {
   if (platform === 'LC')
     return (
       <Image
@@ -1037,12 +1043,15 @@ const ItemNode = ({
                         )}
                       >
                         <span className=''>
-                          {getPlatformIcon(
-                            itemData.problem
-                              ? (itemData.problem.platform ?? 'LC')
-                              : undefined
-                            // : (itemData.customProblem.platform ?? 'LC')
-                          )}
+                          <Image
+                            className='drop-shadow-2xl'
+                            src={getPlatformIconSrc(
+                              itemData.problem?.platform ?? null
+                            )}
+                            width={20}
+                            height={20}
+                            alt='lc'
+                          ></Image>
                         </span>
                         {itemData.problem && itemData.problem?.title}
                         {itemData.customProblem &&

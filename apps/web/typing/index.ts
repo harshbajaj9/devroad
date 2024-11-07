@@ -17,7 +17,7 @@ export type ProblemData = {
   // sessionChange?: boolean | null
   // isNewThisWeek?: boolean
   id: string
-  platform: string
+  platform: string | null
   category: $Enums.ProblemCategory
   url: string
   title: string

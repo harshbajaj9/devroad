@@ -1,4 +1,4 @@
-import { cn, ItemNodeType } from '@/lib/utils'
+import { cn, getPlatformIconSrc, ItemNodeType } from '@/lib/utils'
 import { $Enums, RepositoryItem } from '@repo/database'
 import {
   Tooltip,
@@ -36,8 +36,8 @@ interface InnerItemNodeProps {
   itemData: ItemNodeType
 }
 export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
-  const getPlatformIcon = (platform: $Enums.Platform) => {
-    if (platform === $Enums.Platform.LC)
+  const getPlatformIcon = (platform: string | null) => {
+    if (platform === 'LC')
       return (
         <Image
           className='drop-shadow-2xl'
@@ -65,7 +65,15 @@ export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
                     )}
                   >
                     <span className=''>
-                      {getPlatformIcon(itemData.problem?.platform)}
+                      <Image
+                        className='drop-shadow-2xl'
+                        src={getPlatformIconSrc(
+                          itemData.problem?.platform ?? null
+                        )}
+                        width={20}
+                        height={20}
+                        alt='lc'
+                      ></Image>
                     </span>
                     {itemData.problem?.title ?? itemData.id}
                   </a>

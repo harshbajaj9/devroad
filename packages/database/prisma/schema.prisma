@@ -198,7 +198,7 @@ model Problem {
   url          String
   title        String
   description  Json?
-  platform     String
+  platform     String?
   difficulty   ProblemDifficulty?
   // contains other kv pair data
   platformData Json?

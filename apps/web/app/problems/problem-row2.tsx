@@ -16,7 +16,7 @@ import Link from 'next/link'
 // import CompanyIcon from '~/assets/svg/CompanyIcon'
 import React, { useState } from 'react'
 // import { useRouter } from 'next/router'
-import { cn } from '@/lib/utils'
+import { cn, getPlatformIconSrc } from '@/lib/utils'
 import {
   ArchiveBoxArrowDownIcon,
   BuildingOffice2Icon,
@@ -90,8 +90,8 @@ function ProblemRow2({ problem }: Props) {
   //   router.push(`/companies/${problem.companyId}`)
   // }
 
-  const getPlatformIcon = (platform: $Enums.Platform) => {
-    if (platform === $Enums.Platform.LC)
+  const getPlatformIcon = (platform: string | null) => {
+    if (platform === 'LC')
       return (
         <Image
           className='drop-shadow-2xl'
@@ -171,7 +171,13 @@ function ProblemRow2({ problem }: Props) {
                 href={problem.url ?? '#'}
                 className=''
               >
-                {getPlatformIcon(problem.platform)}
+                <Image
+                  className='drop-shadow-2xl'
+                  src={getPlatformIconSrc(problem.platform)}
+                  width={20}
+                  height={20}
+                  alt='lc'
+                ></Image>
               </a>
               {/* {problem.url ?? '-'} */}
             </div>

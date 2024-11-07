@@ -21,7 +21,7 @@ export const problemRouter = createTRPCRouter({
       const pageSize = input?.pageSize ?? 20
       const problemsCount = await ctx.db.problem.count({
         where: {
-          platform: $Enums.Platform.LC,
+          platform: 'LC',
           // category: {
           //   has: $Enums.ProblemCategory.DSA
           // }
@@ -30,7 +30,7 @@ export const problemRouter = createTRPCRouter({
       })
       const problems = await ctx.db.problem.findMany({
         where: {
-          platform: $Enums.Platform.LC,
+          platform: 'LC',
           // category: {
           //   has: $Enums.ProblemCategory.DSA
           // }

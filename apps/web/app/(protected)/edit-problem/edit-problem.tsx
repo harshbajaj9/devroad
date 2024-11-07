@@ -44,7 +44,7 @@ const extensions = [...defaultExtensions, slashCommand]
 import { ProblemData } from '@/typing'
 import { api } from '@/trpc/react'
 import { ArrowPathIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { cn } from '@/lib/utils'
+import { cn, getPlatformIconSrc } from '@/lib/utils'
 import { getPlatformIcon } from '@/app/repositories/[slug]/edit/editable-node'
 import { useDebouncedCallback } from 'use-debounce'
 const EditProblem = () => {
@@ -185,7 +185,13 @@ const EditProblem = () => {
                                     className='p-auto flex min-h-full items-center justify-start border-0'
                                     onClick={e => e.stopPropagation()}
                                   >
-                                    {getPlatformIcon(problem.platform)}
+                                    <Image
+                                      className='drop-shadow-2xl'
+                                      src={getPlatformIconSrc(problem.platform)}
+                                      width={20}
+                                      height={20}
+                                      alt='lc'
+                                    ></Image>
                                     <p
                                       className={cn(
                                         'text-xs font-semibold text-muted-foreground'
@@ -279,7 +285,15 @@ const EditProblem = () => {
                                 )}
                               >
                                 <span className=''>
-                                  {getPlatformIcon(selectedProblem.platform)}
+                                  <Image
+                                    className='drop-shadow-2xl'
+                                    src={getPlatformIconSrc(
+                                      selectedProblem.platform
+                                    )}
+                                    width={20}
+                                    height={20}
+                                    alt='lc'
+                                  ></Image>
                                 </span>
                                 {selectedProblem.title}
                               </a>
