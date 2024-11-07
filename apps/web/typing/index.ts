@@ -1,4 +1,6 @@
-import { $Enums } from '@repo/database'
+// import { JsonValue } from '@prisma/client/runtime/library'
+import { $Enums, Prisma } from '@repo/database'
+import { JSONContent } from 'novel'
 
 export type ProblemData = {
   // companyId: string
@@ -15,9 +17,11 @@ export type ProblemData = {
   // sessionChange?: boolean | null
   // isNewThisWeek?: boolean
   id: string
-  platform: $Enums.Platform
+  platform: string
   category: $Enums.ProblemCategory
   url: string
   title: string
   difficulty: $Enums.ProblemDifficulty | null
+  description: Prisma.JsonValue
+  // description: JSONContent
 }

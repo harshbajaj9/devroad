@@ -37,34 +37,10 @@ const font2 = Jost({
   subsets: ['latin']
 })
 const EditDescription = () => {
-  // const [isEditMode, setIsEditMode] = useState(false)
-  const [showDescription, setShowDescription] = useState<boolean>(true)
-  const { openItem, setOpenItem } = useRepository()
-  const [editorSavedStatus, setEditorSavedStatus] = useState(true)
   const { activeNotesTab } = useNotes()
-  // if (
-  //   (openItem?.type === 'ITEM' && !openItem.problem.description) ||
-  //   (openItem?.type === 'SECTION' && !openItem.description)
-  // )
-  //   return
-
-  const debouncedUpdates = useDebouncedCallback(
-    async (editor: EditorInstance) => {
-      const json = editor.getJSON()
-      // TODO: create this function
-      // updateItemDescription({
-      //   id: activeNote.id,
-      //   title: title,
-      //   content: json
-      // })
-      // setEditorContent(json)
-      setEditorSavedStatus(true)
-    },
-    500
-  )
   const [openNode, setOpenNode] = useState(false)
-  const [openColor, setOpenColor] = useState(false)
   const [openLink, setOpenLink] = useState(false)
+  const { openItem, setOpenItem } = useRepository()
   if (activeNotesTab != 'Description') {
     return
   }
@@ -101,28 +77,35 @@ const EditDescription = () => {
             <EditorContent
               className='relative h-full min-h-screen p-4'
               // initialContent={editorContent || defaultValue}
-              // initialContent={editorContent}
+              // initialContent={openItem?.problem}
+              // {...(openItem?.problem && { initialContent = {openItem?.problem?.description as JSONContent} })}
+              {...(openItem?.problem
+                ? {
+                    initialContent: openItem.problem.description as JSONContent
+                  }
+                : {})}
+              {...(openItem?.customProblem
+                ? {
+                    initialContent: openItem.customProblem
+                      .description as JSONContent
+                  }
+                : {})}
               extensions={extensions}
-              onUpdate={({ editor }) => {
-                // const json = editor.getJSON()
-                // setEditorContent(json)
-                debouncedUpdates(editor)
-                // setSaveStatus("Unsaved");
-                setEditorSavedStatus(false)
-              }}
+              // onUpdate={({ editor }) => {}}
               slotAfter={<ImageResizer />}
               editorProps={{
-                handleDOMEvents: {
-                  keydown: (_view, event) => handleCommandNavigation(event)
-                },
-                handlePaste: (view, event) =>
-                  handleImagePaste(view, event, uploadFn),
-                handleDrop: (view, event, _slice, moved) =>
-                  handleImageDrop(view, event, moved, uploadFn),
+                // handleDOMEvents: {
+                //   keydown: (_view, event) => handleCommandNavigation(event)
+                // },
+                // handlePaste: (view, event) =>
+                //   handleImagePaste(view, event, uploadFn),
+                // handleDrop: (view, event, _slice, moved) =>
+                //   handleImageDrop(view, event, moved, uploadFn),
                 attributes: {
                   class: `prose dark:prose-invert prose-p:m-0 prose-headings:m-0 prose-ul:m-0 prose-li:m-0 prose-headings:font-title font-default focus:outline-none max-w-full`,
                   spellcheck: 'false'
-                }
+                },
+                editable: () => false
               }}
             >
               <EditorCommand className='z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all'>

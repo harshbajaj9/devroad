@@ -65,7 +65,7 @@ export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
                     )}
                   >
                     <span className=''>
-                      {getPlatformIcon(itemData.problem?.platform ?? 'LC')}
+                      {getPlatformIcon(itemData.problem?.platform)}
                     </span>
                     {itemData.problem?.title ?? itemData.id}
                   </a>
@@ -120,7 +120,7 @@ export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
                         'text-red-600 dark:text-red-400'
                     )}
                   >
-                    {itemData.problem?.difficulty ?? 'EASY'}
+                    {itemData.problem?.difficulty}
                   </span>
                 </p>
               </div>

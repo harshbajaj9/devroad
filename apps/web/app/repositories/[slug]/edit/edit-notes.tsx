@@ -438,11 +438,8 @@ const EditNotes = () => {
   //   return
   // }
   if (activeNotesTab === 'Description') {
-    console.log('here>>')
-
     return
   }
-  console.log('here>')
   return (
     <div className='rounded-md border bg-background p-2 hover:shadow-md'>
       {/* <div>{userData?.lastStatus}</div> */}

@@ -179,20 +179,11 @@ export const SectionNode = ({ sectionData, children }: SectionNodeProps) => {
                 Add section
               </DropdownMenuItem> */}
               {/* <DropdownMenuSeparator /> */}
-              <DropdownMenuItem
-                // onClick={() => deleteItem(sectionData.id)}
-                onClick={e => {
-                  // e.stopPropagation()
-                  // setDeletionItem({
-                  //   id: sectionData.id,
-                  //   title: sectionData.title
-                  // })
-                  // setIsDeleteItemModalOpen(true)
-                }}
-              >
+
+              {/* <DropdownMenuItem onClick={e => {}}>
                 <TrashIcon className='mr-2 h-4 w-4' />
                 Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
 

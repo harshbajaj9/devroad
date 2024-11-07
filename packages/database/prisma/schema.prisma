@@ -140,13 +140,6 @@ enum CompanyTags {
   GOOGLE
 }
 
-enum Platform {
-  DR
-  LC
-  GFG
-  GFE
-}
-
 enum ProblemCategory {
   OBJECT_ORIENTED
   OS
@@ -205,7 +198,7 @@ model Problem {
   url          String
   title        String
   description  Json?
-  platform     Platform           @default(DR)
+  platform     String
   difficulty   ProblemDifficulty?
   // contains other kv pair data
   platformData Json?
