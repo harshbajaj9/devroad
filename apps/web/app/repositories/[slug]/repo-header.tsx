@@ -42,7 +42,7 @@ const RepositoryHeader = async ({ repository }: RepositoryHeaderProps) => {
           'shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]'
         )}
       >
-        <div className='overflow-hidden rounded-md'>
+        {/* <div className='overflow-hidden rounded-md'>
           <img
             className='h-full w-80'
             src={
@@ -51,7 +51,7 @@ const RepositoryHeader = async ({ repository }: RepositoryHeaderProps) => {
             width={'384px'}
             height={'384px'}
           />
-        </div>
+        </div> */}
         <div className='flex-1'>
           <div className='flex justify-end px-8'></div>
           <div className='mb-2 flex items-center gap-2'>
