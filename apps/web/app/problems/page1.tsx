@@ -84,6 +84,7 @@ const Problems = () => {
       setFilteredProblems(searchProblemsData?.problems || [])
     } else {
       setTotalPages(problemsData?.totalPages ?? 1)
+      // @ts-ignore
       setFilteredProblems(problemsData?.problems || [])
     }
     console.log('problemsData', problemsData)
