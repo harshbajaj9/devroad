@@ -1,17 +1,17 @@
 'use server'
 
 import { $Enums } from '@repo/database'
-import leetcodeProblems from './parsedProblems'
+import dsaProblems from './dsaProblems'
 import { prisma } from '@/lib/db'
 
 export const parser = async () => {
-  for (var i = 0; i < leetcodeProblems.length; i++) {
+  for (var i = 0; i < dsaProblems.length; i++) {
     // for (
     //   var i = leetcodeProblems.length - 1;
     //   i > leetcodeProblems.length - 20;
     //   i--
     // ) {
-    var obj = leetcodeProblems[i]
+    var obj = dsaProblems[i]
 
     // console.log(obj)
     if (!obj) continue

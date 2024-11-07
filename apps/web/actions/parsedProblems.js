@@ -5699,7 +5699,6 @@ const leetcodeProblems = [
     Difficulty: 'Medium',
     Category: 'DSA'
   },
-  null,
   {
     Title: '175. Combine Two Tables',
     Link: 'https://leetcode.com/problems/combine-two-tables/',
@@ -5976,7 +5975,6 @@ const leetcodeProblems = [
     Difficulty: 'Easy',
     Category: 'SQL'
   },
-  null,
   {
     Title: '192. Word Frequency',
     Link: 'https://leetcode.com/problems/word-frequency/',
