@@ -3134,7 +3134,7 @@ const leetcodeProblems = [
   {
     Title: '56. Merge Intervals',
     Link: 'https://leetcode.com/problems/merge-intervals/',
-    Difficulty: 'Hard',
+    Difficulty: 'Medium',
     Category: 'DSA'
   },
   {
@@ -3350,7 +3350,7 @@ const leetcodeProblems = [
   {
     Title: '287. Find the Duplicate Number',
     Link: 'https://leetcode.com/problems/find-the-duplicate-number/',
-    Difficulty: 'Hard',
+    Difficulty: 'Medium',
     Category: 'DSA'
   },
   {

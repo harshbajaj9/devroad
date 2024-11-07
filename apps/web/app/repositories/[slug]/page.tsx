@@ -6,6 +6,7 @@ import EditRepositoryItems from './edit/edit-repo-items'
 import RepositoryHeader from './repo-header'
 import RepositoryItems from './repo-items'
 import type { Metadata, ResolvingMetadata } from 'next'
+// https://nextjs.org/docs/app/building-your-application/optimizing/metadata
 import { getRepoTitle } from '@/server/api/routers/utils/repositories-utils'
 
 type Props = {
@@ -19,7 +20,6 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   // read route params
   const id = (await params).slug
-  console.log("repoId1",id)
   // fetch data
   const { title: repoTitle } = await getRepoTitle(id)
 
@@ -27,10 +27,11 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || []
 
   return {
-    title: repoTitle
-    // openGraph: {
-    //   images: ['/some-specific-page-image.jpg', ...previousImages]
-    // }
+    title: repoTitle,
+    openGraph: {
+      title: repoTitle
+      // images: ['/some-specific-page-image.jpg', ...previousImages]
+    }
   }
 }
 
