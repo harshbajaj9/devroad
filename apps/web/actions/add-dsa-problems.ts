@@ -69,7 +69,7 @@ export const parser = async () => {
     //   data: {
     //     url: obj.Link,
     //     title: obj.Title,
-    //     platform: $Enums.Platform.LC
+    //     platform: 'LC'
     //   }
     // })
     console.log('done')

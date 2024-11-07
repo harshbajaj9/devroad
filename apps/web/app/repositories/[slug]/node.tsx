@@ -37,7 +37,7 @@ interface InnerItemNodeProps {
 }
 export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
   const getPlatformIcon = (platform: string | null) => {
-    if (platform === $Enums.Platform.LC)
+    if (platform === 'LC')
       return (
         <Image
           className='drop-shadow-2xl'
