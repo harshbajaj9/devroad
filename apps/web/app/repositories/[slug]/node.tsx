@@ -36,7 +36,7 @@ interface InnerItemNodeProps {
   itemData: ItemNodeType
 }
 export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
-  const getPlatformIcon = (platform: $Enums.Platform) => {
+  const getPlatformIcon = (platform: string | null) => {
     if (platform === $Enums.Platform.LC)
       return (
         <Image

@@ -127,7 +127,7 @@ export const ItemNode = ({ itemData, children }: ItemNodeProps) => {
       return
   }
 
-  const getPlatformIcon = (platform: $Enums.Platform) => {
+  const getPlatformIcon = (platform: string | null) => {
     if (platform === $Enums.Platform.LC)
       return (
         <Image

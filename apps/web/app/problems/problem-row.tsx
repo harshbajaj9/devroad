@@ -47,7 +47,7 @@ function ProblemRow({ problem }: Props) {
   //   router.push(`/companies/${problem.companyId}`)
   // }
 
-  const getPlatformIcon = (platform: $Enums.Platform) => {
+  const getPlatformIcon = (platform: string | null) => {
     if (platform === $Enums.Platform.LC)
       return (
         <Image
