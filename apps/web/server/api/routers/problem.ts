@@ -6,6 +6,7 @@ import {
   publicProcedure
 } from '@/server/api/trpc'
 import { $Enums } from '@repo/database'
+import { JsonEditorInputSchema } from '@/zod/editorschema'
 
 export const problemRouter = createTRPCRouter({
   getAllProblems: publicProcedure
@@ -137,6 +138,7 @@ export const problemRouter = createTRPCRouter({
         totalRecords
       }
     }),
+  // NOTE: only searches by title
   searchProblemsByIdOrTitle: protectedProcedure
     .input(
       z.object({
@@ -195,7 +197,24 @@ export const problemRouter = createTRPCRouter({
 
     return post ?? null
   }),
-
+  updateProblemDescription: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        content: JsonEditorInputSchema
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const problem = await ctx.db.problem.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          description: input.content
+        }
+      })
+      return problem
+    }),
   getSecretMessage: protectedProcedure.query(() => {
     return 'you can now see this secret message!'
   })

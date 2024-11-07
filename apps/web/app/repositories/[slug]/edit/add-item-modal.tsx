@@ -761,7 +761,7 @@ const AddItemModal = ({
                                       <TooltipTrigger asChild>
                                         <div className='border-0 px-1'>
                                           <p className='flex justify-start text-[10px] font-semibold text-muted-foreground'>
-                                            {selectedProblem.category ?? 'DSA'}
+                                            {selectedProblem.category}
                                           </p>
                                         </div>
                                       </TooltipTrigger>

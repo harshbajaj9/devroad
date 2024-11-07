@@ -224,7 +224,7 @@ const leetcodeProblems = [
   {
     Title: '128. Longest Consecutive Sequence',
     Link: 'https://leetcode.com/problems/longest-consecutive-sequence/',
-    Difficulty: 'Hard',
+    Difficulty: 'Medium',
     Category: 'DSA'
   },
   {

@@ -741,7 +741,7 @@ const SectionNode = ({
   )
 }
 export const getPlatformIcon = (platform: $Enums.Platform | undefined) => {
-  if (platform === $Enums.Platform.LC)
+  if (platform === 'LC')
     return (
       <Image
         className='drop-shadow-2xl'
@@ -752,6 +752,17 @@ export const getPlatformIcon = (platform: $Enums.Platform | undefined) => {
         alt='lc'
       ></Image>
     )
+  // else if (platform === 'LC')
+  //   return (
+  //     <Image
+  //       className='drop-shadow-2xl'
+  //       src={'/lc.png'}
+  //       width={20}
+  //       height={20}
+  //       // unoptimized={true}
+  //       alt='lc'
+  //     ></Image>
+  //   )
   return
 }
 interface ItemNodeProps {
@@ -1097,7 +1108,7 @@ const ItemNode = ({
                                   'text-red-600 dark:text-red-400'
                               )}
                             >
-                              {itemData.problem?.difficulty ?? 'EASY'}
+                              {itemData.problem?.difficulty}
                             </span>
                           </p>
                         </div>
@@ -1112,7 +1123,7 @@ const ItemNode = ({
                       <TooltipTrigger asChild>
                         <div className='border-0 px-1'>
                           <p className='flex justify-start text-xs font-semibold text-muted-foreground'>
-                            {itemData.problem?.category ?? 'DSA'}
+                            {itemData.problem?.category}
                           </p>
                         </div>
                       </TooltipTrigger>
