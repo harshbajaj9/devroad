@@ -6,7 +6,7 @@ import Link from 'next/link'
 // import CompanyIcon from '~/assets/svg/CompanyIcon'
 import React, { useState } from 'react'
 // import { useRouter } from 'next/router'
-import { cn } from '@/lib/utils'
+import { cn, getPlatformIconSrc } from '@/lib/utils'
 import {
   BuildingOffice2Icon,
   CheckCircleIcon,
@@ -90,7 +90,13 @@ function ProblemRow({ problem }: Props) {
             href={problem.url ?? '#'}
             className=''
           >
-            {getPlatformIcon(problem.platform)}
+            <Image
+              className='drop-shadow-2xl'
+              src={getPlatformIconSrc(problem.platform)}
+              width={20}
+              height={20}
+              alt='lc'
+            ></Image>
           </a>
           {/* {problem.url ?? '-'} */}
         </TableCell>

@@ -1,4 +1,4 @@
-import { cn, ItemNodeType } from '@/lib/utils'
+import { cn, getPlatformIconSrc, ItemNodeType } from '@/lib/utils'
 import { $Enums, RepositoryItem } from '@repo/database'
 import {
   Tooltip,
@@ -65,7 +65,15 @@ export const InnerItemNode = ({ itemData }: InnerItemNodeProps) => {
                     )}
                   >
                     <span className=''>
-                      {getPlatformIcon(itemData.problem?.platform)}
+                      <Image
+                        className='drop-shadow-2xl'
+                        src={getPlatformIconSrc(
+                          itemData.problem?.platform ?? null
+                        )}
+                        width={20}
+                        height={20}
+                        alt='lc'
+                      ></Image>
                     </span>
                     {itemData.problem?.title ?? itemData.id}
                   </a>

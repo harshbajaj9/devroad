@@ -113,3 +113,17 @@ export const getCompanyById = (compId: string) => {
   }
   return undefined // Return undefined if the id doesn't exist
 }
+
+export const getPlatformIconSrc = (platform: string | null) => {
+  if (platform === 'LC') return '/lc.png'
+  return '/na.png'
+  // return (
+  //   <Image
+  //     className='drop-shadow-2xl'
+  //     src={'/lc.png'}
+  //     width={20}
+  //     height={20}
+  //     alt='lc'
+  //   ></Image>
+  // )
+}
