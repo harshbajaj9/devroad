@@ -13744,6 +13744,18 @@ const dsaProblems = [
     Link: 'https://leetcode.com/problems/method-chaining/',
     Difficulty: 'Easy',
     Category: 'SQL'
+  },
+  {
+    Title: '2891. Method Chaining',
+    Link: 'https://leetcode.com/problems/method-chaining/',
+    Difficulty: 'Easy',
+    Category: 'SQL'
+  },
+  {
+    Title: 'Repeat and Missing Number Array',
+    Link: 'https://www.interviewbit.com/problems/repeat-and-missing-number-array/',
+    Difficulty: 'Medium',
+    Category: 'DSA'
   }
 ]
 export default leetcodeProblems
