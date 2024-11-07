@@ -740,7 +740,7 @@ const SectionNode = ({
     </div>
   )
 }
-export const getPlatformIcon = (platform: $Enums.Platform | undefined) => {
+export const getPlatformIcon = (platform: string | undefined) => {
   if (platform === 'LC')
     return (
       <Image
