@@ -132,7 +132,6 @@ export const getCountValues = async (repositoryId: string) => {
 }
 
 export const getRepoTitle = async (id: string) => {
-  console.log('repoId',id)
   const repository = await db.repository.findUnique({
     where: { id: id }
   })
