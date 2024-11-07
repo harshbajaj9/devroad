@@ -19,7 +19,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   // read route params
   const id = (await params).slug
-
+  console.log("repoId1",id)
   // fetch data
   const { title: repoTitle } = await getRepoTitle(id)
 
