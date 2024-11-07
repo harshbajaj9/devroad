@@ -13756,6 +13756,12 @@ const dsaProblems = [
     Link: 'https://www.interviewbit.com/problems/repeat-and-missing-number-array/',
     Difficulty: 'Medium',
     Category: 'DSA'
+  },
+  {
+    Title: 'Count Inversions',
+    Link: 'https://www.naukri.com/code360/problems/count-inversions_615',
+    Difficulty: 'Medium',
+    Category: 'DSA'
   }
 ]
 export default leetcodeProblems

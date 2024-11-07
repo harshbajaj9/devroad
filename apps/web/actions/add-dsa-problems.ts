@@ -50,6 +50,8 @@ export const parser = async () => {
       platform = 'GFG'
     } else if (obj.Link.includes('greatfrontend.com')) {
       platform = 'GFE'
+    } else if (obj.Link.includes('naukri.com')) {
+      platform = 'CN'
     }
 
     await prisma.problem.create({
