@@ -68,6 +68,40 @@ export const ItemNode = ({ itemData, children }: ItemNodeProps) => {
   const { doneItems, setDoneItems, revisitItems, setRevisitItems } =
     useRepository()
   useEffect(() => {
+    if (itemData) {
+      if (status !== itemData.lastStatus) setStatus(itemData.lastStatus ?? 0)
+
+      if (itemData.lastStatus === 1) {
+        setDoneItems(prev => {
+          if (!prev.includes(itemData.referenceId as string)) {
+            return [...prev, itemData.referenceId as string]
+          }
+          return prev
+        })
+        setRevisitItems(prev => {
+          return prev.filter(item => item !== itemData.referenceId)
+        })
+      } else if (itemData.lastStatus === 2) {
+        setRevisitItems(prev => {
+          if (!prev.includes(itemData.referenceId as string)) {
+            return [...prev, itemData.referenceId as string]
+          }
+          return prev
+        })
+        setDoneItems(prev => {
+          return prev.filter(item => item !== itemData.referenceId)
+        })
+      } else if (itemData.lastStatus === 0) {
+        setRevisitItems(prev => {
+          return prev.filter(item => item !== itemData.referenceId)
+        })
+        setDoneItems(prev => {
+          return prev.filter(item => item !== itemData.referenceId)
+        })
+      }
+    }
+  }, [itemData])
+  useEffect(() => {
     if (userData) {
       if (status !== userData.lastStatus) setStatus(userData.lastStatus ?? 0)
 
