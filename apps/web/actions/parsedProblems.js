@@ -860,7 +860,7 @@ const parsedProblems = [
   {
     Title: '8. String to Integer (atoi)',
     Link: 'https://leetcode.com/problems/string-to-integer-atoi/',
-    Difficulty: 'Easy',
+    Difficulty: 'Medium',
     Category: 'DSA'
   },
   {
