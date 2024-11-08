@@ -100,6 +100,7 @@ const RepositoryHeader = async ({ repository }: RepositoryHeaderProps) => {
           >
             {repository.title}
           </h1>
+          <p className='pl-0 text-foreground'>{repository.description}</p>
           <p className='pl-0 text-muted-foreground'>
             @{repository.creatorName}
           </p>

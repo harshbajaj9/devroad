@@ -258,7 +258,7 @@ enum RepositoryVerifiedStatus {
 model Repository {
   id                 String                   @id @default(uuid())
   title              String
-  description        Json?
+  description        String?
   type               RepositoryType
   visibility         RepositoryVisibilityMode @default(PRIVATE)
   creatorId          String
