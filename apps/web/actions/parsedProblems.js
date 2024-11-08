@@ -6000,4 +6000,4 @@ const parsedProblems = [
     Category: 'Shell Script'
   }
 ]
-export default leetcodeProblems
+export default parsedProblems
