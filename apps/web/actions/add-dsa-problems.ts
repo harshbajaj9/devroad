@@ -1,7 +1,8 @@
 'use server'
 
 import { $Enums } from '@repo/database'
-import dsaProblems from './dsaProblems'
+// import dsaProblems from './newProblems'
+import dsaProblems from './parsedProblems'
 import { prisma } from '@/lib/db'
 
 export const parser = async () => {
@@ -72,7 +73,7 @@ export const parser = async () => {
     //     platform: 'LC'
     //   }
     // })
-    console.log('done')
+    // console.log('done')
     // console.log('created', obj.Title, cat, primaryPlatform)
   }
 }
