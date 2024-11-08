@@ -1,4 +1,4 @@
-const leetcodeProblems = [
+const parsedProblems = [
   {
     Title: '136. Single Number',
     Link: 'https://leetcode.com/problems/single-number/',
