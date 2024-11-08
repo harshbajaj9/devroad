@@ -374,7 +374,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
               </p>
             </div>
           )} */}
-
+          <p className='pl-0 text-foreground'>{repository.description}</p>
           {!isEditMode && (
             // <HoverCard>
             //   <HoverCardTrigger asChild>
@@ -403,8 +403,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
             //     </div>
             //   </HoverCardContent>
             // </HoverCard>
-          <p className='pl-0 text-foreground'>{repository.description}</p>
-            
+
             <p
               // href={repository.creatorWebsiteLink ?? '#'}
               // target='_blank'
