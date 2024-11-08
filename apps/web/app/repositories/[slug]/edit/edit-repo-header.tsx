@@ -224,7 +224,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
           )}
         </div> */}
         <div className='flex-1'>
-          <div className='flex justify-end px-8'>
+          {/* <div className='flex justify-end px-8'>
             {!isEditMode ? (
               // <Button
               //   variant={'outline'}
@@ -236,12 +236,10 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
               // </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  {/* <div className=''> */}
                   <EllipsisVerticalIcon
                     onClick={() => {}}
                     className={cn('size-6 text-muted-foreground')}
                   />
-                  {/* </div> */}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end' className='w-56'>
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
@@ -254,10 +252,8 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuItem>
-                    {/* <User className='mr-2 h-4 w-4' /> */}
                     <ClipboardDocumentIcon className='mr-2 size-6' />
                     <span>Add to ProblemSet</span>
-                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                   </DropdownMenuItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
@@ -293,7 +289,7 @@ const EditRepositoryHeader = ({ repository }: EditCollectionHeaderProps) => {
                 Save
               </Button>
             )}
-          </div>
+          </div> */}
           <div className='mb-2 flex items-center gap-2'>
             {isEditMode ? (
               <Select value={repository.type}>
