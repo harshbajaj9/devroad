@@ -4308,7 +4308,7 @@ const parsedProblems = [
     Category: 'DSA'
   },
   {
-    Title: '733. Max Area of Island',
+    Title: '733. Flood Fill',
     Link: 'https://leetcode.com/problems/flood-fill/',
     Difficulty: 'Easy',
     Category: 'DSA'
