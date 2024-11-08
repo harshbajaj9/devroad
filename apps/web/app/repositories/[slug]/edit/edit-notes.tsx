@@ -258,12 +258,9 @@ const EditorBox = () => {
   )
 }
 const EditNotes = () => {
-  console.log('editnotes>')
-
   // console.log('initialContent', initialContent)
   const { openItem, setOpenItem } = useRepository()
   if (!openItem) {
-    console.log('openItem>', openItem)
     return
   }
   // const { activeNoteContent, setActiveNoteContent } = useNotes()

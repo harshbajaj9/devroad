@@ -289,7 +289,12 @@ MultiSegmentProgress.displayName = 'MultiSegmentProgress'
 interface SectionNodeProps {
   path: { id: string; title: string }[]
   sectionData: ItemNodeType
-  updateOrder: () => void
+  updateOrder: (
+    priorityOrder: {
+      id: string
+      order: number
+    }[]
+  ) => void
   isOwner: boolean
   setDisableDnD: React.Dispatch<React.SetStateAction<boolean>>
   disableDnD: boolean
@@ -413,8 +418,7 @@ const SectionNode = ({
       )
       return arrayMove(childNodes, oldIndex, newIndex)
     })
-    // await updateOrder(changedPriorities)
-    await updateOrder()
+    await updateOrder(changedPriorities)
     setActiveItem(undefined)
 
     // const { active, over } = event
