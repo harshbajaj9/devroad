@@ -13764,4 +13764,4 @@ const dsaProblems = [
     Category: 'DSA'
   }
 ]
-export default leetcodeProblems
+export default dsaProblems
